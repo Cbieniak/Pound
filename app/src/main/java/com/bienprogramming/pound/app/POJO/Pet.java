@@ -46,6 +46,13 @@ public class Pet {
         this.contactDetail = contactDetail;
     }
 
+    public Pet(String name, String species, String breed){
+        this.name = name;
+        this.species = species;
+        this.breed = breed;
+
+    }
+
     public ContactDetail getContactDetail() {
         return contactDetail;
     }
