@@ -1,14 +1,21 @@
 package com.bienprogramming.pound.app.POJO;
 
+import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.net.URL;
 import java.util.ArrayList;
 
 /**
  * Created by Christian on 6/04/2014.
  */
-public class Pet {
+
+public class Pet implements Parcelable {
     //Pet
     private URL imageUrl;
+    private Bitmap thumbURL;
+    private Bitmap image;
     private String name;
     private String species;
     private String breed;
@@ -115,5 +122,15 @@ public class Pet {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+
     }
 }
