@@ -63,5 +63,6 @@ dependencies {
     apt "org.androidannotations:androidannotations:$AAVersion"
     compile "org.androidannotations:androidannotations-api:$AAVersion"
     compile 'com.android.support:support-v4:19.+'
+    compile "com.j256.ormlite:ormlite-android:4.45"
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }

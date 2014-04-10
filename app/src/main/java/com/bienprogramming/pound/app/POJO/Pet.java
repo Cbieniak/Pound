@@ -4,29 +4,47 @@ import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import java.net.URL;
 import java.util.ArrayList;
 
 /**
  * Created by Christian on 6/04/2014.
  */
-
-public class Pet implements Parcelable {
+@DatabaseTable
+public class Pet {
     //Pet
-    private URL imageUrl;
-    private Bitmap thumbURL;
-    private Bitmap image;
+    @DatabaseField(generatedId = true)
+    private int id;
+    @DatabaseField(index = true)
+    private String imageUrl;
+    @DatabaseField
+    private String thumbURL;
+    @DatabaseField
     private String name;
+    @DatabaseField
     private String species;
     private String breed;
-    private ArrayList<String> petColours;
+    @DatabaseField
     private double reward;
+    @DatabaseField
     private String notes;
-    //Location
-    private PetLocation petLocation;
-    //Contact Owner
-    private ContactDetail contactDetail;
 
+
+    //@DatabaseField
+    //private ArrayList<String> petColours;
+    //Location
+    //@DatabaseField(foreign = true)
+    //private PetLocation petLocation;
+    //Contact Owner
+    //@DatabaseField(foreign = true)
+    //private ContactDetail contactDetail;
+
+
+    //private Bitmap thumbImage;
+    //private Bitmap image;
     public String getSpecies() {
         return species;
     }
@@ -35,22 +53,16 @@ public class Pet implements Parcelable {
         this.species = species;
     }
 
-    public PetLocation getPetLocation() {
-        return petLocation;
-    }
 
-    public void setPetLocation(PetLocation petLocation) {
-        this.petLocation = petLocation;
-    }
+    public Pet(){
 
+    }
     public Pet(String name, String species, String breed, ArrayList<String> petColours, PetLocation petLocation, ContactDetail contactDetail){
         this.name = name;
         this.species = species;
 
         this.breed = breed;
-        this.petColours = petColours;
-        this.petLocation = petLocation;
-        this.contactDetail = contactDetail;
+
     }
 
     public Pet(String name, String species, String breed){
@@ -60,27 +72,14 @@ public class Pet implements Parcelable {
 
     }
 
-    public ContactDetail getContactDetail() {
-        return contactDetail;
-    }
 
-    public void setContactDetail(ContactDetail contactDetail) {
-        this.contactDetail = contactDetail;
-    }
 
-    public PetLocation getLocation() {
-        return petLocation;
-    }
 
-    public void setLocation(PetLocation location) {
-        this.petLocation = location;
-    }
-
-    public URL getImageUrl() {
+    public String getImageUrl() {
         return imageUrl;
     }
 
-    public void setImageUrl(URL imageUrl) {
+    public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 
@@ -100,13 +99,6 @@ public class Pet implements Parcelable {
         this.breed = breed;
     }
 
-    public ArrayList<String> getPetColours() {
-        return petColours;
-    }
-
-    public void setPetColours(ArrayList<String> petColours) {
-        this.petColours = petColours;
-    }
 
     public double getReward() {
         return reward;
@@ -124,13 +116,23 @@ public class Pet implements Parcelable {
         this.notes = notes;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public int getId() {
+        return id;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-
+    public void setId(int id) {
+        this.id = id;
     }
+
+    public String getThumbURL() {
+        return thumbURL;
+    }
+
+    public void setThumbURL(String thumbURL) {
+        this.thumbURL = thumbURL;
+    }
+    //Parcelable
+
+
+
 }

@@ -2,13 +2,23 @@ package com.bienprogramming.pound.app.POJO;
 
 import android.location.Location;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 /**
  * Created by Christian on 6/04/2014.
  */
+@DatabaseTable
 public class PetLocation {
+    @DatabaseField
+    private int id;
+    @DatabaseField
     private String suburb;
+    @DatabaseField
     private double latitude;
+    @DatabaseField
     private double longitude;
+    public PetLocation(){}
 
     public PetLocation(String suburb, double latitude, double longitude) {
         this.suburb = suburb;

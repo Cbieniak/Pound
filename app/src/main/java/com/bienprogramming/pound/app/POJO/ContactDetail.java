@@ -1,14 +1,26 @@
 package com.bienprogramming.pound.app.POJO;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 /**
  * Created by Christian on 6/04/2014.
  */
+@DatabaseTable
 public class ContactDetail {
+    @DatabaseField(generatedId = true)
+    private int id;
+    @DatabaseField
     private String name;
+    @DatabaseField
     private String phoneNumber;
+    @DatabaseField
     private String emailAddress;
+    @DatabaseField
     private String address;
+    public ContactDetail(){
 
+    }
     public ContactDetail(String name, String phoneNumber, String emailAddress, String address) {
         this.name = name;
         this.phoneNumber = phoneNumber;

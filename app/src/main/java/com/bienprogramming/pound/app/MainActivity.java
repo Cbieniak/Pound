@@ -21,7 +21,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bienprogramming.pound.app.POJO.DBHelper;
 import com.bienprogramming.pound.app.POJO.Pet;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.j256.ormlite.dao.Dao;
 
 import java.util.ArrayList;
 
@@ -29,7 +33,7 @@ import static com.bienprogramming.pound.app.R.id.foundPetsScrollView;
 import static com.bienprogramming.pound.app.R.id.missingPetsScrollView;
 
 
-public class MainActivity extends Activity
+public class MainActivity extends OrmLiteBaseActivity<DBHelper>
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     /**
@@ -160,6 +164,21 @@ public class MainActivity extends Activity
             pets.add(pet2);
             pets.add(pet3);
             pets.add(pet4);
+            try
+            {
+                DBHelper a = OpenHelperManager.getHelper(getActivity().getApplicationContext(),DBHelper.class);
+                Dao<Pet,Integer> dao = a.getPetDao();
+                //Dao<Pet,Integer> dao =  OpenHelperManager.getHelper(this.getActivity().getApplicationContext(),DBHelper.class).getPetDao();
+                dao.create(pet);
+                dao.create(pet1);
+                dao.create(pet2);
+                dao.create(pet3);
+                dao.create(pet4);
+
+
+
+
+            } catch (Exception e) {Log.d("TAG",e.getLocalizedMessage());}
 
             fillPets(lostPets, pets);
             fillPets(foundPets, pets);
@@ -182,6 +201,7 @@ public class MainActivity extends Activity
             mainLayout.setLayoutParams(mllp);
 
             for (Pet pet : pets) {
+                final int id = pet.getId();
                 //create layout
                 LinearLayout layout = new LinearLayout(this.getActivity().getApplicationContext());
                 LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(
@@ -214,8 +234,10 @@ public class MainActivity extends Activity
                     @Override
                     public void onClick(View view) {
                         FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        Fragment fragment = DisplayPetFragment.newInstance(pet);
-                        ft.replace(R.layout.fragment_main, fragment);
+                        Fragment fragment = DisplayPetFragment.newInstance(id);
+                        //ft.replace(R.id.displayPetFragment, fragment);
+                        ft.add(R.id.displayPetFragment,fragment);
+
                         ft.commit();
 
                     }
@@ -233,10 +255,10 @@ public class MainActivity extends Activity
 
     public static class DisplayPetFragment extends Fragment {
 
-        public static DisplayPetFragment newInstance(Pet pet) {
+        public static DisplayPetFragment newInstance(int id) {
             DisplayPetFragment fragment = new DisplayPetFragment();
             Bundle args = new Bundle();
-            args.putSerializable("PET",pet);
+            args.putInt("id", id);
             fragment.setArguments(args);
             return fragment;
         }
@@ -245,32 +267,35 @@ public class MainActivity extends Activity
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_display_pet, container, false);
+            int petId = getArguments().getInt("id");
 
-            Pet pet = (Pet) getArguments().getSerializable("PET");
-            ImageView petImage = (ImageView) rootView.findViewById(R.id.displayPetImage);
-            TextView breedView = (TextView) rootView.findViewById(R.id.displayBreed);
-            TextView speciesView = (TextView) rootView.findViewById(R.id.displaySpecies);
-            TextView colorView = (TextView) rootView.findViewById(R.id.displayColor);
-            TextView locationView = (TextView) rootView.findViewById(R.id.displayLocation);
-            TextView noteView = (TextView) rootView.findViewById(R.id.displayNotes);
-            TextView rewardView = (TextView) rootView.findViewById(R.id.displayReward);
-            TextView ownerView = (TextView) rootView.findViewById(R.id.displayContactOwner);
 
-            petImage.setImageResource(R.drawable.dog_sill);
 
-            breedView.setText(pet.getBreed());
-            speciesView.setText(pet.getSpecies());
-            String colors="";
-            for(String color : pet.getPetColours()){
-                colors = colors + color + " ";
+            try {
+                Dao<Pet,Integer> dao =  OpenHelperManager.getHelper(this.getActivity().getApplicationContext(),DBHelper.class).getPetDao();
+                Pet pet = dao.queryForId(petId);
+
+                ImageView petImage = (ImageView) rootView.findViewById(R.id.displayPetImage);
+                TextView breedView = (TextView) rootView.findViewById(R.id.displayBreed);
+                TextView speciesView = (TextView) rootView.findViewById(R.id.displaySpecies);
+                TextView colorView = (TextView) rootView.findViewById(R.id.displayColor);
+                TextView locationView = (TextView) rootView.findViewById(R.id.displayLocation);
+                TextView noteView = (TextView) rootView.findViewById(R.id.displayNotes);
+                TextView rewardView = (TextView) rootView.findViewById(R.id.displayReward);
+                TextView ownerView = (TextView) rootView.findViewById(R.id.displayContactOwner);
+
+                petImage.setImageResource(R.drawable.dog_sill);
+
+                breedView.setText(pet.getBreed());
+                speciesView.setText(pet.getSpecies());
+                noteView.setText(pet.getNotes());
+                rewardView.setText("$" + pet.getReward());
+                ownerView.setText("Contact Owner");
+
+            } catch (Exception e){
+
+
             }
-            colorView.setText(colors);
-            locationView.setText(pet.getLocation().getSuburb());
-            noteView.setText(pet.getNotes());
-            rewardView.setText("$"+pet.getReward());
-            ownerView.setText("Contact Owner");
-
-
 
 
             return rootView;
