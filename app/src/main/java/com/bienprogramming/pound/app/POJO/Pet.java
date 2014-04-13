@@ -3,8 +3,12 @@ package com.bienprogramming.pound.app.POJO;
 import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.renderscript.Element;
 
+import com.j256.ormlite.dao.ForeignCollection;
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.net.URL;
@@ -31,16 +35,17 @@ public class Pet {
     private double reward;
     @DatabaseField
     private String notes;
+    @DatabaseField
+    private boolean lost;
 
+    private ArrayList<Color> colours;
+    @DatabaseField(foreign = true)
+    private PetLocation petLocation;
+    @DatabaseField(foreign = true)
+    private ContactDetail contactDetail;
 
-    //@DatabaseField
-    //private ArrayList<String> petColours;
-    //Location
-    //@DatabaseField(foreign = true)
-    //private PetLocation petLocation;
-    //Contact Owner
-    //@DatabaseField(foreign = true)
-    //private ContactDetail contactDetail;
+    @DatabaseField(dataType = DataType.BYTE_ARRAY)
+    private byte[] imageBlob;
 
 
     //private Bitmap thumbImage;

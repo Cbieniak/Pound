@@ -10,7 +10,7 @@ import com.j256.ormlite.table.DatabaseTable;
  */
 @DatabaseTable
 public class PetLocation {
-    @DatabaseField
+    @DatabaseField(generatedId = true)
     private int id;
     @DatabaseField
     private String suburb;
@@ -18,6 +18,8 @@ public class PetLocation {
     private double latitude;
     @DatabaseField
     private double longitude;
+    @DatabaseField
+    private int petId;
     public PetLocation(){}
 
     public PetLocation(String suburb, double latitude, double longitude) {

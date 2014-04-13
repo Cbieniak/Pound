@@ -27,7 +27,12 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.Dao;
 
+import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.UiThread;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.bienprogramming.pound.app.R.id.foundPetsScrollView;
 import static com.bienprogramming.pound.app.R.id.missingPetsScrollView;
@@ -40,6 +45,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
+    private Pet currentPet;
 
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
@@ -64,6 +70,9 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
 
+
+
+
     }
 
     @Override
@@ -71,7 +80,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                .replace(R.id.container, MainFragment.newInstance(position + 1))
                 .commit();
     }
 
@@ -79,12 +88,6 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
         switch (number) {
             case 1:
                 mTitle = getString(R.string.title_section1);
-                break;
-            case 2:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section3);
                 break;
         }
     }
@@ -125,7 +128,8 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+
+    public static class MainFragment extends Fragment {
         /**
          * The fragment argument representing the section number for this
          * fragment.
@@ -136,15 +140,15 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
+        public static MainFragment newInstance(int sectionNumber) {
+            MainFragment fragment = new MainFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
             fragment.setArguments(args);
             return fragment;
         }
 
-        public PlaceholderFragment() {
+        public MainFragment() {
         }
 
         @Override
@@ -153,35 +157,29 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             lostPets = (HorizontalScrollView) rootView.findViewById(missingPetsScrollView);
             foundPets = (HorizontalScrollView) rootView.findViewById(foundPetsScrollView);
-            Pet pet = new Pet("name", "Species", "Breed");
-            Pet pet1 = new Pet("name", "Species", "Breed");
-            Pet pet2 = new Pet("name", "Species", "Breed");
-            Pet pet3 = new Pet("name", "Species", "Breed");
-            Pet pet4 = new Pet("name", "Species", "Breed");
-            ArrayList<Pet> pets = new ArrayList<Pet>();
-            pets.add(pet);
-            pets.add(pet1);
-            pets.add(pet2);
-            pets.add(pet3);
-            pets.add(pet4);
-            try
-            {
-                DBHelper a = OpenHelperManager.getHelper(getActivity().getApplicationContext(),DBHelper.class);
-                Dao<Pet,Integer> dao = a.getPetDao();
-                //Dao<Pet,Integer> dao =  OpenHelperManager.getHelper(this.getActivity().getApplicationContext(),DBHelper.class).getPetDao();
-                dao.create(pet);
-                dao.create(pet1);
-                dao.create(pet2);
-                dao.create(pet3);
-                dao.create(pet4);
+            try {
+                Dao<Pet, Integer> petDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetDao();
+                List<Pet> pets = petDao.queryForAll();
+                if(pets.size() == 0){
+                    Pet pet = new Pet("name", "Species2", "Breed2");
+                    Pet pet1 = new Pet("name", "Species1", "Breed1");
+                    Pet pet2= new Pet("name", "Species3", "Breed3");
+                    petDao.create(pet);
+                    petDao.create(pet1);
+                    petDao.create(pet2);
+                    pets.add(pet);
+                    pets.add(pet1);
+                    pets.add(pet2);
+                }
+
+                fillPets(lostPets, pets);
+                fillPets(foundPets, pets);
+            } catch(Exception e){
+
+            }
 
 
 
-
-            } catch (Exception e) {Log.d("TAG",e.getLocalizedMessage());}
-
-            fillPets(lostPets, pets);
-            fillPets(foundPets, pets);
 
             return rootView;
         }
@@ -193,7 +191,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
 
-        public void fillPets(HorizontalScrollView scrollView, ArrayList<Pet> pets) {
+        public void fillPets(HorizontalScrollView scrollView, List<Pet> pets) {
             LinearLayout mainLayout = new LinearLayout(this.getActivity().getApplicationContext());
             LinearLayout.LayoutParams mllp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -212,6 +210,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                 layout.setPadding(20, 20, 20, 20);
 
                 ImageView imageView = new ImageView(this.getActivity().getApplicationContext());
+                //Download image set placeholder
                 imageView.setImageResource(R.drawable.paw_print);
                 LinearLayout.LayoutParams ilp = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -228,15 +227,18 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
 
                 layout.addView(imageView);
                 layout.addView(petName);
-
+                final Pet petCopy = pet;
                 //Set onclickListener
                 layout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        Fragment fragment = DisplayPetFragment.newInstance(id);
-                        //ft.replace(R.id.displayPetFragment, fragment);
-                        ft.add(R.id.displayPetFragment,fragment);
+                        DisplayPetFragment fragment = DisplayPetFragment.newInstance(id);
+
+                        fragment.setPet(petCopy);
+                        ft.replace(R.id.container,fragment);
+                        ft.addToBackStack(null);
+
 
                         ft.commit();
 
@@ -248,12 +250,16 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
 
             scrollView.addView(mainLayout);
 
+
         }
+        //Download images
+
 
 
     }
 
     public static class DisplayPetFragment extends Fragment {
+        Pet pet;
 
         public static DisplayPetFragment newInstance(int id) {
             DisplayPetFragment fragment = new DisplayPetFragment();
@@ -262,7 +268,11 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
             fragment.setArguments(args);
             return fragment;
         }
-
+        public DisplayPetFragment() {
+        }
+        public void setPet(Pet pet){
+            this.pet = pet;
+        }
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -272,9 +282,9 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
 
 
             try {
-                Dao<Pet,Integer> dao =  OpenHelperManager.getHelper(this.getActivity().getApplicationContext(),DBHelper.class).getPetDao();
-                Pet pet = dao.queryForId(petId);
-
+                //DBHelper a = OpenHelperManager.getHelper(getActivity().getApplicationContext(),DBHelper.class);
+                //Dao<Pet,Integer> dao = a.getPetDao();
+                getActivity().getActionBar().setTitle(pet.getName());
                 ImageView petImage = (ImageView) rootView.findViewById(R.id.displayPetImage);
                 TextView breedView = (TextView) rootView.findViewById(R.id.displayBreed);
                 TextView speciesView = (TextView) rootView.findViewById(R.id.displaySpecies);
@@ -294,13 +304,14 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
 
             } catch (Exception e){
 
-
+                Log.d("TAG",e.getLocalizedMessage());
             }
 
 
             return rootView;
 
         }
+
     }
 
 }

@@ -18,6 +18,8 @@ public class ContactDetail {
     private String emailAddress;
     @DatabaseField
     private String address;
+    @DatabaseField
+    private int petId;
     public ContactDetail(){
 
     }
