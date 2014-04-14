@@ -9,13 +9,16 @@ import android.app.FragmentTransaction;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,6 +39,7 @@ import java.util.List;
 
 import static com.bienprogramming.pound.app.R.id.foundPetsScrollView;
 import static com.bienprogramming.pound.app.R.id.missingPetsScrollView;
+import static com.bienprogramming.pound.app.R.id.petImageLayout;
 
 
 public class MainActivity extends OrmLiteBaseActivity<DBHelper>
@@ -258,7 +262,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
 
     }
 
-    public static class DisplayPetFragment extends Fragment {
+    public static class DisplayPetFragment extends Fragment{
         Pet pet;
 
         public static DisplayPetFragment newInstance(int id) {
@@ -277,10 +281,96 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_display_pet, container, false);
-            int petId = getArguments().getInt("id");
+            final int petId = getArguments().getInt("id");
+            /*
+            rootView.setOnClickListener(new View.OnClickListener() {
+                int i = 6;
+                @Override
+                public void onClick(View view) {
 
 
+                    FrameLayout petImageLayout = (FrameLayout) view.findViewById(R.id.petImageLayout);
+                    LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            petImageLayout.getLayoutParams().height );
 
+                    Log.d("Here",param.weight+"");
+
+                    param.weight = i;
+                    i=i-1;
+                    petImageLayout.setLayoutParams(param);
+                }
+            });
+            */
+            /*
+                rootView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        Log.d("TAG", "ere");
+                        return false;
+                    }
+                });
+                */
+            rootView.setOnClickListener(null);
+            rootView.setOnTouchListener(new View.OnTouchListener() {
+                float i=600;
+                float baseY=0;
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                    if(motionEvent.getAction() == motionEvent.ACTION_DOWN){
+                            baseY=motionEvent.getY();
+
+                        }else
+                        if(motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+                            FrameLayout petImageLayout = (FrameLayout) view.findViewById(R.id.petImageLayout);
+                            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                                    LinearLayout.LayoutParams.MATCH_PARENT,
+                                    0 );
+                            Log.d(""+baseY,""+motionEvent.getY());
+                            i = i - (baseY - motionEvent.getY());
+                            param.weight = i;
+                            petImageLayout.setLayoutParams(param);
+                            baseY = motionEvent.getY();
+                        }
+                        /*
+                        case MotionEvent.ACTION_MOVE:
+
+                            FrameLayout petImageLayout = (FrameLayout) view.findViewById(R.id.petImageLayout);
+                            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                                    LinearLayout.LayoutParams.MATCH_PARENT,
+                                    petImageLayout.getLayoutParams().height);
+                            i = i - (i - motionEvent.getY());
+                            param.weight = i;
+
+                            petImageLayout.setLayoutParams(param);
+                            break;
+                    }
+                    */
+                            return false;
+                    }
+
+            });
+
+            /*
+                rootView.setOnDragListener(new View.OnDragListener() {
+                    @Override
+                    public boolean onDrag(View view, DragEvent dragEvent) {
+                        Log.d("TAG", "ere");
+
+                    FrameLayout petImageLayout = (FrameLayout) rootView.findViewById(R.id.petImageLayout);
+                    LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            0 );
+                    weight = weight - (Math.abs(petImageLayout.getY() - dragEvent.getY()));
+                    param.weight = weight;
+                    petImageLayout.setLayoutParams(param);
+
+                        return false;
+                    }
+                });
+
+            */
             try {
                 //DBHelper a = OpenHelperManager.getHelper(getActivity().getApplicationContext(),DBHelper.class);
                 //Dao<Pet,Integer> dao = a.getPetDao();
@@ -293,7 +383,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                 TextView noteView = (TextView) rootView.findViewById(R.id.displayNotes);
                 TextView rewardView = (TextView) rootView.findViewById(R.id.displayReward);
                 TextView ownerView = (TextView) rootView.findViewById(R.id.displayContactOwner);
-
+                FrameLayout petImageLayout = (FrameLayout) rootView.findViewById(R.id.petImageLayout);
                 petImage.setImageResource(R.drawable.dog_sill);
 
                 breedView.setText(pet.getBreed());
@@ -304,7 +394,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
 
             } catch (Exception e){
 
-                Log.d("TAG",e.getLocalizedMessage());
+                //Log.d("TAG",e.getLocalizedMessage());
             }
 
 
