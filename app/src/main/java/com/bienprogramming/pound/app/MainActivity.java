@@ -391,6 +391,11 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                 noteView.setText(pet.getNotes());
                 rewardView.setText("$" + pet.getReward());
                 ownerView.setText("Contact Owner");
+                String sb = "";
+                for(com.bienprogramming.pound.app.POJO.Color color : pet.getColours()){
+                    sb = sb+" "+color.getColorName();
+                }
+                colorView.setText(sb);
 
             } catch (Exception e){
 

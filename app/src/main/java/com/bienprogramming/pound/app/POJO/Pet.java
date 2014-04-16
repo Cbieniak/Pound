@@ -30,6 +30,7 @@ public class Pet {
     private String name;
     @DatabaseField
     private String species;
+    @DatabaseField
     private String breed;
     @DatabaseField
     private double reward;
@@ -58,6 +59,9 @@ public class Pet {
         this.species = species;
     }
 
+    public ArrayList<Color> getColours() {
+        return colours;
+    }
 
     public Pet(){
 
@@ -74,8 +78,18 @@ public class Pet {
         this.name = name;
         this.species = species;
         this.breed = breed;
+        this.notes = "THIS IS A REALLY LONG NOTE PROVIDING ADDITION NEWS ABOUT THE PET";
+        Color color1 = new Color("Brown");
+        Color color2 = new Color("Orange");
+        ArrayList<Color> colors = new ArrayList<Color>();
+        colors.add(color1);
+        colors.add(color2);
+        this.colours=colors;
+        this.reward=25.0;
+
 
     }
+
 
 
 
