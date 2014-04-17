@@ -9,10 +9,26 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_search">Search</string>
     <string name="action_settings">Settings</string>
+    <string name="action_save">Save</string>
+    <string name="action_upload">Upload</string>
     <string name="section_label">Section Label</string>
     <string name="lostAPet">Lost A Pet</string>
     <string name="foundAPet">Found A Pet</string>
     <string name="missingPets">Missing Pets</string>
     <string name="foundPets">Found Pets</string>
+
+    <string name="name">Name</string>
+    <string name="species">Species</string>
+    <string name="breed">Breed</string>
+    <string name="color">Color</string>
+    <string name="breed">Breed</string>
+    <string name="location">Location</string>
+    <string name="owner_details">Owner Details</string>
+    <string name="finder_details">Finder Details</string>
+    <string name="contact_detail">Contact Details</string>
+    <string name="reward">Reward</string>
+    <string name="notes">Notes</string>
+
+
 
 </resources>
