@@ -13,19 +13,60 @@
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:paddingLeft="10dp">
-
+        android:paddingLeft="10dp"
+        android:paddingTop="@dimen/mediumPadding"
+        android:paddingRight="10dp">
         <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/raised"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="@dimen/mediumPadding" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/pet_details"
+                android:id="@+id/create_pet_title"
+                android:paddingLeft="20dp"
+
+                />
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@color/highlight"
+                />
+
+            <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="4">
 
             <ImageView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/create_pet_picture"
-                    android:layout_weight="1.2"/>
+                    android:layout_weight=".6"
+                android:visibility="gone" />
+             <RelativeLayout
+                 android:layout_width="0dp"
+                 android:layout_height="fill_parent"
+                 android:layout_weight=".6"
+                 android:layout_margin="10dp"
+                 android:background="@color/background">
+                 <TextView
+                     android:layout_width="fill_parent"
+                     android:layout_height="fill_parent"
+                     android:text="+"
+                     android:textSize="50dp"
+                     android:textColor="#FFA913"
+                     android:gravity="center"/>
+
+                 </RelativeLayout>
 
             <LinearLayout
                 android:orientation="vertical"
@@ -34,21 +75,21 @@
                     android:layout_weight="1">
 
                 <EditText
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/name"
+                    android:hint="@string/name"
                     android:id="@+id/create_pet_name" />
 
                 <EditText
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/species"
+                    android:hint="@string/species"
                     android:id="@+id/create_pet_species" />
 
                 <EditText
-                        android:layout_width="wrap_content"
+                        android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/breed"
+                        android:hint="@string/breed"
                         android:id="@+id/create_pet_breed" />
             </LinearLayout>
 
@@ -56,7 +97,7 @@
 
         <FrameLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:id="@+id/create_color_holder"
           ></FrameLayout>
@@ -64,41 +105,16 @@
         <EditText
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/location"
+                android:hint="@string/location"
                 android:ems="10"
                 android:id="@+id/create_pet_location"
                 android:layout_weight="1" />
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="@string/owner_details"
-            android:id="@+id/create_pet_owner_detail"
-            android:layout_weight="1" />
-
-        <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:text="@string/name"
-            android:ems="10"
-            android:id="@+id/create_pet_owner_name"
-            android:layout_weight="1" />
-
-        <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:text="@string/contact_detail"
-            android:ems="10"
-            android:id="@+id/create_pet_contact_detail"
-            android:layout_weight="1" />
 
         <EditText
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
+            android:hint="@string/reward"
             android:ems="10"
             android:id="@+id/create_pet_reward"
             android:layout_weight="1" />
@@ -109,9 +125,54 @@
             android:inputType="textMultiLine"
             android:ems="10"
             android:id="@+id/create_pet_notes"
-            android:text="@string/notes"
+            android:hint="@string/notes"
             android:layout_weight="1" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:layout_weight="3"
+            android:layout_marginTop="@dimen/mediumPadding"
+            android:background="@color/raised"
+            android:paddingLeft="10dp"
+            android:paddingBottom="@dimen/mediumPadding"
+            android:paddingRight="10dp">
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/owner_details"
+                android:id="@+id/create_pet_owner_detail"
+                android:paddingLeft="20dp"
+
+                />
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@color/highlight"
+               />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:hint="@string/name"
+                android:ems="10"
+                android:id="@+id/create_pet_owner_name" />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:hint="@string/contact_detail"
+                android:ems="10"
+                android:id="@+id/create_pet_contact_detail"/>
+        </LinearLayout>
+
     </LinearLayout>
+
+
     </ScrollView>
 
 </LinearLayout>
