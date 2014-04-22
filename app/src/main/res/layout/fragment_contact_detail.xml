@@ -1,0 +1,170 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.bienprogramming.pound.app.Fragment.ContactDetailFragment">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="@dimen/mediumPadding"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/raised"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/mediumPadding"
+                android:paddingLeft="@dimen/mediumPadding"
+                android:id="@+id/contact_phone_layout">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="20dp"
+                    android:text="@string/contact_details_phone"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+
+                    />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/highlight" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="10"
+                        android:hint="@string/contact_details_phone"
+                        android:id="@+id/contact_new_phone_number_text" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:text="+"
+                        android:textColor="@color/highlight"
+                        android:textSize="30dp"
+                        android:id="@+id/contact_add_phone_number" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/mediumPadding"
+                android:background="@color/raised"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/mediumPadding"
+                android:paddingLeft="@dimen/mediumPadding"
+                android:id="@+id/contact_email_layout"
+                >
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="20dp"
+                    android:text="@string/contact_details_email"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+
+                    />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/highlight" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="10"
+                        android:hint="@string/contact_details_email"
+                        android:id="@+id/contact_new_email_text" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:text="+"
+                        android:textColor="@color/highlight"
+                        android:textSize="30dp"
+                        android:id="@+id/contact_add_email" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/mediumPadding"
+                android:background="@color/raised"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/mediumPadding"
+                android:paddingLeft="@dimen/mediumPadding"
+                android:id="@+id/contact_address_layout">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="20dp"
+                    android:text="@string/contact_details_address"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+
+                    />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/highlight" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="10"
+                        android:hint="@string/contact_details_address"
+                        android:id="@+id/contact_new_address_text" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:text="+"
+                        android:textColor="@color/highlight"
+                        android:textSize="30dp"
+                        android:id="@+id/contact_add_address" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</FrameLayout>

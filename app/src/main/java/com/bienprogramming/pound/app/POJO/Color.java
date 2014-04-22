@@ -18,6 +18,19 @@ public class Color {
 
     public Color(){};
 
+    public Color(String colorName, int colorValue)
+    {
+        this.colorName=colorName;
+        this.colorValue=colorValue;
+    }
+
+    public int getColorValue() {
+        return colorValue;
+    }
+
+    public void setColorValue(int colorValue) {
+        this.colorValue = colorValue;
+    }
 
     public Color(String colorName){
         this.colorName = colorName;
@@ -30,4 +43,6 @@ public class Color {
     public void setColorName(String colorName) {
         this.colorName = colorName;
     }
+
+    public String toString(){return colorName;}
 }

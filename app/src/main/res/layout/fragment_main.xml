@@ -2,61 +2,80 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
-    tools:context="com.bienprogramming.pound.app.MainActivity$MainFragment">
+    tools:context="com.bienprogramming.pound.app.Activity.MainActivity$MainFragment">
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/highlight"
+        android:padding="5dp"
+        >
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/lostAPet"
             android:id="@+id/lostAPet"
-            android:layout_weight="1" />
-
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/foundAPet"
+            android:layout_weight="1"
+            android:text="@string/lostAPet"
+            android:background="@color/raised"
+            android:layout_marginRight="5dp"/>
+
+        <Button
             android:id="@+id/foundAPet"
-            android:layout_weight="1" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/foundAPet"
+            android:background="@color/raised"/>
     </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:paddingTop="@dimen/mediumPadding"
+        android:paddingLeft="@dimen/mediumPadding"
         android:text="@string/missingPets"
-        android:textSize="@dimen/titleLabelSize"
-        android:padding="@dimen/mediumPadding"
-        android:layout_gravity="center_horizontal" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="@dimen/titleLabelSize" />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/highlight"
+        android:layout_marginBottom="10dp"/>
 
     <HorizontalScrollView
+        android:id="@+id/missingPetsScrollView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:id="@+id/missingPetsScrollView" />
+        android:background="@color/raised" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:paddingTop="@dimen/mediumPadding"
+        android:paddingLeft="@dimen/mediumPadding"
         android:text="@string/foundPets"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="@dimen/titleLabelSize"
-        android:padding="@dimen/mediumPadding"
-        android:layout_gravity="center_horizontal" />
+        />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/highlight"
+        android:layout_marginBottom="10dp"/>
 
     <HorizontalScrollView
+        android:id="@+id/foundPetsScrollView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:id="@+id/foundPetsScrollView" />
+        android:background="@color/raised" />
 </LinearLayout>
 

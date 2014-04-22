@@ -11,54 +11,36 @@ public class ContactDetail {
     @DatabaseField(generatedId = true)
     private int id;
     @DatabaseField
-    private String name;
+    private int type;
     @DatabaseField
-    private String phoneNumber;
-    @DatabaseField
-    private String emailAddress;
-    @DatabaseField
-    private String address;
+    private String detail;
     @DatabaseField
     private int petId;
+
+
     public ContactDetail(){
 
     }
-    public ContactDetail(String name, String phoneNumber, String emailAddress, String address) {
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.emailAddress = emailAddress;
-        this.address = address;
+    public ContactDetail(int type, String detail){
+        this.detail = detail;
+
     }
 
-    public String getName() {
-        return name;
+    public String getDetail() {
+        return detail;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public int getType() {
+        return type;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setType(int type) {
+        this.type = type;
     }
 
-    public String getEmailAddress() {
-        return emailAddress;
-    }
 
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
 }

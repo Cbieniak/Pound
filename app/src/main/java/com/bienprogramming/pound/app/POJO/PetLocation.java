@@ -56,4 +56,8 @@ public class PetLocation {
         this.latitude = location.getLatitude();
         this.longitude = location.getLongitude();
     }
+    public String toString(){
+        return this.suburb;
+    }
+
 }

@@ -37,13 +37,18 @@ public class Pet {
     @DatabaseField
     private String notes;
     @DatabaseField
+    private String contactName;
+    @DatabaseField
+    private String contactDetail;
+    @DatabaseField
+    private int contactType;
+    @DatabaseField
     private boolean lost;
 
     private ArrayList<Color> colours;
     @DatabaseField(foreign = true)
     private PetLocation petLocation;
-    @DatabaseField(foreign = true)
-    private ContactDetail contactDetail;
+
 
     @DatabaseField(dataType = DataType.BYTE_ARRAY)
     private byte[] imageBlob;
@@ -61,6 +66,10 @@ public class Pet {
 
     public ArrayList<Color> getColours() {
         return colours;
+    }
+
+    public void setColours(ArrayList<Color> colours) {
+        this.colours = colours;
     }
 
     public Pet(){
@@ -153,5 +162,56 @@ public class Pet {
     //Parcelable
 
 
+    public PetLocation getPetLocation() {
+        return petLocation;
+    }
 
+    public void setPetLocation(PetLocation petLocation) {
+        this.petLocation = petLocation;
+    }
+
+
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
+    }
+
+    public String getContactName() {
+        return contactName;
+    }
+
+    public boolean isLost() {
+        return lost;
+    }
+
+    public void setLost(boolean lost) {
+        this.lost = lost;
+    }
+
+    public int getContactType() {
+        return contactType;
+    }
+
+    public void setContactType(int contactType) {
+        this.contactType = contactType;
+    }
+
+    public String getContactDetail() {
+        return contactDetail;
+    }
+
+    public void setContactDetail(String contactDetail) {
+        this.contactDetail = contactDetail;
+    }
+
+    public byte[] getImageBlob() {
+        return imageBlob;
+    }
+
+    public void setImageBlob(byte[] imageBlob) {
+        this.imageBlob = imageBlob;
+    }
+
+    public String toString(){
+        return name;
+    }
 }

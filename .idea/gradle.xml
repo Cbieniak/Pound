@@ -9,6 +9,7 @@
           <set>
             <option value="C:\Users\Christian\Dropbox\3027Pound\Pound" />
             <option value="C:\Users\Christian\Dropbox\3027Pound\Pound\app" />
+            <option value="C:\Users\Christian\Dropbox\3027Pound\Pound\google-play-services_lib" />
           </set>
         </option>
       </GradleProjectSettings>

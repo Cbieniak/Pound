@@ -1,79 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
     android:id="@+id/fragment_display_pet"
-    tools:context="com.bienprogramming.pound.app.MainActivity$DisplayPetFragment">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.bienprogramming.pound.app.Activity.MainActivity$DisplayPetFragment">
+
     <FrameLayout
+        android:id="@+id/petImageLayout"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
+        android:layout_margin="@dimen/mediumPadding"
         android:layout_weight="600"
-        android:id="@+id/petImageLayout">
+        android:background="@color/highlight">
 
         <ImageView
+            android:id="@+id/displayPetImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/displayPetImage"
             android:layout_gravity="center" />
     </FrameLayout>
 
-    <LinearLayout
-        android:orientation="vertical"
+    <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="300"
-        android:background="@color/raised"
-        android:layout_margin="@dimen/mediumPadding">
+        android:layout_marginBottom="10dp"
+        android:layout_weight="300">
 
-
-        <TextView
+        <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Breed"
-            android:id="@+id/displayBreed" />
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/mediumPadding"
+            android:background="@color/raised"
+            android:orientation="vertical"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp">
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Species"
-            android:id="@+id/displaySpecies" />
+            <TextView
+                android:id="@+id/create_pet_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:text="@string/pet_details"
+                android:textAppearance="?android:attr/textAppearanceSmall"
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Colors"
-            android:id="@+id/displayColor" />
+                />
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Location"
-            android:id="@+id/displayLocation" />
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@color/highlight" />
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Reward"
-            android:id="@+id/displayReward" />
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Notes"
-            android:id="@+id/displayNotes" />
+                <TextView
+                    android:id="@+id/displayBreed"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Breed"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <TextView
+                <TextView
+                    android:id="@+id/displaySpecies"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Species"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+            </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/displayColor"
+            android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Owner"
-            android:id="@+id/displayContactOwner" />
-    </LinearLayout>
+            android:layout_height="40dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:background="@color/background"/>
+
+            <TextView
+                android:id="@+id/displayLocation"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Location"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/displayReward"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Reward"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/displayContactOwner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Owner"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/display_pet_notes"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:text="@string/notes"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+
+                />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@color/highlight" />
+
+            <TextView
+                android:id="@+id/displayNotes"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Notes" />
+
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
