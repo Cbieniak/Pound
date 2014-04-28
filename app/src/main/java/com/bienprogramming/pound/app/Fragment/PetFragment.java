@@ -69,6 +69,7 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     try {
         Dao<Pet, Integer> petDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetDao();
         pets = petDao.queryForAll();
@@ -91,6 +92,20 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
         mListView.setOnItemClickListener(this);
         sortNameButton = (Button)  rootView.findViewById(R.id.list_button_name);
         sortLocationButton = (Button) rootView.findViewById(R.id.list_button_location);
+
+        Comparator<Pet> ALPHABETICAL_ORDER = new Comparator<Pet>() {
+            public int compare(Pet object1, Pet object2) {
+                if(object1.getName() == null)
+                    object1.setName("");
+                if(object2.getName() == null)
+                    object2.setName("");
+                return String.CASE_INSENSITIVE_ORDER.compare(object1.toString(), object2.toString());
+
+            }
+        };
+        Collections.sort(pets,ALPHABETICAL_ORDER);
+
+        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 
         sortNameButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,13 +144,13 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
     public void onCreateOptionsMenu(Menu menu,MenuInflater inflater)
     {
         menu.clear();
-        inflater.inflate(R.menu.create,menu);
+        inflater.inflate(R.menu.pet_list_menu,menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        //Save
+        //Filter
         if(item.getItemId() == R.id.action_filter) {
 
         }

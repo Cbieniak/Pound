@@ -6,7 +6,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -27,6 +29,7 @@ import com.bienprogramming.pound.app.POJO.Color;
 import com.bienprogramming.pound.app.POJO.ContactDetail;
 import com.bienprogramming.pound.app.POJO.DBHelper;
 import com.bienprogramming.pound.app.POJO.Pet;
+import com.bienprogramming.pound.app.POJO.PetColor;
 import com.bienprogramming.pound.app.POJO.PetLocation;
 import com.bienprogramming.pound.app.Activity.PetLocationActivity;
 import com.bienprogramming.pound.app.R;
@@ -34,6 +37,7 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -207,12 +211,30 @@ public class CreatePetFragment extends Fragment {
                 pet.setName(nameEditText.getText().toString());
                 pet.setReward(Double.parseDouble(rewardEditText.getText().toString()));
                 pet.setNotes(notesEditText.getText().toString());
-
+                Dao<PetLocation, Integer> petlocationDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetLocationDao();
+                Dao<Color, Integer> colorDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getColorDao();
+                Dao<PetColor, Integer> petColorDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetColorDao();
                 Dao<Pet, Integer> petDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetDao();
+
                 petDao.create(pet);
+
+
+                pet.getPetLocation().setPetId(pet.getId());
+
+                petlocationDao.create(pet.getPetLocation());
+
+                for(Color color : pet.getColours()){
+                    if(color.getId() == null) {
+                        colorDao.create(color);
+                    }
+
+                    PetColor petColor = new PetColor(pet,color);
+                    petColorDao.create(petColor);
+                }
+
                 getFragmentManager().popBackStack();
             } catch (Exception e) {
-                Log.d("Create", "Failed to create Pet with Name" + pet.getName());
+                Log.d("Create", "Failed to create Pet with Name" + e.getLocalizedMessage());
             }
         }
         return true;
@@ -289,16 +311,9 @@ public class CreatePetFragment extends Fragment {
 
 
                         Uri selectedImage = returnedIntent.getData();
-                        InputStream imageStream = getActivity().getContentResolver().openInputStream(selectedImage);
-                        Bitmap chosenImage = BitmapFactory.decodeStream(imageStream);
-                        //Upload
-                        ImageView petImage = new ImageView(getView().getContext());
-                        petImage.setImageBitmap(chosenImage);
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        chosenImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                        byte[] byteArray = stream.toByteArray();
-                        pet.setImageBlob(byteArray);
-                        petImageLayout.addView(petImage);
+
+                        new ProcessFilesTask().execute(selectedImage);
+
 
                     }catch (Exception e){
                         Log.d("Failure","Error picking Image");
@@ -328,6 +343,7 @@ public class CreatePetFragment extends Fragment {
 
     public void refreshUI()
     {
+
         if(pet.getSpecies()!=null) {
             speciesEditText = ((EditText) getView().findViewById(R.id.create_pet_species));
             speciesEditText.post(new Runnable() {
@@ -385,6 +401,79 @@ public class CreatePetFragment extends Fragment {
                 }
             });
         }
+        if(pet.getImageBlob() !=null) {
+            petImageLayout = ((RelativeLayout) getView().findViewById(R.id.create_pet_add_image));
+
+            petImageLayout.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    Bitmap bmp = BitmapFactory.decodeByteArray(pet.getImageBlob(), 0, pet.getImageBlob().length);
+                    ImageView petImage = new ImageView(getView().getContext());
+                    petImage.setImageBitmap(ThumbnailUtils.extractThumbnail(bmp, petImageLayout.getWidth(), petImageLayout.getHeight()));
+                    petImageLayout.addView(petImage);
+                }
+            });
+        }
+
+        }
+
+    private class ProcessFilesTask extends AsyncTask<Uri, Integer , ImageView> {
+        protected ImageView doInBackground(Uri... uris) {
+
+
+            try {
+                Uri selectedImage = uris[0];
+                InputStream imageStream = getActivity().getContentResolver().openInputStream(selectedImage);
+                publishProgress(1);
+
+                Bitmap chosenImage = BitmapFactory.decodeStream(imageStream);
+                //Upload
+                ImageView petImage = new ImageView(getView().getContext());
+                petImage.setImageBitmap(ThumbnailUtils.extractThumbnail(chosenImage, petImageLayout.getWidth(), petImageLayout.getHeight()));
+                publishProgress(2);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                publishProgress(3);
+                //chosenImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+                publishProgress(4);
+                //byte[] byteArray = stream.toByteArray();
+                publishProgress(5);
+
+                InputStream iStream =   getActivity().getContentResolver().openInputStream(selectedImage);
+                byte[] inputData = getBytes(iStream);
+                pet.setImageBlob(inputData);
+
+                return petImage;
+            } catch (Exception e){}
+            return null;
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+            TextView plusTextView = (TextView) getView().findViewById(R.id.create_pet_image_progress);
+            String sb="";
+            for(int i = 0; i < progress[0];i++) {
+                sb = sb + ".";
+            }
+            plusTextView.setText(sb);
+        }
+
+        protected void onPostExecute(ImageView result) {
+            petImageLayout.addView(result);
+        }
     }
+
+    public byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
+    }
+
 
 }

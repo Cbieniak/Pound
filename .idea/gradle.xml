@@ -7,9 +7,9 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="C:\Users\Christian\Dropbox\3027Pound\Pound" />
-            <option value="C:\Users\Christian\Dropbox\3027Pound\Pound\app" />
-            <option value="C:\Users\Christian\Dropbox\3027Pound\Pound\google-play-services_lib" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/google-play-services_lib" />
           </set>
         </option>
       </GradleProjectSettings>

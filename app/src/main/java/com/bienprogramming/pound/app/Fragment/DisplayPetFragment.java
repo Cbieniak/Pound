@@ -2,6 +2,8 @@ package com.bienprogramming.pound.app.Fragment;
 
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,9 +18,14 @@ import android.widget.TextView;
 import com.bienprogramming.pound.app.POJO.Color;
 import com.bienprogramming.pound.app.POJO.DBHelper;
 import com.bienprogramming.pound.app.POJO.Pet;
+import com.bienprogramming.pound.app.POJO.PetColor;
+import com.bienprogramming.pound.app.POJO.PetLocation;
 import com.bienprogramming.pound.app.R;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -74,9 +81,23 @@ public class DisplayPetFragment extends android.app.Fragment {
         });
 
         try {
-            DBHelper a = OpenHelperManager.getHelper(rootView.getContext(),DBHelper.class);
-            Dao<Pet,Integer> dao = a.getPetDao();
-            pet = dao.queryForId(petId);
+            Dao<Pet,Integer> petDao = OpenHelperManager.getHelper(rootView.getContext(),DBHelper.class).getPetDao();;
+            Dao<Color, Integer> colorDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getColorDao();
+            Dao<PetColor, Integer> petColorDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetColorDao();
+            Dao<PetLocation, Integer> petLocationDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetLocationDao();
+            pet = petDao.queryForId(petId);
+            List<PetLocation> petLocationList = petLocationDao.queryForEq("petId",petId);
+            if(petLocationList.size()>0)
+                    pet.setPetLocation(petLocationList.get(0));
+
+
+            List<PetColor> petColorList = petColorDao.queryForEq("petId",petId);
+            ArrayList<Color> colorArrayList = new ArrayList<Color>();
+            for(PetColor petColor : petColorList){
+                 colorArrayList.add(colorDao.queryForId(petColor.getColorId()));
+
+            }
+            pet.setColours(colorArrayList);
             getActivity().getActionBar().setTitle(pet.getName());
             ImageView petImage = (ImageView) rootView.findViewById(R.id.displayPetImage);
             TextView breedView = (TextView) rootView.findViewById(R.id.displayBreed);
@@ -88,7 +109,7 @@ public class DisplayPetFragment extends android.app.Fragment {
             TextView rewardView = (TextView) rootView.findViewById(R.id.displayReward);
             TextView ownerView = (TextView) rootView.findViewById(R.id.displayContactOwner);
             FrameLayout petImageLayout = (FrameLayout) rootView.findViewById(R.id.petImageLayout);
-            petImage.setImageResource(R.drawable.dog_sill);
+
 
             breedView.setText(pet.getBreed());
             speciesView.setText(pet.getSpecies());
@@ -108,9 +129,12 @@ public class DisplayPetFragment extends android.app.Fragment {
                 colorView.addView(col);
             }
 
+            Bitmap bmp = BitmapFactory.decodeByteArray(pet.getImageBlob(), 0, pet.getImageBlob().length);
+            petImage.setImageBitmap(bmp);
+
         } catch (Exception e){
 
-            //Log.d("TAG",e.getLocalizedMessage());
+            Log.d("TAG",e.getLocalizedMessage());
         }
 
 

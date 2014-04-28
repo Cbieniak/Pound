@@ -60,4 +60,12 @@ public class PetLocation {
         return this.suburb;
     }
 
+    public int getPetId() {
+        return petId;
+    }
+
+    public void setPetId(int petId) {
+        this.petId = petId;
+    }
+
 }

@@ -9,7 +9,7 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable
 public class Color {
     @DatabaseField(generatedId = true)
-    private int id;
+    private Integer id;
     @DatabaseField
     private String colorName;
 
@@ -45,4 +45,12 @@ public class Color {
     }
 
     public String toString(){return colorName;}
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }

@@ -2,6 +2,10 @@ package com.bienprogramming.pound.app.Fragment;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -36,17 +40,14 @@ public class MainFragment extends android.app.Fragment {
      * The fragment argument representing the section number for this
      * fragment.
      */
-    private static final String ARG_SECTION_NUMBER = "section_number";
+
 
     /**
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static MainFragment newInstance(int sectionNumber) {
+    public static MainFragment newInstance() {
         MainFragment fragment = new MainFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -98,15 +99,13 @@ public class MainFragment extends android.app.Fragment {
                 petDao.create(pet);
                 petDao.create(pet1);
                 petDao.create(pet2);
-                pets.add(pet);
-                pets.add(pet1);
-                pets.add(pet2);
-            }
 
+            }
+            pets = petDao.queryForAll();
             fillPets(lostPets, pets);
             fillPets(foundPets, pets);
         } catch(Exception e){
-
+            Log.d("MAD EXCEPTIONS",e.getLocalizedMessage());
         }
 
 
@@ -115,12 +114,7 @@ public class MainFragment extends android.app.Fragment {
         return rootView;
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        ((MainActivity) activity).onSectionAttached(
-                getArguments().getInt(ARG_SECTION_NUMBER));
-    }
+
 
     public void fillPets(HorizontalScrollView scrollView, List<Pet> pets) {
         LinearLayout mainLayout = new LinearLayout(this.getActivity().getApplicationContext());
@@ -142,12 +136,31 @@ public class MainFragment extends android.app.Fragment {
 
             ImageView imageView = new ImageView(this.getActivity().getApplicationContext());
             //Download image set placeholder
-            imageView.setImageResource(R.drawable.paw_print);
+            imageView.setAdjustViewBounds(true);
             LinearLayout.LayoutParams ilp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT, 6f);
             imageView.setLayoutParams(ilp);
+            imageView.setPadding(5,5,5,5);
             imageView.setBackgroundColor(getResources().getColor(R.color.highlight));
+
+            if(pet.getImageBlob() != null) {
+                Bitmap bmp = BitmapFactory.decodeByteArray(pet.getImageBlob(), 0, pet.getImageBlob().length);
+                try{
+
+                }catch (Exception e){Log.d("THE ERROR MAN",e.getLocalizedMessage());}
+
+                //imageView.setImageBitmap(ThumbnailUtils.extractThumbnail(bmp, imageView.getWidth(), imageView.getHeight()));
+                imageView.setImageResource(R.drawable.paw_print);
+                layout.addView(imageView);
+
+                //imageView.setImageBitmap(bmp);
+                imageView.setImageBitmap(ThumbnailUtils.extractThumbnail(bmp, 450, 300));
+
+            }else {
+                imageView.setImageResource(R.drawable.paw_print);
+                layout.addView(imageView);
+            }
             //load image
             //set image
             //textview
@@ -156,7 +169,7 @@ public class MainFragment extends android.app.Fragment {
             petName.setGravity(Gravity.CENTER_HORIZONTAL);
 
 
-            layout.addView(imageView);
+
             layout.addView(petName);
             final Pet petCopy = pet;
             //Set onclickListener
