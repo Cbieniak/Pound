@@ -1,6 +1,7 @@
 package com.bienprogramming.pound.app.Fragment;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -17,6 +18,8 @@ import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.bienprogramming.pound.app.Activity.MainActivity;
+import com.bienprogramming.pound.app.POJO.Color;
 import com.bienprogramming.pound.app.POJO.DBHelper;
 import com.bienprogramming.pound.app.POJO.Pet;
 import com.bienprogramming.pound.app.R;
@@ -25,9 +28,11 @@ import com.bienprogramming.pound.app.Fragment.dummy.DummyContent;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Filter;
 
 /**
  * A fragment representing a list of Items.
@@ -106,7 +111,7 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
         Collections.sort(pets,ALPHABETICAL_ORDER);
 
         ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
-
+        mListView.invalidate();
         sortNameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -151,9 +156,7 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
     public boolean onOptionsItemSelected(MenuItem item)
     {
         //Filter
-        if(item.getItemId() == R.id.action_filter) {
 
-        }
         return true;
     }
 
@@ -210,6 +213,47 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
     public interface OnPetClickedListener {
         // TODO: Update argument type and name
         public void OnPetClicked(int id);
+    }
+
+    public void filterResults(com.bienprogramming.pound.app.POJO.Filter filter)
+    {
+        List<Pet> results = new ArrayList<Pet>();
+        results.addAll(pets);
+        for (Pet pet : pets) {
+            if(!filter(filter,pet))
+                results.remove(pet);
+        }
+        pets = null;
+        pets = results;
+        Log.d("PETSIZE",pets.size()+"");
+
+        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
+    }
+
+    public Boolean filter(com.bienprogramming.pound.app.POJO.Filter filter, Pet pet)
+    {
+        if (filter.getSpecies() != null) {
+            if(filter.getSpecies().equals(pet.getSpecies())) return false;
+        } else if (filter.getBreed() != null) {
+            if(filter.getBreed().equals(pet.getBreed())) return false;
+        } else if (filter.getColours() != null) {
+            for(Color filterColor:filter.getColours())
+            {
+                for(Color petColor : pet.getColours())
+                {
+                    if(filterColor.getColorName().equals(petColor.getColorName()))
+                        return false;
+                }
+            }
+        } else if (filter.getLocation() != null) {
+            if(filter.getLocation().toString().equals(pet.getPetLocation().toString())) return false;
+        } else if (filter.getRewards() != null) {
+            if(filter.getRewards().equals(pet.getReward())) return false;
+        } else if (filter.getNotes() != null) {
+
+
+        }
+        return true;
     }
 
 }

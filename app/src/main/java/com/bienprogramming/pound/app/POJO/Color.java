@@ -1,5 +1,8 @@
 package com.bienprogramming.pound.app.POJO;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -7,7 +10,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * Created by Christian on 13/04/2014.
  */
 @DatabaseTable
-public class Color {
+public class Color implements Parcelable{
     @DatabaseField(generatedId = true)
     private Integer id;
     @DatabaseField
@@ -52,5 +55,17 @@ public class Color {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(colorName);
+        parcel.writeInt(colorValue);
+
     }
 }

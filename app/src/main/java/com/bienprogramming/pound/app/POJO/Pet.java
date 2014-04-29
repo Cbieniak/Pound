@@ -78,7 +78,6 @@ public class Pet {
     public Pet(String name, String species, String breed, ArrayList<String> petColours, PetLocation petLocation, ContactDetail contactDetail){
         this.name = name;
         this.species = species;
-
         this.breed = breed;
 
     }

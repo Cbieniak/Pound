@@ -3,6 +3,7 @@ package com.bienprogramming.pound.app.Activity;
 import android.app.ActionBar;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -15,10 +16,12 @@ import com.bienprogramming.pound.app.Fragment.ColorListFragment;
 import com.bienprogramming.pound.app.Fragment.ContactDetailFragment;
 import com.bienprogramming.pound.app.Fragment.CreatePetFragment;
 import com.bienprogramming.pound.app.Fragment.DisplayPetFragment;
+import com.bienprogramming.pound.app.Fragment.FilterFragment;
 import com.bienprogramming.pound.app.Fragment.MainFragment;
 import com.bienprogramming.pound.app.Fragment.NavigationDrawerFragment;
 import com.bienprogramming.pound.app.Fragment.PetFragment;
 import com.bienprogramming.pound.app.POJO.DBHelper;
+import com.bienprogramming.pound.app.POJO.Filter;
 import com.bienprogramming.pound.app.POJO.Pet;
 import com.bienprogramming.pound.app.R;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
@@ -28,7 +31,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends OrmLiteBaseActivity<DBHelper>
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, CreatePetFragment.OnPetCreatedListener, AttributeListFragment.OnItemChosenListener,AttributeListFragment.OnItemsChosenListener,
-    ColorListFragment.OnColorsChosenListener, ContactDetailFragment.OnContactChosenListener, PetFragment.OnPetClickedListener{
+    ColorListFragment.OnColorsChosenListener, ContactDetailFragment.OnContactChosenListener, PetFragment.OnPetClickedListener, FilterFragment.OnFiltersChosenListener{
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -36,6 +39,10 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private Pet currentPet;
     private CreatePetFragment createdPet;
+    private FilterFragment filterFragment;
+    private PetFragment searchFragment;
+    private Filter filter;
+
     private Menu menu;
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
@@ -107,13 +114,20 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
         } else if(item.getItemId() == R.id.action_search) {
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 PetFragment fragment = PetFragment.newInstance();
+                searchFragment = fragment;
                 ft.replace(R.id.container,fragment);
                 ft.addToBackStack(null);
                 ft.commit();
                 return true;
-            }
+            } else if(item.getItemId() == R.id.action_filter) {
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                FilterFragment fragment = FilterFragment.newInstance(0);
+                filterFragment = fragment;
+                ft.replace(R.id.container, fragment);
+                ft.addToBackStack(null);
+                ft.commit();
 
-
+        }
         return super.onOptionsItemSelected(item);
     }
     public void setCreatedPet(CreatePetFragment fragment)
@@ -123,13 +137,15 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
     }
     @Override
     public void onPetCreated(int id) {
-
+        createdPet = null;
     }
 
     @Override
     public void onItemChosenListener(CreatePetFragment.Field field,String item) {
-        createdPet.updateField(field, item);
-
+        if(createdPet != null)
+            createdPet.updateField(field, item);
+        else
+            filterFragment.updateField(field,item);
     }
 
     @Override
@@ -139,7 +155,10 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
 
     @Override
     public void colorsChosen(CreatePetFragment.Field field,ArrayList<com.bienprogramming.pound.app.POJO.Color> colors) {
-        createdPet.updateField(field,colors);
+        if(createdPet !=null)
+            createdPet.updateField(field,colors);
+        else
+            filterFragment.updateField(field, colors);
         getFragmentManager().popBackStack();
     }
 
@@ -158,4 +177,12 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
 
         ft.commit();
     }
+
+    @Override
+    public void onFiltersChosen(Filter filter) {
+        searchFragment.filterResults(filter);
+
+    }
+
+
 }

@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.bienprogramming.pound.app.R;
 import com.google.android.gms.location.LocationClient;
@@ -51,7 +52,12 @@ public class PetLocationActivity extends FragmentActivity  implements LocationLi
 
         int id = item.getItemId();
         if (id == R.id.action_done) {
-            finish();
+            if(markedLocation == null)
+            {
+                Toast.makeText(getApplicationContext(),"Please choose a location",Toast.LENGTH_SHORT);
+            } else {
+                finish();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
