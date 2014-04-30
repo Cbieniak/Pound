@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -103,8 +104,10 @@ public class CreatePetFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        if(pet == null)pet= new Pet();
         if (getArguments() != null) {
             lost = getArguments().getBoolean("Lost");
+            pet.setLost(lost);
         }
     }
 
@@ -113,7 +116,6 @@ public class CreatePetFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_create, container, false);
-        if(pet == null)pet= new Pet();
         getActivity().getActionBar().setTitle((lost) ? "Lost Pet" : "Found Pet");
         createPetLayout = (LinearLayout) rootView.findViewById(R.id.create_pet_layout);
         petImageLayout = (RelativeLayout) rootView.findViewById(R.id.create_pet_add_image);
@@ -196,6 +198,13 @@ public class CreatePetFragment extends Fragment {
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        refreshUI();
+
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu,MenuInflater inflater)
     {
         menu.clear();
@@ -238,13 +247,6 @@ public class CreatePetFragment extends Fragment {
             }
         }
         return true;
-    }
-
-
-    public void onSavePressed(int id) {
-        if (mListener != null) {
-            mListener.onPetCreated(pet.getId());
-        }
     }
 
     @Override
@@ -293,12 +295,7 @@ public class CreatePetFragment extends Fragment {
     }
 
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-           refreshUI();
 
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent returnedIntent) {
@@ -325,19 +322,88 @@ public class CreatePetFragment extends Fragment {
                     Bundle intentData = returnedIntent.getExtras();
                     Double latitude = intentData.getDouble("Latitude");
                     Double longitude = intentData.getDouble("Longitude");
-                    List<Address> addresses = null;
-                    try {
-                        Geocoder geocoder = new Geocoder(getView().getContext(), Locale.getDefault());
-                        addresses = geocoder.getFromLocation(latitude, longitude, 1);
-                        Address address = addresses.get(0);
-                        PetLocation petLocation = new PetLocation(address.getLocality(), latitude, longitude);
-                        pet.setPetLocation(petLocation);
-                        refreshUI();
-                    } catch (Exception e) {
+                    locationEditText.post(new Runnable() {
 
-                    }
+                        @Override
+                        public void run() {
+                            locationEditText.setText("Processing");
+                        }
+                    });
+
+                    new ProcessLocationTask().execute(latitude,longitude);
+
                 }
 
+        }
+    }
+
+    private class ProcessFilesTask extends AsyncTask<Uri, Integer , ImageView> {
+        protected ImageView doInBackground(Uri... uris) {
+
+
+            try {
+                Uri selectedImage = uris[0];
+                InputStream imageStream = getActivity().getContentResolver().openInputStream(selectedImage);
+                publishProgress(1);
+
+                Bitmap chosenImage = BitmapFactory.decodeStream(imageStream);
+                //Upload
+                ImageView petImage = new ImageView(getView().getContext());
+                petImage.setImageBitmap(ThumbnailUtils.extractThumbnail(chosenImage, petImageLayout.getWidth(), petImageLayout.getHeight()));
+                publishProgress(2);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                publishProgress(3);
+                //chosenImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+                publishProgress(4);
+                //byte[] byteArray = stream.toByteArray();
+                publishProgress(5);
+
+                InputStream iStream =   getActivity().getContentResolver().openInputStream(selectedImage);
+                byte[] inputData = getBytes(iStream);
+                pet.setImageBlob(inputData);
+
+                return petImage;
+            } catch (Exception e){}
+            return null;
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+            TextView plusTextView = (TextView) getView().findViewById(R.id.create_pet_image_progress);
+            String sb="";
+            for(int i = 0; i < progress[0];i++) {
+                sb = sb + ".";
+            }
+            plusTextView.setText(sb);
+        }
+
+
+    }
+
+    private class ProcessLocationTask extends AsyncTask<Double, Integer , PetLocation>
+    {
+
+        @Override
+        protected PetLocation doInBackground(Double... locations) {
+
+            Double latitude = locations[0];
+            Double longitude = locations[1];
+            List<Address> addresses = null;
+            try {
+                Geocoder geocoder = new Geocoder(getView().getContext(), Locale.getDefault());
+                addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                Address address = addresses.get(0);
+                PetLocation petLocation = new PetLocation(address.getLocality(), latitude, longitude);
+                return petLocation;
+
+            } catch (Exception e) {
+
+            }
+            return null;
+        }
+        protected void onPostExecute(PetLocation result) {
+            pet.setPetLocation(result);
+            refreshUI();
         }
     }
 
@@ -355,15 +421,15 @@ public class CreatePetFragment extends Fragment {
             });
         }
         if(pet.getBreed()!=null) {
-                breedEditText = ((EditText) getView().findViewById(R.id.create_pet_breed));
-                breedEditText.post(new Runnable() {
+            breedEditText = ((EditText) getView().findViewById(R.id.create_pet_breed));
+            breedEditText.post(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        breedEditText.setText(pet.getBreed());
-                    }
-                });
-            }
+                @Override
+                public void run() {
+                    breedEditText.setText(pet.getBreed());
+                }
+            });
+        }
         if(pet.getPetLocation()!=null) {
             locationEditText = ((EditText) getView().findViewById(R.id.create_pet_location));
             locationEditText.post(new Runnable() {
@@ -416,51 +482,6 @@ public class CreatePetFragment extends Fragment {
             });
         }
 
-        }
-
-    private class ProcessFilesTask extends AsyncTask<Uri, Integer , ImageView> {
-        protected ImageView doInBackground(Uri... uris) {
-
-
-            try {
-                Uri selectedImage = uris[0];
-                InputStream imageStream = getActivity().getContentResolver().openInputStream(selectedImage);
-                publishProgress(1);
-
-                Bitmap chosenImage = BitmapFactory.decodeStream(imageStream);
-                //Upload
-                ImageView petImage = new ImageView(getView().getContext());
-                petImage.setImageBitmap(ThumbnailUtils.extractThumbnail(chosenImage, petImageLayout.getWidth(), petImageLayout.getHeight()));
-                publishProgress(2);
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                publishProgress(3);
-                //chosenImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
-
-                publishProgress(4);
-                //byte[] byteArray = stream.toByteArray();
-                publishProgress(5);
-
-                InputStream iStream =   getActivity().getContentResolver().openInputStream(selectedImage);
-                byte[] inputData = getBytes(iStream);
-                pet.setImageBlob(inputData);
-
-                return petImage;
-            } catch (Exception e){}
-            return null;
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-            TextView plusTextView = (TextView) getView().findViewById(R.id.create_pet_image_progress);
-            String sb="";
-            for(int i = 0; i < progress[0];i++) {
-                sb = sb + ".";
-            }
-            plusTextView.setText(sb);
-        }
-
-        protected void onPostExecute(ImageView result) {
-            petImageLayout.addView(result);
-        }
     }
 
     public byte[] getBytes(InputStream inputStream) throws IOException {

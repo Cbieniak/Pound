@@ -102,7 +102,9 @@ public class MainFragment extends android.app.Fragment {
 
             }
             pets = petDao.queryForAll();
+            pets = petDao.queryForEq("lost",true);
             fillPets(lostPets, pets);
+            pets = petDao.queryForEq("lost",false);
             fillPets(foundPets, pets);
         } catch(Exception e){
             Log.d("MAD EXCEPTIONS",e.getLocalizedMessage());

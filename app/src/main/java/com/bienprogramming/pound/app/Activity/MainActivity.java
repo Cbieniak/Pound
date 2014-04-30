@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.HorizontalScrollView;
+import android.widget.Switch;
 
 import com.bienprogramming.pound.app.Fragment.AttributeListFragment;
 import com.bienprogramming.pound.app.Fragment.ColorListFragment;
@@ -72,10 +73,39 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, MainFragment.newInstance())
-                .commit();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        switch(position)
+        {
+            case 0:
+                ft.replace(R.id.container, MainFragment.newInstance()).commit();
+                break;
+            case 1:
+                searchFragment = PetFragment.newInstance();
+                ft.replace(R.id.container,searchFragment);
+                ft.addToBackStack(null);
+                ft.commit();
+                break;
+            case 2:
+                createdPet = CreatePetFragment.newInstance(false);
+                ft.replace(R.id.container,createdPet);
+                ft.addToBackStack(null);
+                ft.commit();
+                break;
+            case 3:
+                createdPet= CreatePetFragment.newInstance(true);
+                ft.replace(R.id.container,createdPet);
+                ft.addToBackStack(null);
+                ft.commit();
+                break;
+            case 4:
+                //ft.replace(R.id.container,AboutFragment.newInstance()).commit();
+                break;
+            case 5:
+               //Settings
+                break;
+        }
+
+
     }
 
 

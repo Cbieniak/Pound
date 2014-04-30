@@ -2,6 +2,10 @@ package com.bienprogramming.pound.app.Fragment;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -41,12 +45,16 @@ import java.util.logging.Filter;
  * with a GridView.
  * <p />
  */
-public class PetFragment extends Fragment implements AbsListView.OnItemClickListener {
+public class PetFragment extends Fragment implements AbsListView.OnItemClickListener, LocationListener {
 
+    private LocationManager locationManager;
+    private Location currentLocation;
     private OnPetClickedListener mListener;
     private List<Pet> pets;
     private Button sortNameButton;
     private Button sortLocationButton;
+    private static final long MIN_TIME = 400;
+    private static final float MIN_DISTANCE = 1000;
     /**
      * The fragment's ListView/GridView.
      */
@@ -98,6 +106,11 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
         sortNameButton = (Button)  rootView.findViewById(R.id.list_button_name);
         sortLocationButton = (Button) rootView.findViewById(R.id.list_button_location);
 
+        //GET LOCATION
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
+
+
         Comparator<Pet> ALPHABETICAL_ORDER = new Comparator<Pet>() {
             public int compare(Pet object1, Pet object2) {
                 if(object1.getName() == null)
@@ -111,7 +124,7 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
         Collections.sort(pets,ALPHABETICAL_ORDER);
 
         ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
-        mListView.invalidate();
+
         sortNameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -139,6 +152,21 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
             public void onClick(View view) {
                 sortNameButton.setBackgroundColor(getResources().getColor(R.color.highlight));
                 sortLocationButton.setBackgroundColor(getResources().getColor(R.color.background));
+
+                Comparator<Pet> DISTANCE_ORDER = new Comparator<Pet>() {
+                    public int compare(Pet pet1, Pet pet2) {
+                        if(pet1.getPetLocation() == null)
+                            pet1.setName("");
+                        if(pet2.getPetLocation() == null)
+                            pet2.setName("");
+
+                        return String.CASE_INSENSITIVE_ORDER.compare(pet2.toString(), pet1.toString());
+
+                    }
+                };
+                Collections.sort(pets,DISTANCE_ORDER);
+
+                ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
             }
         });
 
@@ -200,6 +228,26 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
         }
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+        currentLocation = location;
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
+    }
+
     /**
     * This interface must be implemented by activities that contain this
     * fragment to allow an interaction in this fragment to be communicated
@@ -233,27 +281,35 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
     public Boolean filter(com.bienprogramming.pound.app.POJO.Filter filter, Pet pet)
     {
         if (filter.getSpecies() != null) {
-            if(filter.getSpecies().equals(pet.getSpecies())) return false;
+            if(filter.getSpecies().equals(pet.getSpecies())) return true;
         } else if (filter.getBreed() != null) {
-            if(filter.getBreed().equals(pet.getBreed())) return false;
+            if(filter.getBreed().equals(pet.getBreed())) return true;
         } else if (filter.getColours() != null) {
             for(Color filterColor:filter.getColours())
             {
                 for(Color petColor : pet.getColours())
                 {
                     if(filterColor.getColorName().equals(petColor.getColorName()))
-                        return false;
+                        return true;
                 }
             }
         } else if (filter.getLocation() != null) {
-            if(filter.getLocation().toString().equals(pet.getPetLocation().toString())) return false;
+            if(filter.getLocation().toString().equals(pet.getPetLocation().toString())) return true;
         } else if (filter.getRewards() != null) {
-            if(filter.getRewards().equals(pet.getReward())) return false;
+            if(filter.getRewards().equals(pet.getReward())) return true;
         } else if (filter.getNotes() != null) {
+            for(String note : filter.getNotes().split(" "))
+            {
+                for(String petNote : pet.getNotes().split(" "))
+                {
+                    if(note.equals(petNote)) return true;
+                }
+            }
+
 
 
         }
-        return true;
+        return false;
     }
 
 }
