@@ -377,6 +377,10 @@ public class CreatePetFragment extends Fragment {
             plusTextView.setText(sb);
         }
 
+        protected void onPostExecute(ImageView result) {
+            refreshUI();
+        }
+
 
     }
 
