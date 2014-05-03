@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.renderscript.Element;
 
+import com.google.gson.annotations.Expose;
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
@@ -23,31 +24,31 @@ public class Pet {
     @DatabaseField(generatedId = true)
     private int id;
     @DatabaseField(index = true)
-    private String imageUrl;
+    @Expose private String imageUrl;
     @DatabaseField
-    private String thumbURL;
+    @Expose private String thumbURL;
     @DatabaseField
-    private String name;
+    @Expose private String name;
     @DatabaseField
-    private String species;
+    @Expose private String species;
     @DatabaseField
-    private String breed;
+    @Expose private String breed;
     @DatabaseField
-    private double reward;
+    @Expose private double reward;
     @DatabaseField
-    private String notes;
+    @Expose private String notes;
     @DatabaseField
-    private String contactName;
+    @Expose private String contactName;
     @DatabaseField
-    private String contactDetail;
+    @Expose private String contactDetail;
     @DatabaseField
-    private int contactType;
+    @Expose private int contactType;
     @DatabaseField
-    private boolean lost;
+    @Expose private boolean lost;
 
-    private ArrayList<Color> colours;
+    @Expose private ArrayList<Color> colours;
     @DatabaseField(foreign = true)
-    private PetLocation petLocation;
+    @Expose private PetLocation petLocation;
 
 
     @DatabaseField(dataType = DataType.BYTE_ARRAY)

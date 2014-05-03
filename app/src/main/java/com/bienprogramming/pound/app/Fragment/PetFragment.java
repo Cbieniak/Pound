@@ -138,9 +138,7 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
                             object2.setName("");
 
 
-                        double pet1Dist = distFrom (double currentLocation.getLatitude(), double currentLocation.getLangitude(), double pet1.getPetLocation().getLatitude, double pet1.getPetLocation().getLongtitude );
-                        double pet2Dist = distFrom (double currentLocation.getLatitude(), double currentLocation.getLangitude(), double (float)pet2.getPetLocation().getLatitude, double (float)pet2.getPetLocation().getLongtitude );
-                        return  (int)(pet1Dist-pet2Dist);
+                        return String.CASE_INSENSITIVE_ORDER.compare(object1.toString(), object2.toString());
 
                     }
                 };
@@ -159,13 +157,15 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
 
                 Comparator<Pet> DISTANCE_ORDER = new Comparator<Pet>() {
                     public int compare(Pet pet1, Pet pet2) {
-                        if(pet1.getPetLocation() == null)
-                            pet1.setName("");
-                        if(pet2.getPetLocation() == null)
-                            pet2.setName("");
-                        currentLocation.getLatitude()
-                        d
-                        return String.CASE_INSENSITIVE_ORDER.compare(pet2.toString(), pet1.toString());
+                        if(pet1.getPetLocation() == null || pet2.getPetLocation() == null)
+                        {
+                            return 100000000;
+                        }
+
+                        double pet1Dist = distFrom (currentLocation.getLatitude(), currentLocation.getLongitude(), pet1.getPetLocation().getLatitude(), pet1.getPetLocation().getLongitude() );
+                        double pet2Dist = distFrom (currentLocation.getLatitude(), currentLocation.getLongitude(), pet2.getPetLocation().getLatitude(), pet2.getPetLocation().getLongitude() );
+                        return  (int)(pet1Dist-pet2Dist);
+
 
                     }
                 };

@@ -125,7 +125,7 @@ public class DisplayPetFragment extends android.app.Fragment {
                         LinearLayout.LayoutParams.MATCH_PARENT);
                 ilp.weight=1;
                 col.setLayoutParams(ilp);
-                col.setBackgroundColor(color.getColorValue());
+                col.setBackgroundColor(android.graphics.Color.parseColor(color.getColorValue()));
                 colorView.addView(col);
             }
 

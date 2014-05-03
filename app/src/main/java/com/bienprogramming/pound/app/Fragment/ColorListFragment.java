@@ -45,8 +45,8 @@ public class ColorListFragment extends ListFragment {
         setHasOptionsMenu(true);
         chosenColors = new ArrayList<Color>();
 
-        Color newColor = new Color("White",getResources().getColor(R.color.raised));
-        Color color1 = new Color("orange",getResources().getColor(R.color.highlight));
+        Color newColor = new Color("White","#FFFFFF");
+        Color color1 = new Color("orange","#000000");
         colors = new ArrayList<Color>();
         colors.add(newColor);
         colors.add(color1);

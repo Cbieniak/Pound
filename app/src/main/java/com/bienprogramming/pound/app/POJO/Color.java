@@ -3,6 +3,7 @@ package com.bienprogramming.pound.app.POJO;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -12,26 +13,26 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable
 public class Color implements Parcelable{
     @DatabaseField(generatedId = true)
-    private Integer id;
+    @Expose private Integer id;
     @DatabaseField
-    private String colorName;
+    @Expose  private String colorName;
 
     @DatabaseField
-    private int colorValue;
+    @Expose private String colorValue;
 
     public Color(){};
 
-    public Color(String colorName, int colorValue)
+    public Color(String colorName, String colorValue)
     {
         this.colorName=colorName;
         this.colorValue=colorValue;
     }
 
-    public int getColorValue() {
+    public String getColorValue() {
         return colorValue;
     }
 
-    public void setColorValue(int colorValue) {
+    public void setColorValue(String colorValue) {
         this.colorValue = colorValue;
     }
 
@@ -65,7 +66,7 @@ public class Color implements Parcelable{
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(colorName);
-        parcel.writeInt(colorValue);
+        parcel.writeString(colorValue);
 
     }
 }

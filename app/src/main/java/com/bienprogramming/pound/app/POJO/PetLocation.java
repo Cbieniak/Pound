@@ -2,6 +2,7 @@ package com.bienprogramming.pound.app.POJO;
 
 import android.location.Location;
 
+import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -11,15 +12,15 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable
 public class PetLocation {
     @DatabaseField(generatedId = true)
-    private int id;
+    @Expose private int id;
     @DatabaseField
-    private String suburb;
+    @Expose private String suburb;
     @DatabaseField
-    private double latitude;
+    @Expose private double latitude;
     @DatabaseField
-    private double longitude;
+    @Expose private double longitude;
     @DatabaseField
-    private int petId;
+    @Expose private int petId;
     public PetLocation(){}
 
     public PetLocation(String suburb, double latitude, double longitude) {

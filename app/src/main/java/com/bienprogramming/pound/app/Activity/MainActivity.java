@@ -6,6 +6,7 @@ import android.app.FragmentTransaction;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
@@ -98,8 +99,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                 ft.commit();
                 break;
             case 4:
-                LayoutInflater inflater = new LayoutInflater();
-                inflater.inflate(R.layout.fragment_about, R.id.container, false);
+                //ABout
                 break;
             case 5:
                //Settings

@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,8 +35,21 @@ import com.bienprogramming.pound.app.POJO.PetColor;
 import com.bienprogramming.pound.app.POJO.PetLocation;
 import com.bienprogramming.pound.app.Activity.PetLocationActivity;
 import com.bienprogramming.pound.app.R;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -220,6 +234,7 @@ public class CreatePetFragment extends Fragment {
                 pet.setName(nameEditText.getText().toString());
                 pet.setReward(Double.parseDouble(rewardEditText.getText().toString()));
                 pet.setNotes(notesEditText.getText().toString());
+                pet.setContactName(contactNameEditText.getText().toString());
                 Dao<PetLocation, Integer> petlocationDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetLocationDao();
                 Dao<Color, Integer> colorDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getColorDao();
                 Dao<PetColor, Integer> petColorDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetColorDao();
@@ -240,6 +255,9 @@ public class CreatePetFragment extends Fragment {
                     PetColor petColor = new PetColor(pet,color);
                     petColorDao.create(petColor);
                 }
+
+                //Upload to server
+                new UploadPetTask().execute(pet);
 
                 getFragmentManager().popBackStack();
             } catch (Exception e) {
@@ -411,6 +429,60 @@ public class CreatePetFragment extends Fragment {
         }
     }
 
+    private class UploadPetTask extends AsyncTask<Pet, Integer , String>
+    {
+
+        @Override
+        protected String doInBackground(Pet... pets) {
+            int TIMEOUT_MILLISEC = 10000;  // = 10 seconds
+
+            Gson gSon = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
+            String json = gSon.toJson(pets[0]);
+
+            // = gSon.toJson(pets);
+            Log.d("JSON",json);
+            try {
+                //Post the pet
+                HttpParams httpParams = new BasicHttpParams();
+                HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT_MILLISEC);
+                HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_MILLISEC);
+                HttpClient client = new DefaultHttpClient(httpParams);
+
+                HttpPost request = new HttpPost("http://192.168.1.8:3000/pets.json");
+                request.setEntity(new ByteArrayEntity(
+                        json.getBytes("UTF8")));
+                request.setHeader("Accept", "application/json");
+                request.setHeader("Content-type", "application/json");
+                HttpResponse response = client.execute(request);
+
+                //return  response.toString();
+                //Post the image
+                String encodedImage = Base64.encodeToString(pets[0].getImageBlob(), Base64.DEFAULT);
+
+                Log.d("Tag this", encodedImage);
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("pet_id",pet.getId());
+                jsonObject.put("pet_image",encodedImage);
+                HttpPost imageRequest = new HttpPost("http://192.168.1.8:3000/pet_images.json");
+                request.setEntity(new ByteArrayEntity(
+                        jsonObject.toString().getBytes("UTF8")));
+                imageRequest.setHeader("Accept", "application/json");
+                imageRequest.setHeader("Content-type", "application/json");
+                response = client.execute(request);
+                return response.toString();
+
+            }catch (Exception e){
+                Log.d("Stuff e",e.getLocalizedMessage()+"error");
+            }
+
+            return "";
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("Stuff",result);
+        }
+    }
+
     public void refreshUI()
     {
 
@@ -446,6 +518,8 @@ public class CreatePetFragment extends Fragment {
         }
 
         if(pet.getColours() !=null){
+            //colorHolder.removeAllViews();
+            //colorHolder.removeAllViewsInLayout();
             TextView colorText =(TextView) getView().findViewById(R.id.colour_text);
             colorText.setVisibility(View.GONE);
             for(Color color: pet.getColours()){
@@ -456,7 +530,7 @@ public class CreatePetFragment extends Fragment {
                         LinearLayout.LayoutParams.MATCH_PARENT);
                 ilp.weight=1;
                 col.setLayoutParams(ilp);
-                col.setBackgroundColor(color.getColorValue());
+                col.setBackgroundColor(android.graphics.Color.parseColor(color.getColorValue()));
                 colorHolder.addView(col);
             }
         }

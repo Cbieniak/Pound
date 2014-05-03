@@ -57,6 +57,18 @@ android {
             assets.srcDirs = ['src/main/assets']
         }
     }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+    }
 }
 
 dependencies {
@@ -74,5 +86,7 @@ dependencies {
     compile files('libs/android-support-v4.jar')
     compile files('google-play-services.jar')
     compile 'com.google.android.gms:play-services:4.3.23'
+    compile 'com.google.code.gson:gson:2.2.4'
 
 }
+

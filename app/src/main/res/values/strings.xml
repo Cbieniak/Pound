@@ -37,7 +37,7 @@
     your pet faster.\nPost pets you find to public board to help them find their home again</string>
 
 
-        <string-array name="menu-items">
+        <string-array name="menu_items">
             <item>@string/title_activity_pet_location</item>
         </string-array>
 

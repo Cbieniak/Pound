@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.ThumbnailUtils;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -27,6 +28,7 @@ import com.bienprogramming.pound.app.R;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.bienprogramming.pound.app.R.id.foundPetsScrollView;
@@ -103,7 +105,7 @@ public class MainFragment extends android.app.Fragment {
 
             }
 
-            new ProcessLocationTask().execute(petDao.queryForEq("lost",true),petDao.queryForEq("lost",false));
+            new FillPetTask().execute(petDao.queryForEq("lost",true),petDao.queryForEq("lost",false));
         } catch(Exception e){
             Log.d("MAD EXCEPTIONS",e.getLocalizedMessage());
         }
@@ -121,11 +123,12 @@ public class MainFragment extends android.app.Fragment {
             ArrayList<LinearLayout> resultArrayList = new ArrayList<LinearLayout>();
             resultArrayList.add(fillPets(pets[0]));
             resultArrayList.add(fillPets(pets[1]));
+            return resultArrayList;
         }
-
+        @Override
         protected void onPostExecute(ArrayList<LinearLayout> result) {
-            lostPets.addView(result[0]);
-            foundPets.addView(result[1]);
+            lostPets.addView(result.get(0));
+            foundPets.addView(result.get(1));
 
         }
 
