@@ -136,7 +136,11 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
                             object1.setName("");
                         if(object2.getName() == null)
                             object2.setName("");
-                        return String.CASE_INSENSITIVE_ORDER.compare(object1.toString(), object2.toString());
+
+
+                        double pet1Dist = distFrom (double currentLocation.getLatitude(), double currentLocation.getLangitude(), double pet1.getPetLocation().getLatitude, double pet1.getPetLocation().getLongtitude );
+                        double pet2Dist = distFrom (double currentLocation.getLatitude(), double currentLocation.getLangitude(), double (float)pet2.getPetLocation().getLatitude, double (float)pet2.getPetLocation().getLongtitude );
+                        return  (int)(pet1Dist-pet2Dist);
 
                     }
                 };
@@ -159,7 +163,8 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
                             pet1.setName("");
                         if(pet2.getPetLocation() == null)
                             pet2.setName("");
-
+                        currentLocation.getLatitude()
+                        d
                         return String.CASE_INSENSITIVE_ORDER.compare(pet2.toString(), pet1.toString());
 
                     }
@@ -310,6 +315,17 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
 
         }
         return false;
+    }
+    //From http://stackoverflow.com/questions/5396286/sort-list-of-lon-lat-points-start-with-nearest
+    static double distFrom(double fromLat, double fromLon, double toLat, double toLon) {
+        double radius = 6378137;   // approximate Earth radius, *in meters*
+        double deltaLat = toLat - fromLat;
+        double deltaLon = toLon - fromLon;
+        double angle = 2 * Math.asin( Math.sqrt(
+                Math.pow(Math.sin(deltaLat/2), 2) +
+                        Math.cos(fromLat) * Math.cos(toLat) *
+                                Math.pow(Math.sin(deltaLon/2), 2) ) );
+        return radius * angle;
     }
 
 }

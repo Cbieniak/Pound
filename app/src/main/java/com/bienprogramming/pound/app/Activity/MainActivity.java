@@ -98,7 +98,8 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                 ft.commit();
                 break;
             case 4:
-                //ft.replace(R.id.container,AboutFragment.newInstance()).commit();
+                LayoutInflater inflater = new LayoutInflater();
+                inflater.inflate(R.layout.fragment_about, R.id.container, false);
                 break;
             case 5:
                //Settings

@@ -79,7 +79,7 @@ public class ContactDetailFragment extends Fragment {
             List<ContactDetail> contacts = contactDetailDao.queryForAll();
             for (final ContactDetail contact : contacts) {
                 LinearLayout textContainer = new LinearLayout(rootView.getContext());
-                LinearLayout.LayoutParams tclp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                LinearLayout.LayoutParams tclp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
                 textContainer.setOrientation(LinearLayout.HORIZONTAL);
                 textContainer.setLayoutParams(tclp);
 
@@ -184,7 +184,12 @@ public class ContactDetailFragment extends Fragment {
     }
 
 
-    // TODO: Rename method, update argument and hook method into UI event
+    @Override
+    public void onCreateOptionsMenu(Menu menu,MenuInflater inflater)
+    {
+        menu.clear();
+    }
+
     public void onMethodChosen(int type, String detail) {
         if (mListener != null) {
             mListener.onContactChosen(type, detail);

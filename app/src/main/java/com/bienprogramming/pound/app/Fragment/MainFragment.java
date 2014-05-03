@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.bienprogramming.pound.app.Activity.MainActivity;
 import com.bienprogramming.pound.app.POJO.DBHelper;
 import com.bienprogramming.pound.app.POJO.Pet;
+import com.bienprogramming.pound.app.POJO.PetLocation;
 import com.bienprogramming.pound.app.R;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
@@ -101,11 +102,8 @@ public class MainFragment extends android.app.Fragment {
                 petDao.create(pet2);
 
             }
-            pets = petDao.queryForAll();
-            pets = petDao.queryForEq("lost",true);
-            fillPets(lostPets, pets);
-            pets = petDao.queryForEq("lost",false);
-            fillPets(foundPets, pets);
+
+            new ProcessLocationTask().execute(petDao.queryForEq("lost",true),petDao.queryForEq("lost",false));
         } catch(Exception e){
             Log.d("MAD EXCEPTIONS",e.getLocalizedMessage());
         }
@@ -116,9 +114,28 @@ public class MainFragment extends android.app.Fragment {
         return rootView;
     }
 
+    private class FillPetTask extends AsyncTask<List<Pet>, Integer , ArrayList<LinearLayout>>
+    {
+        @Override
+        protected ArrayList<LinearLayout> doInBackground(List<Pet>... pets) {
+            ArrayList<LinearLayout> resultArrayList = new ArrayList<LinearLayout>();
+            resultArrayList.add(fillPets(pets[0]));
+            resultArrayList.add(fillPets(pets[1]));
+        }
+
+        protected void onPostExecute(ArrayList<LinearLayout> result) {
+            lostPets.addView(result[0]);
+            foundPets.addView(result[1]);
+
+        }
 
 
-    public void fillPets(HorizontalScrollView scrollView, List<Pet> pets) {
+
+
+
+    }
+
+    public LinearLayout fillPets(List<Pet> pets) {
         LinearLayout mainLayout = new LinearLayout(this.getActivity().getApplicationContext());
         LinearLayout.LayoutParams mllp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -194,7 +211,7 @@ public class MainFragment extends android.app.Fragment {
             mainLayout.addView(layout);
         }
 
-        scrollView.addView(mainLayout);
+        return mainLayout;
 
 
     }
