@@ -1,8 +1,10 @@
 package com.bienprogramming.pound.app.Fragment;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +15,30 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 
+import com.bienprogramming.pound.app.POJO.Breed;
+import com.bienprogramming.pound.app.POJO.Pet;
+import com.bienprogramming.pound.app.POJO.Species;
 import com.bienprogramming.pound.app.R;
 import com.bienprogramming.pound.app.dummy.DummyContent;
+import com.google.gson.Gson;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class AttributeListFragment extends Fragment implements AbsListView.OnItemClickListener {
@@ -73,10 +95,21 @@ public class AttributeListFragment extends Fragment implements AbsListView.OnIte
             path = getArguments().getString(PATH);
             hasOne = getArguments().getBoolean(HASONE);
         }
+        switch (field)
+        {
+            case FIELD_SPECIES:
 
+                mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
+                        android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
+                break;
+
+            case FIELD_BREED:
+                mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
+                        android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
+                break;
+        }
         // TODO: Change Adapter to display your content
-        mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
+
     }
 
     @Override
@@ -158,6 +191,60 @@ public class AttributeListFragment extends Fragment implements AbsListView.OnIte
     public interface OnItemsChosenListener {
         // TODO: Update argument type and name
         public void onItemsChosen(CreatePetFragment.Field field,ArrayList<String> items);
+    }
+
+    private class GetItemsTask extends AsyncTask<String, Integer , String>
+    {
+        int TIMEOUT_MILLISEC = 10000;
+        @Override
+        protected String doInBackground(String... urls) {
+            try{
+            String result;
+            InputStream is = null;
+            HttpParams httpParams = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT_MILLISEC);
+            HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_MILLISEC);
+            HttpClient client = new DefaultHttpClient(httpParams);
+
+            HttpGet request = new HttpGet(urls[0]);
+            request.setHeader("Accept", "application/json");
+            request.setHeader("Content-type", "application/json");
+            HttpResponse response = client.execute(request);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is,"utf-8"),8);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+               sb.append(line + "\n");
+            }
+            is.close();
+            result = sb.toString();
+            Log.d("JSONRESULT", result);
+            return result;
+            }catch (Exception e){
+
+            }
+                return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Gson gson = new Gson();
+            switch (field){
+                case FIELD_SPECIES:
+                    Species[] speciesArray = gson.fromJson(result,Species[].class);
+                    mAdapter = new ArrayAdapter<Species>(getActivity(),
+                            android.R.layout.simple_list_item_1, android.R.id.text1, speciesArray);
+                    break;
+                case FIELD_BREED:
+                    Breed[] breedArray = gson.fromJson(result,Breed[].class);
+                    mAdapter = new ArrayAdapter<Breed>(getActivity(),
+                            android.R.layout.simple_list_item_1, android.R.id.text1, breedArray);
+                    break;
+            }
+        }
+
+
     }
 
 }
