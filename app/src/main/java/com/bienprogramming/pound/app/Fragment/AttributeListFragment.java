@@ -95,20 +95,7 @@ public class AttributeListFragment extends Fragment implements AbsListView.OnIte
             path = getArguments().getString(PATH);
             hasOne = getArguments().getBoolean(HASONE);
         }
-        switch (field)
-        {
-            case FIELD_SPECIES:
-
-                mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                        android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
-                break;
-
-            case FIELD_BREED:
-                mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                        android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
-                break;
-        }
-        // TODO: Change Adapter to display your content
+         new GetItemsTask().execute("SERVER HERE/"+path);
 
     }
 

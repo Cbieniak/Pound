@@ -11,10 +11,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 
+import com.bienprogramming.pound.app.ColorAdapter;
 import com.bienprogramming.pound.app.POJO.Color;
 import com.bienprogramming.pound.app.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -50,9 +52,8 @@ public class ColorListFragment extends ListFragment {
         colors = new ArrayList<Color>();
         colors.add(newColor);
         colors.add(color1);
-
-        setListAdapter(new ArrayAdapter<Color>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, colors));
+        ColorAdapter colorAdapter = new ColorAdapter(getActivity().getApplicationContext(),R.layout.color_row,colors);
+        setListAdapter(colorAdapter);
 
 
 
