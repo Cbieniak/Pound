@@ -11,19 +11,42 @@ public class Species {
     @Expose private Integer id;
 
     @DatabaseField
-    @Expose private String species;
+    @Expose private String name;
 
     public Species() {
 
     }
+    public Species(String name) {
+        this.name = name;
+    }
 
 
     public String getSpecies() {
-        return species;
+        return name;
     }
 
     public void setSpecies(String species) {
-        this.species = species;
+        this.name = species;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String toString(){
+        return name;
     }
 
 }

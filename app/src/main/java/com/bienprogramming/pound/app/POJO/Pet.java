@@ -29,10 +29,13 @@ public class Pet {
     @Expose private String thumbURL;
     @DatabaseField
     @Expose private String name;
+
+    private Species species;
     @DatabaseField
-    @Expose private String species;
+    @Expose private int speciesId;
+    private ArrayList<Breed> breeds;
     @DatabaseField
-    @Expose private String breed;
+    @Expose private int[] breedIds;
     @DatabaseField
     @Expose private double reward;
     @DatabaseField
@@ -57,12 +60,13 @@ public class Pet {
 
     //private Bitmap thumbImage;
     //private Bitmap image;
-    public String getSpecies() {
+    public Species getSpecies() {
         return species;
     }
 
-    public void setSpecies(String species) {
+    public void setSpecies(Species species) {
         this.species = species;
+        this.speciesId = species.getId();
     }
 
     public ArrayList<Color> getColours() {
@@ -76,24 +80,29 @@ public class Pet {
     public Pet(){
 
     }
-    public Pet(String name, String species, String breed, ArrayList<String> petColours, PetLocation petLocation, ContactDetail contactDetail){
+    public Pet(String name, Species species, Breed breed, ArrayList<String> petColours, PetLocation petLocation, ContactDetail contactDetail){
         this.name = name;
         this.species = species;
-        this.breed = breed;
+        this.breeds =new ArrayList<Breed>();
+        this.breeds.add(breed);
 
     }
 
-    public Pet(String name, String species, String breed){
+    public Pet(String name, Species species, Breed breed){
         this.name = name;
         this.species = species;
-        this.breed = breed;
+        this.breeds =new ArrayList<Breed>();
+        this.breeds.add(breed);
         this.notes = "THIS IS A REALLY LONG NOTE PROVIDING ADDITION NEWS ABOUT THE PET";
+        /*
         Color color1 = new Color("Brown");
-        Color color2 = new Color("Orange");
+        Color color2 = new Color("Orange",);
         ArrayList<Color> colors = new ArrayList<Color>();
+
         colors.add(color1);
         colors.add(color2);
         this.colours=colors;
+        */
         this.reward=25.0;
 
 
@@ -119,12 +128,17 @@ public class Pet {
         this.name = name;
     }
 
-    public String getBreed() {
-        return breed;
+    public ArrayList<Breed> getBreeds() {
+        return breeds;
     }
 
-    public void setBreed(String breed) {
-        this.breed = breed;
+    public void setBreeds(ArrayList<Breed> breeds) {
+        this.breeds = breeds;
+        int[] breedIds = new int[this.breeds.size()];
+        for(int i = 0; i < this.breeds.size(); i++){
+            breedIds[i] = this.breeds.get(i).getId();
+
+        }
     }
 
 
@@ -213,5 +227,13 @@ public class Pet {
 
     public String toString(){
         return name;
+    }
+
+    public int getSpeciesId() {
+        return speciesId;
+    }
+
+    public void setSpeciesId(int speciesId) {
+        this.speciesId = speciesId;
     }
 }

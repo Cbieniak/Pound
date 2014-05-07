@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bienprogramming.pound.app.POJO.Breed;
 import com.bienprogramming.pound.app.POJO.Color;
 import com.bienprogramming.pound.app.POJO.ContactDetail;
 import com.bienprogramming.pound.app.POJO.DBHelper;
@@ -34,6 +35,7 @@ import com.bienprogramming.pound.app.POJO.Pet;
 import com.bienprogramming.pound.app.POJO.PetColor;
 import com.bienprogramming.pound.app.POJO.PetLocation;
 import com.bienprogramming.pound.app.Activity.PetLocationActivity;
+import com.bienprogramming.pound.app.POJO.Species;
 import com.bienprogramming.pound.app.R;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -171,7 +173,7 @@ public class CreatePetFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
-                AttributeListFragment fragment = AttributeListFragment.newInstance(Field.FIELD_BREED,"breed?species="+speciesEditText.getText(),true);
+                AttributeListFragment fragment = AttributeListFragment.newInstance(Field.FIELD_BREED,"breeds.json?q[species_id_eq]="+pet.getSpeciesId(),true);
                 ft.replace(R.id.container,fragment);
                 ft.addToBackStack(null);
                 ft.commit();
@@ -290,13 +292,13 @@ public class CreatePetFragment extends Fragment {
         public void onPetCreated(int id);
     }
 
-    public void updateField(Field field,String attribute){
+    public void updateField(Field field,Object attribute){
         switch (field) {
             case FIELD_SPECIES:
-                pet.setSpecies(attribute);
+                pet.setSpecies((Species)attribute);
                 break;
             case FIELD_BREED:
-                pet.setBreed(attribute);
+                //pet.setBreeds((Breed)attribute);
                 break;
 
         }
@@ -492,17 +494,17 @@ public class CreatePetFragment extends Fragment {
 
                 @Override
                 public void run() {
-                    speciesEditText.setText(pet.getSpecies());
+                    speciesEditText.setText(pet.getSpecies().toString());
                 }
             });
         }
-        if(pet.getBreed()!=null) {
+        if(pet.getBreeds()!=null) {
             breedEditText = ((EditText) getView().findViewById(R.id.create_pet_breed));
             breedEditText.post(new Runnable() {
 
                 @Override
                 public void run() {
-                    breedEditText.setText(pet.getBreed());
+                    breedEditText.setText(pet.getBreeds().toString());
                 }
             });
         }
@@ -530,7 +532,7 @@ public class CreatePetFragment extends Fragment {
                         LinearLayout.LayoutParams.MATCH_PARENT);
                 ilp.weight=1;
                 col.setLayoutParams(ilp);
-                col.setBackgroundColor(android.graphics.Color.parseColor(color.getColorValue()));
+                col.setBackgroundColor(android.graphics.Color.parseColor(color.getValue()));
                 colorHolder.addView(col);
             }
         }

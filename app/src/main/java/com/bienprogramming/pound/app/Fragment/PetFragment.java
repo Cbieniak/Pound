@@ -27,8 +27,6 @@ import com.bienprogramming.pound.app.POJO.Color;
 import com.bienprogramming.pound.app.POJO.DBHelper;
 import com.bienprogramming.pound.app.POJO.Pet;
 import com.bienprogramming.pound.app.R;
-
-import com.bienprogramming.pound.app.Fragment.dummy.DummyContent;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 
@@ -288,13 +286,13 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
         if (filter.getSpecies() != null) {
             if(filter.getSpecies().equals(pet.getSpecies())) return true;
         } else if (filter.getBreed() != null) {
-            if(filter.getBreed().equals(pet.getBreed())) return true;
+            if(filter.getBreed().equals(pet.getBreeds())) return true;
         } else if (filter.getColours() != null) {
             for(Color filterColor:filter.getColours())
             {
                 for(Color petColor : pet.getColours())
                 {
-                    if(filterColor.getColorName().equals(petColor.getColorName()))
+                    if(filterColor.getName().equals(petColor.getName()))
                         return true;
                 }
             }

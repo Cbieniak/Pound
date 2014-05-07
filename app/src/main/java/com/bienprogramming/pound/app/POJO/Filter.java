@@ -10,8 +10,8 @@ import java.util.ArrayList;
  */
 
 public class Filter {
-    String species;
-    String breed;
+    Species species;
+    Breed breed;
     ArrayList<Color> colours;
     PetLocation location;
     String reward;
@@ -20,19 +20,19 @@ public class Filter {
     public Filter() {
     }
 
-    public String getSpecies() {
+    public Species getSpecies() {
         return species;
     }
 
-    public void setSpecies(String species) {
+    public void setSpecies(Species species) {
         this.species = species;
     }
 
-    public String getBreed() {
+    public Breed getBreed() {
         return breed;
     }
 
-    public void setBreed(String breed) {
+    public void setBreed(Breed breed) {
         this.breed = breed;
     }
 

@@ -172,17 +172,14 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
     }
 
     @Override
-    public void onItemChosenListener(CreatePetFragment.Field field,String item) {
+    public void onItemChosenListener(CreatePetFragment.Field field,Object item) {
         if(createdPet != null)
             createdPet.updateField(field, item);
         else
             filterFragment.updateField(field,item);
     }
 
-    @Override
-    public void onItemsChosen(CreatePetFragment.Field field,ArrayList<String> items) {
-        //createdPet.updateField(field,items);
-    }
+
 
     @Override
     public void colorsChosen(CreatePetFragment.Field field,ArrayList<com.bienprogramming.pound.app.POJO.Color> colors) {
@@ -216,4 +213,8 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
     }
 
 
+    @Override
+    public void onItemsChosen(CreatePetFragment.Field field, ArrayList<String> items) {
+
+    }
 }

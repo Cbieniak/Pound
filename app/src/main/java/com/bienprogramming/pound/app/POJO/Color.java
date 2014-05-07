@@ -7,48 +7,28 @@ import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.io.Serializable;
+
 /**
  * Created by Christian on 13/04/2014.
  */
 @DatabaseTable
-public class Color implements Parcelable{
+public class Color implements Serializable{
     @DatabaseField(generatedId = true)
     @Expose private Integer id;
     @DatabaseField
-    @Expose  private String colorName;
+    @Expose  private String name;
 
     @DatabaseField
-    @Expose private String colorValue;
+    @Expose private String value;
 
     public Color(){};
 
     public Color(String colorName, String colorValue)
     {
-        this.colorName=colorName;
-        this.colorValue=colorValue;
+        this.name=colorName;
+        this.value=colorValue;
     }
-
-    public String getColorValue() {
-        return colorValue;
-    }
-
-    public void setColorValue(String colorValue) {
-        this.colorValue = colorValue;
-    }
-
-    public Color(String colorName){
-        this.colorName = colorName;
-    };
-
-    public String getColorName() {
-        return colorName;
-    }
-
-    public void setColorName(String colorName) {
-        this.colorName = colorName;
-    }
-
-    public String toString(){return colorName;}
 
     public Integer getId() {
         return id;
@@ -58,15 +38,19 @@ public class Color implements Parcelable{
         this.id = id;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getName() {
+        return name;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(colorName);
-        parcel.writeString(colorValue);
+    public void setName(String name) {
+        this.name = name;
+    }
 
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

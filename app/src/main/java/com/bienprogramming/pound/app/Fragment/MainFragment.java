@@ -21,9 +21,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bienprogramming.pound.app.Activity.MainActivity;
+import com.bienprogramming.pound.app.POJO.Breed;
 import com.bienprogramming.pound.app.POJO.DBHelper;
 import com.bienprogramming.pound.app.POJO.Pet;
 import com.bienprogramming.pound.app.POJO.PetLocation;
+import com.bienprogramming.pound.app.POJO.Species;
 import com.bienprogramming.pound.app.R;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
@@ -96,9 +98,10 @@ public class MainFragment extends android.app.Fragment {
             Dao<Pet, Integer> petDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetDao();
             List<Pet> pets = petDao.queryForAll();
             if(pets.size() == 0){
-                Pet pet = new Pet("name", "Species2", "Breed2");
-                Pet pet1 = new Pet("name", "Species1", "Breed1");
-                Pet pet2= new Pet("name", "Species3", "Breed3");
+                Pet pet = new Pet("name", new Species("Dog"), new Breed("Golden Retriever",1));
+                Pet pet1 = new Pet("name", new Species("Bird"), new Breed("Budgie",2));
+                Pet pet2 = new Pet("name", new Species("Dog"), new Breed("Pug",1));
+
                 petDao.create(pet);
                 petDao.create(pet1);
                 petDao.create(pet2);

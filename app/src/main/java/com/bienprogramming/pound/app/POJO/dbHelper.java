@@ -23,6 +23,8 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
     private Dao<ContactDetail,Integer> contactDetailDao = null;
     private Dao<PetColor,Integer> petColorDao = null;
     private Dao<Color,Integer> colorDao = null;
+    private Dao<Species,Integer> speciesDao = null;
+    private Dao<Breed,Integer> breedDao = null;
 
 
     public DBHelper(Context context) {
@@ -37,6 +39,8 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, ContactDetail.class);
             TableUtils.createTable(connectionSource, PetColor.class);
             TableUtils.createTable(connectionSource, Color.class);
+            TableUtils.createTable(connectionSource, Species.class);
+            TableUtils.createTable(connectionSource, Breed.class);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -49,6 +53,8 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, ContactDetail.class, true);
             TableUtils.dropTable(connectionSource, PetColor.class, true);
             TableUtils.dropTable(connectionSource, Color.class, true);
+            TableUtils.dropTable(connectionSource, Species.class, true);
+            TableUtils.dropTable(connectionSource, Breed.class, true);
             onCreate(db,connectionSource);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -82,6 +88,20 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         return colorDao;
     }
 
+    public Dao<Species, Integer> getSpeciesDao() throws SQLException {
+        if (speciesDao == null) {
+            speciesDao = getDao(Species.class);
+        }
+        return speciesDao;
+    }
+
+    public Dao<Breed, Integer> getBreedDao() throws SQLException {
+        if (breedDao == null) {
+            breedDao = getDao(Breed.class);
+        }
+        return breedDao;
+    }
+
 
     public Dao<ContactDetail, Integer> getContactDetailDao() throws SQLException {
         if (contactDetailDao == null) {
@@ -98,6 +118,8 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         contactDetailDao = null;
         petColorDao = null;
         colorDao = null;
+        speciesDao = null;
+        breedDao = null;
 
     }
 }

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.bienprogramming.pound.app.POJO.Color;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +26,10 @@ public class ColorAdapter extends ArrayAdapter<Color> {
     }
 
     public ColorAdapter(Context context, int resource, List<Color> objects) {
+        super(context, resource, objects);
+    }
+
+    public ColorAdapter(Context context, int resource, Color[] objects) {
         super(context, resource, objects);
     }
 
@@ -50,12 +55,12 @@ public class ColorAdapter extends ArrayAdapter<Color> {
             LinearLayout colorLayout = (LinearLayout) v.findViewById(R.id.colorLayout);
 
             if (title != null) {
-                title.setText((c.getColorName()));
+                title.setText((c.getName()));
             }
 
             if(colorLayout!=null)
             {
-                colorLayout.setBackgroundColor(android.graphics.Color.parseColor(c.getColorValue()));
+                colorLayout.setBackgroundColor(android.graphics.Color.parseColor(c.getValue()));
             }
         }
 

@@ -27,9 +27,11 @@ import android.widget.TextView;
 
 import com.bienprogramming.pound.app.Activity.MainActivity;
 import com.bienprogramming.pound.app.Activity.PetLocationActivity;
+import com.bienprogramming.pound.app.POJO.Breed;
 import com.bienprogramming.pound.app.POJO.Color;
 import com.bienprogramming.pound.app.POJO.Filter;
 import com.bienprogramming.pound.app.POJO.PetLocation;
+import com.bienprogramming.pound.app.POJO.Species;
 import com.bienprogramming.pound.app.R;
 
 import java.util.ArrayList;
@@ -238,7 +240,7 @@ public class FilterFragment extends Fragment {
 
                 @Override
                 public void run() {
-                    speciesText.setText(filter.getSpecies());
+                    speciesText.setText(filter.getSpecies().toString());
                 }
             });
         }
@@ -248,7 +250,7 @@ public class FilterFragment extends Fragment {
 
                 @Override
                 public void run() {
-                    breedText.setText(filter.getBreed());
+                    breedText.setText(filter.getBreed().toString());
                 }
             });
         }
@@ -274,7 +276,7 @@ public class FilterFragment extends Fragment {
                         LinearLayout.LayoutParams.MATCH_PARENT);
                 ilp.weight=1;
                 col.setLayoutParams(ilp);
-                col.setBackgroundColor(android.graphics.Color.parseColor(color.getColorValue()));
+                col.setBackgroundColor(android.graphics.Color.parseColor(color.getValue()));
                 colorLayout.addView(col);
             }
         }
@@ -296,13 +298,13 @@ public class FilterFragment extends Fragment {
         public void onFiltersChosen(Filter filter);
     }
 
-    public void updateField(CreatePetFragment.Field field,String attribute){
+    public void updateField(CreatePetFragment.Field field,Object attribute){
         switch (field) {
             case FIELD_SPECIES:
-                filter.setSpecies(attribute);
+                filter.setSpecies((Species)attribute);
                 break;
             case FIELD_BREED:
-                filter.setBreed(attribute);
+                filter.setBreed((Breed)attribute);
                 break;
 
         }

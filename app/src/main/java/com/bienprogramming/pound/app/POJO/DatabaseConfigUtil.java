@@ -12,7 +12,7 @@ import java.sql.SQLException;
  */
 public class DatabaseConfigUtil extends OrmLiteConfigUtil {
     private static final Class<?>[] classes = new Class[] {
-       ContactDetail.class,Pet.class,PetLocation.class,PetColor.class,Color.class
+       ContactDetail.class,Pet.class,PetLocation.class,PetColor.class,Color.class,Species.class,Breed.class
     };
     public static void main(String[] args) throws SQLException,IOException {
         writeConfigFile(new File("C:\\Users\\Christian\\Dropbox\\3027Pound\\Pound\\app\\src\\main\\res\\raw\\ormlite_config.txt"),classes);

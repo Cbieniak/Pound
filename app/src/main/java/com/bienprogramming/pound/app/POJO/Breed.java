@@ -10,7 +10,7 @@ public class Breed {
     @DatabaseField(generatedId = true)
     @Expose private Integer id;
     @DatabaseField
-    @Expose  private String breed;
+    @Expose  private String name;
 
     @DatabaseField
     @Expose private int speciesId;
@@ -18,12 +18,17 @@ public class Breed {
     public Breed() {
     }
 
+    public Breed(String breed, int speciesId) {
+        this.name = breed;
+        this.speciesId = speciesId;
+    }
+
     public String getBreed() {
-        return breed;
+        return name;
     }
 
     public void setBreed(String breed) {
-        this.breed = breed;
+        this.name = breed;
     }
 
     public int getSpeciesId() {
@@ -41,4 +46,6 @@ public class Breed {
     public void setId(Integer id) {
         this.id = id;
     }
+
+    public String toString(){return name;}
 }

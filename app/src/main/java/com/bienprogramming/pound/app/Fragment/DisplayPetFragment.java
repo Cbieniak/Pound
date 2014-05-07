@@ -111,8 +111,8 @@ public class DisplayPetFragment extends android.app.Fragment {
             FrameLayout petImageLayout = (FrameLayout) rootView.findViewById(R.id.petImageLayout);
 
 
-            breedView.setText(pet.getBreed());
-            speciesView.setText(pet.getSpecies());
+            breedView.setText(pet.getBreeds().toString());
+            speciesView.setText(pet.getSpecies().toString());
             noteView.setText(pet.getNotes());
             locationView.setText(pet.getPetLocation().getSuburb());
             rewardView.setText("$" + pet.getReward());
@@ -125,7 +125,7 @@ public class DisplayPetFragment extends android.app.Fragment {
                         LinearLayout.LayoutParams.MATCH_PARENT);
                 ilp.weight=1;
                 col.setLayoutParams(ilp);
-                col.setBackgroundColor(android.graphics.Color.parseColor(color.getColorValue()));
+                col.setBackgroundColor(android.graphics.Color.parseColor(color.getValue()));
                 colorView.addView(col);
             }
 

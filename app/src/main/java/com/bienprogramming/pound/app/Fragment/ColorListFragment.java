@@ -1,8 +1,10 @@
 package com.bienprogramming.pound.app.Fragment;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.ListFragment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,9 +14,23 @@ import android.widget.ListView;
 
 
 import com.bienprogramming.pound.app.ColorAdapter;
+import com.bienprogramming.pound.app.POJO.Breed;
 import com.bienprogramming.pound.app.POJO.Color;
+import com.bienprogramming.pound.app.POJO.Species;
 import com.bienprogramming.pound.app.R;
+import com.google.gson.Gson;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +43,7 @@ public class ColorListFragment extends ListFragment {
     private ArrayList<Color> chosenColors;
     private ArrayList<Color> colors;
     private OnColorsChosenListener mListener;
-
+    ColorAdapter colorAdapter;
     public static ColorListFragment newInstance() {
         ColorListFragment fragment = new ColorListFragment();
 
@@ -47,15 +63,14 @@ public class ColorListFragment extends ListFragment {
         setHasOptionsMenu(true);
         chosenColors = new ArrayList<Color>();
 
-        Color newColor = new Color("White","#FFFFFF");
-        Color color1 = new Color("orange","#000000");
+        Color newColor = new Color("White","#FF1111");
+        Color color1 = new Color("orange","#111111");
         colors = new ArrayList<Color>();
         colors.add(newColor);
         colors.add(color1);
-        ColorAdapter colorAdapter = new ColorAdapter(getActivity().getApplicationContext(),R.layout.color_row,colors);
+        colorAdapter = new ColorAdapter(getActivity().getApplicationContext(),R.layout.color_row,colors);
         setListAdapter(colorAdapter);
-
-
+        new GetColorsTask().execute("http://192.168.1.8:3000/colors.json");
 
     }
 
@@ -98,7 +113,9 @@ public class ColorListFragment extends ListFragment {
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            chosenColors.add(colors.get(position));
+            v.setSelected(true);
+
+            chosenColors.add(colorAdapter.getItem(position));
         }
     }
 
@@ -115,6 +132,57 @@ public class ColorListFragment extends ListFragment {
     public interface OnColorsChosenListener {
         // TODO: Update argument type and name
         public void colorsChosen(CreatePetFragment.Field field,ArrayList<Color> colors);
+    }
+
+    private class GetColorsTask extends AsyncTask<String, Integer , String>
+    {
+        int TIMEOUT_MILLISEC = 10000;
+        @Override
+        protected String doInBackground(String... urls) {
+            try{
+                String result;
+
+                InputStream is = null;
+                HttpParams httpParams = new BasicHttpParams();
+                HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT_MILLISEC);
+                HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_MILLISEC);
+                HttpClient client = new DefaultHttpClient(httpParams);
+
+                HttpGet request = new HttpGet(urls[0]);
+                request.setHeader("Accept", "application/json");
+                request.setHeader("Content-type", "application/json");
+                HttpResponse response = client.execute(request);
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),"utf-8"),8);
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line + "\n");
+                }
+                result = sb.toString();
+                Log.d("JSONRESULT", result);
+
+
+                Gson gson = new Gson();
+
+                        Color[] colorArray = gson.fromJson(result,Color[].class);
+                        colorAdapter = new ColorAdapter(getActivity().getApplicationContext(),R.layout.color_row,colorArray);
+
+
+
+            }catch (Exception e){
+                Log.d("JSONRESULT", e.toString());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            setListAdapter(colorAdapter);
+        }
+
+
     }
 
 }
