@@ -40,6 +40,8 @@ import com.bienprogramming.pound.app.R;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 
@@ -51,6 +53,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -60,16 +63,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-
-/**
- * A simple {@link android.support.v4.app.Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link CreatePetFragment.OnPetCreatedListener} interface
- * to handle interaction events.
- * Use the {@link CreatePetFragment#newInstance} factory method to
- * create an instance of this fragment.
- *
- */
 
 
 public class CreatePetFragment extends Fragment {
@@ -162,7 +155,7 @@ public class CreatePetFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
-                AttributeListFragment fragment = AttributeListFragment.newInstance(Field.FIELD_SPECIES, "species", true);
+                AttributeListFragment fragment = AttributeListFragment.newInstance(Field.FIELD_SPECIES, "/species.json", true);
                 ft.replace(R.id.container, fragment);
                 ft.addToBackStack(null);
                 ft.commit();
@@ -173,7 +166,7 @@ public class CreatePetFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
-                AttributeListFragment fragment = AttributeListFragment.newInstance(Field.FIELD_BREED,"breeds.json?q[species_id_eq]="+pet.getSpeciesId(),true);
+                AttributeListFragment fragment = AttributeListFragment.newInstance(Field.FIELD_BREED,"/breeds.json?q[species_id_eq]="+pet.getSpeciesId(),true);
                 ft.replace(R.id.container,fragment);
                 ft.addToBackStack(null);
                 ft.commit();
@@ -237,31 +230,12 @@ public class CreatePetFragment extends Fragment {
                 pet.setReward(Double.parseDouble(rewardEditText.getText().toString()));
                 pet.setNotes(notesEditText.getText().toString());
                 pet.setContactName(contactNameEditText.getText().toString());
-                Dao<PetLocation, Integer> petlocationDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetLocationDao();
-                Dao<Color, Integer> colorDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getColorDao();
-                Dao<PetColor, Integer> petColorDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetColorDao();
-                Dao<Pet, Integer> petDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetDao();
 
-                petDao.create(pet);
-
-
-                pet.getPetLocation().setPetId(pet.getId());
-
-                petlocationDao.create(pet.getPetLocation());
-
-                for(Color color : pet.getColours()){
-                    if(color.getId() == null) {
-                        colorDao.create(color);
-                    }
-
-                    PetColor petColor = new PetColor(pet,color);
-                    petColorDao.create(petColor);
-                }
 
                 //Upload to server
                 new UploadPetTask().execute(pet);
 
-                getFragmentManager().popBackStack();
+
             } catch (Exception e) {
                 Log.d("Create", "Failed to create Pet with Name" + e.getLocalizedMessage());
             }
@@ -450,38 +424,81 @@ public class CreatePetFragment extends Fragment {
                 HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_MILLISEC);
                 HttpClient client = new DefaultHttpClient(httpParams);
 
-                HttpPost request = new HttpPost("http://192.168.1.12:3000/pets.json");
+                HttpPost request = new HttpPost(getString(R.string.server_base_address)+"/pets.json");
                 request.setEntity(new ByteArrayEntity(
                         json.getBytes("UTF8")));
                 request.setHeader("Accept", "application/json");
                 request.setHeader("Content-type", "application/json");
                 HttpResponse response = client.execute(request);
+                String responseBody = EntityUtils.toString(response.getEntity());
+                Log.d("JSON",responseBody);
+                /*
+                JsonParser parser = new JsonParser();
+                JsonArray array = parser.parse(responseBody).getAsJsonArray();
+                */
+                Gson responseGSon = new GsonBuilder().create();
+                //Pet pet1 = responseGSon.fromJson(responseBody,Pet.class);
+                pet.setId(Integer.valueOf(responseBody));
 
                 //return  response.toString();
                 //Post the image
-                String encodedImage = Base64.encodeToString(pets[0].getImageBlob(), Base64.DEFAULT);
+                if(pet.getImageBlob()!=null) {
+                    String encodedImage = Base64.encodeToString(pet.getImageBlob(), Base64.DEFAULT);
+                    JSONObject jsonObject = new JSONObject();
+                    JSONObject classObject = new JSONObject();
+                    jsonObject.put("pet_id", pet.getId());
+                    jsonObject.put("image", encodedImage);
+                    classObject.put("pet_image",jsonObject);
+                    Log.d("JSONSTRING",classObject.toString());
+                    HttpPost imageRequest = new HttpPost(getString(R.string.server_base_address) + "/pet_images.json");
+                    imageRequest.setEntity(new ByteArrayEntity(
+                            classObject.toString().getBytes("UTF8")));
+                    imageRequest.setHeader("Accept", "application/json");
+                    imageRequest.setHeader("Content-type", "application/json");
+                    response = client.execute(imageRequest);
+                    responseBody = EntityUtils.toString(response.getEntity());
+                    Log.d("JSON",responseBody);
+                    Pet pet2 = responseGSon.fromJson(responseBody,Pet.class);
+                    pet.setImageUrl(pet2.getImageUrl());
 
-                Log.d("Tag this", encodedImage);
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("pet_id",pet.getId());
-                jsonObject.put("pet_image",encodedImage);
-                HttpPost imageRequest = new HttpPost("http://192.168.1.12:3000/pet_images.json");
-                request.setEntity(new ByteArrayEntity(
-                        jsonObject.toString().getBytes("UTF8")));
-                imageRequest.setHeader("Accept", "application/json");
-                imageRequest.setHeader("Content-type", "application/json");
-                response = client.execute(request);
+                }
+
+                Dao<PetLocation, Integer> petlocationDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetLocationDao();
+                Dao<Color, Integer> colorDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getColorDao();
+                Dao<PetColor, Integer> petColorDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetColorDao();
+                Dao<Pet, Integer> petDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetDao();
+
+                petDao.create(pet);
+
+
+
+                pet.getPetLocation().setPetId(pet.getId());
+
+                petlocationDao.create(pet.getPetLocation());
+
+                for(Color color : pet.getColours()){
+                    if(color.getId() == null) {
+                        colorDao.create(color);
+                    }
+
+                    PetColor petColor = new PetColor(pet,color);
+                    petColorDao.create(petColor);
+                }
                 return response.toString();
 
             }catch (Exception e){
-                Log.d("Stuff e",e.getLocalizedMessage()+"error");
+                Log.d("Stuff e",e.getMessage()+"error");
+
             }
+
+
 
             return "";
         }
         @Override
         protected void onPostExecute(String result) {
             Log.d("Stuff",result);
+            getFragmentManager().popBackStack();
         }
     }
 

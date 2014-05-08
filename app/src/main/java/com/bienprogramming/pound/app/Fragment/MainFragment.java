@@ -96,20 +96,7 @@ public class MainFragment extends android.app.Fragment {
         });
         try {
             Dao<Pet, Integer> petDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetDao();
-            List<Pet> pets = petDao.queryForAll();
-            if(pets.size() == 0){
-                Pet pet = new Pet("name", new Species("Dog"), new Breed("Golden Retriever",1));
-                Pet pet1 = new Pet("name", new Species("Bird"), new Breed("Budgie",2));
-                Pet pet2 = new Pet("name", new Species("Dog"), new Breed("Pug",1));
-                //Dao<Breed, Integer> breedsDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getBreedDao();
-
-
-
-                petDao.create(pet);
-                petDao.create(pet1);
-                petDao.create(pet2);
-
-            }
+            //List<Pet> pets = petDao.queryForAll();
 
             new FillPetTask().execute(petDao.queryForEq("lost",true),petDao.queryForEq("lost",false));
         } catch(Exception e){
@@ -182,11 +169,11 @@ public class MainFragment extends android.app.Fragment {
                 //imageView.setImageResource(R.drawable.paw_print);
                 layout.addView(imageView);
 
-                //imageView.setImageBitmap(bmp);
+                imageView.setImageBitmap(bmp);
                 imageView.setImageBitmap(ThumbnailUtils.extractThumbnail(bmp, 450, 300));
 
             }else {
-                //imageView.setImageResource(R.drawable.paw_print);
+                imageView.setImageResource(R.drawable.paw_print);
                 layout.addView(imageView);
             }
             //load image

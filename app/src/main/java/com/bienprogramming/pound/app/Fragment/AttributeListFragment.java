@@ -100,7 +100,7 @@ public class AttributeListFragment extends Fragment implements AbsListView.OnIte
             path = getArguments().getString(PATH);
             hasOne = getArguments().getBoolean(HASONE);
         }
-         new GetItemsTask().execute("http://192.168.1.12:3000/"+path);
+         new GetItemsTask().execute(getString(R.string.server_base_address)+path);
         getActivity().getActionBar().setTitle((field == CreatePetFragment.Field.FIELD_SPECIES) ? "Species" : "Breed");
         try {
             switch (field) {
@@ -118,7 +118,7 @@ public class AttributeListFragment extends Fragment implements AbsListView.OnIte
                     mAdapter = new ArrayAdapter<Breed>(getActivity(),
                             android.R.layout.simple_list_item_1, android.R.id.text1, (List<Breed>)items);
                     mListView.setAdapter(mAdapter);
-                    mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+
                     break;
             }
         }catch (Exception e){}
@@ -168,8 +168,9 @@ public class AttributeListFragment extends Fragment implements AbsListView.OnIte
         if (null != mItemListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mItemListener.onItemChosenListener(field, mAdapter.getItem(position));
-            getFragmentManager().popBackStack();
+
+                mItemListener.onItemChosenListener(field, mAdapter.getItem(position));
+                getFragmentManager().popBackStack();
 
         }
     }

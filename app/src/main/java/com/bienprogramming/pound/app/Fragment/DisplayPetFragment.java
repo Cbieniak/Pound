@@ -134,7 +134,7 @@ public class DisplayPetFragment extends android.app.Fragment {
 
         } catch (Exception e){
 
-            Log.d("TAG",e.getLocalizedMessage());
+            Log.d("TAG",e.getMessage());
         }
 
 

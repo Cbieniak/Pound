@@ -1,15 +1,22 @@
 package com.bienprogramming.pound.app.Fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.ListFragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 
@@ -38,12 +45,25 @@ import java.util.List;
  * A fragment representing a list of Items.
  * interface.
  */
-public class ColorListFragment extends ListFragment {
+public class ColorListFragment extends Fragment implements AbsListView.OnItemClickListener{
 
     private ArrayList<Color> chosenColors;
     private ArrayList<Color> colors;
+    private ArrayList<View> selectedViews;
     private OnColorsChosenListener mListener;
     ColorAdapter colorAdapter;
+    /**
+     * The fragment's ListView/GridView.
+     */
+    private AbsListView mListView;
+
+    /**
+     * The Adapter which will be used to populate the ListView/GridView with
+     * Views.
+     */
+    private ListAdapter mAdapter;
+
+
     public static ColorListFragment newInstance() {
         ColorListFragment fragment = new ColorListFragment();
 
@@ -68,11 +88,31 @@ public class ColorListFragment extends ListFragment {
         colors = new ArrayList<Color>();
         colors.add(newColor);
         colors.add(color1);
-        colorAdapter = new ColorAdapter(getActivity().getApplicationContext(),R.layout.color_row,colors);
-        setListAdapter(colorAdapter);
-        new GetColorsTask().execute("http://192.168.1.12:3000/colors.json");
+        selectedViews = new ArrayList<View>();
+        new GetColorsTask().execute(getString(R.string.server_base_address)+"/colors.json");
+
 
     }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_attributelist, container, false);
+
+        // Set the adapter
+        mListView = (AbsListView) view.findViewById(android.R.id.list);
+        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
+
+        // Set OnItemClickListener so we can be notified on item clicks
+        mListView.setOnItemClickListener(this);
+
+        colorAdapter = new ColorAdapter(getActivity().getApplicationContext(),R.layout.color_row,colors);
+        mListView.setAdapter(colorAdapter);
+        mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
+        return view;
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
@@ -106,18 +146,28 @@ public class ColorListFragment extends ListFragment {
     }
 
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
 
-        if (null != mListener) {
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            v.setSelected(true);
-
+        //mListView.setItemChecked(position,true);
+        if(chosenColors.contains(colorAdapter.getItem(position)))
+        {
+            selectedViews.remove(view);
+            chosenColors.remove(colorAdapter.getItem(position));
+        }else {
+            selectedViews.add(view);
             chosenColors.add(colorAdapter.getItem(position));
         }
+
+        setSelectedViews();
+
+
     }
+
 
     /**
     * This interface must be implemented by activities that contain this
@@ -179,10 +229,21 @@ public class ColorListFragment extends ListFragment {
         @Override
         protected void onPostExecute(String result) {
 
-            setListAdapter(colorAdapter);
+            mListView.setAdapter(colorAdapter);
+
         }
 
 
+    }
+
+    private void setSelectedViews()
+    {
+        for(View view :selectedViews)
+        {
+            if(!view.isSelected())
+            view.setSelected(true);
+
+        }
     }
 
 }

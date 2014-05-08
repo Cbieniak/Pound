@@ -1,10 +1,12 @@
 package com.bienprogramming.pound.app;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Checkable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,7 +18,7 @@ import java.util.List;
 /**
  * Created by Christian on 5/05/2014.
  */
-public class ColorAdapter extends ArrayAdapter<Color> {
+public class ColorAdapter extends ArrayAdapter<Color> implements Checkable{
     public ColorAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
     }
@@ -65,6 +67,23 @@ public class ColorAdapter extends ArrayAdapter<Color> {
         }
 
         return v;
+
+    }
+
+    @Override
+    public void setChecked(boolean b) {
+        Log.d("CHEC:","CJJA");
+    }
+
+    @Override
+    public boolean isChecked() {
+        Log.d("CHEC:","CA");
+        return false;
+    }
+
+    @Override
+    public void toggle() {
+        Log.d("C:","CJJA");
 
     }
 }
