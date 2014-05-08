@@ -101,6 +101,9 @@ public class MainFragment extends android.app.Fragment {
                 Pet pet = new Pet("name", new Species("Dog"), new Breed("Golden Retriever",1));
                 Pet pet1 = new Pet("name", new Species("Bird"), new Breed("Budgie",2));
                 Pet pet2 = new Pet("name", new Species("Dog"), new Breed("Pug",1));
+                //Dao<Breed, Integer> breedsDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getBreedDao();
+
+
 
                 petDao.create(pet);
                 petDao.create(pet1);
@@ -176,14 +179,14 @@ public class MainFragment extends android.app.Fragment {
                 }catch (Exception e){Log.d("THE ERROR MAN",e.getLocalizedMessage());}
 
                 //imageView.setImageBitmap(ThumbnailUtils.extractThumbnail(bmp, imageView.getWidth(), imageView.getHeight()));
-                imageView.setImageResource(R.drawable.paw_print);
+                //imageView.setImageResource(R.drawable.paw_print);
                 layout.addView(imageView);
 
                 //imageView.setImageBitmap(bmp);
                 imageView.setImageBitmap(ThumbnailUtils.extractThumbnail(bmp, 450, 300));
 
             }else {
-                imageView.setImageResource(R.drawable.paw_print);
+                //imageView.setImageResource(R.drawable.paw_print);
                 layout.addView(imageView);
             }
             //load image

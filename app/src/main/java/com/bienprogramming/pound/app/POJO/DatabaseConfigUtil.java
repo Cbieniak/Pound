@@ -15,6 +15,7 @@ public class DatabaseConfigUtil extends OrmLiteConfigUtil {
        ContactDetail.class,Pet.class,PetLocation.class,PetColor.class,Color.class,Species.class,Breed.class
     };
     public static void main(String[] args) throws SQLException,IOException {
-        writeConfigFile(new File("C:\\Users\\Christian\\Dropbox\\3027Pound\\Pound\\app\\src\\main\\res\\raw\\ormlite_config.txt"),classes);
+        //writeConfigFile(new File("C:\\Users\\Christian\\Dropbox\\3027Pound\\Pound\\app\\src\\main\\res\\raw\\ormlite_config.txt"),classes);
+        writeConfigFile(new File("/Users/gladys/Work/Pound/app/src/main/res/raw/ormlite_config.txt"),classes);
     }
 }

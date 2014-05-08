@@ -1,0 +1,165 @@
+#
+# generated on 2014/05/08 11:02:42
+#
+# --table-start--
+dataClass=com.bienprogramming.pound.app.POJO.ContactDetail
+tableName=contactdetail
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=type
+# --field-end--
+# --field-start--
+fieldName=detail
+# --field-end--
+# --field-start--
+fieldName=petId
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.bienprogramming.pound.app.POJO.Pet
+tableName=pet
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=imageUrl
+indexName=pet_imageUrl_idx
+# --field-end--
+# --field-start--
+fieldName=thumbURL
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=speciesId
+# --field-end--
+# --field-start--
+fieldName=breedIds
+dataPersister=SERIALIZABLE
+# --field-end--
+# --field-start--
+fieldName=reward
+# --field-end--
+# --field-start--
+fieldName=notes
+# --field-end--
+# --field-start--
+fieldName=contactName
+# --field-end--
+# --field-start--
+fieldName=contactDetail
+# --field-end--
+# --field-start--
+fieldName=contactType
+# --field-end--
+# --field-start--
+fieldName=lost
+# --field-end--
+# --field-start--
+fieldName=petLocation
+foreign=true
+# --field-end--
+# --field-start--
+fieldName=imageBlob
+dataPersister=BYTE_ARRAY
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.bienprogramming.pound.app.POJO.PetLocation
+tableName=petlocation
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=suburb
+# --field-end--
+# --field-start--
+fieldName=latitude
+# --field-end--
+# --field-start--
+fieldName=longitude
+# --field-end--
+# --field-start--
+fieldName=petId
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.bienprogramming.pound.app.POJO.PetColor
+tableName=petcolor
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=colorId
+# --field-end--
+# --field-start--
+fieldName=petId
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.bienprogramming.pound.app.POJO.Color
+tableName=color
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=value
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.bienprogramming.pound.app.POJO.Species
+tableName=species
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.bienprogramming.pound.app.POJO.Breed
+tableName=breed
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=speciesId
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################

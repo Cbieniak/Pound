@@ -12,6 +12,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -19,7 +20,7 @@ import java.util.ArrayList;
  * Created by Christian on 6/04/2014.
  */
 @DatabaseTable
-public class Pet {
+public class Pet implements Serializable {
     //Pet
     @DatabaseField(generatedId = true)
     private int id;
@@ -34,7 +35,10 @@ public class Pet {
     @DatabaseField
     @Expose private int speciesId;
     private ArrayList<Breed> breeds;
-    @DatabaseField
+
+
+
+    @DatabaseField (dataType = DataType.SERIALIZABLE)
     @Expose private int[] breedIds;
     @DatabaseField
     @Expose private double reward;
@@ -235,5 +239,13 @@ public class Pet {
 
     public void setSpeciesId(int speciesId) {
         this.speciesId = speciesId;
+    }
+
+    public int[] getBreedIds() {
+        return breedIds;
+    }
+
+    public void setBreedIds(int[] breedIds) {
+        this.breedIds = breedIds;
     }
 }

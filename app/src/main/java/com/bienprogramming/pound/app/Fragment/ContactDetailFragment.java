@@ -83,13 +83,15 @@ public class ContactDetailFragment extends Fragment {
                 LinearLayout textContainer = new LinearLayout(rootView.getContext());
                 LinearLayout.LayoutParams tclp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
                 textContainer.setOrientation(LinearLayout.HORIZONTAL);
+                textContainer.setPadding(10,10,0,0);
+
                 textContainer.setLayoutParams(tclp);
 
                 TextView contactTextView = new TextView(rootView.getContext());
                 contactTextView.setTextSize(20);
                 contactTextView.setText(contact.getDetail());
                 LinearLayout.LayoutParams tlp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-                tlp.weight=10;
+                tlp.weight=1;
                 contactTextView.setLayoutParams(tlp);
                 contactTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -99,11 +101,11 @@ public class ContactDetailFragment extends Fragment {
                 });
 
                 TextView actionTextView = new TextView(rootView.getContext());
-                actionTextView.setTextSize(20);
+                actionTextView.setTextSize(30);
                 actionTextView.setText("-");
                 actionTextView.setTextColor(getResources().getColor(R.color.delete));
                 LinearLayout.LayoutParams atlp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-                atlp.weight=1;
+                atlp.weight=10;
                 actionTextView.setLayoutParams(atlp);
                 actionTextView.setOnClickListener(new View.OnClickListener() {
                     @Override

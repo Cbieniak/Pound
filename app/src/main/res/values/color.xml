@@ -7,4 +7,7 @@
     <color name="delete">#F59777</color>
     <color name="highlight">#A4C639</color>
     <color name="raised">#E4EBCE</color>
+
+    <color name="polar_background">#2980b9</color>
+    <color name="polar_highlight">#3498db</color>
 </resources>

@@ -31,6 +31,7 @@
     <string name="contact_details_phone">Phone Number</string>
     <string name="contact_details_email">Email</string>
     <string name="contact_details_address">Address</string>
+    <string name="server_base_address"></string>
 
 
     <string name="about_detail">Pound is your best tool to find you missing pet\nUse the community to help find

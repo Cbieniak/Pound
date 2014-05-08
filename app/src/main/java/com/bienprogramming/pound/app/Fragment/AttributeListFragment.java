@@ -92,6 +92,8 @@ public class AttributeListFragment extends Fragment implements AbsListView.OnIte
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //getActivity().getActionBar().setTitle((field == CreatePetFragment.Field.FIELD_SPECIES) ? "Species" : "Breed");
         items = new ArrayList<Object>();
         if (getArguments() != null) {
             field = (CreatePetFragment.Field)getArguments().getSerializable("field_key");
@@ -99,6 +101,7 @@ public class AttributeListFragment extends Fragment implements AbsListView.OnIte
             hasOne = getArguments().getBoolean(HASONE);
         }
          new GetItemsTask().execute("http://192.168.1.8:3000/"+path);
+        getActivity().getActionBar().setTitle((field == CreatePetFragment.Field.FIELD_SPECIES) ? "Species" : "Breed");
         try {
             switch (field) {
                 case FIELD_SPECIES:

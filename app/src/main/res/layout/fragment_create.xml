@@ -22,6 +22,7 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                style="@style/newTheme"
                 android:background="@color/raised"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/mediumPadding"
@@ -70,6 +71,7 @@
                             android:gravity="center"
                             android:text="+"
                             android:textColor="@color/highlight"
+                            android:background="@drawable/item_background"
                             android:id="@+id/create_pet_image_progress"
                             android:textSize="50dp" />
 
@@ -91,16 +93,19 @@
                             android:id="@+id/create_pet_species"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:editable="false"
+                            android:focusable="false"
+                            android:clickable="true"
                             android:hint="@string/species"
-                            android:textSize="20dp" />
+                            android:textSize="20dp"
+                            />
 
                         <EditText
                             android:id="@+id/create_pet_breed"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/breed"
-                            android:editable="false"
+                            android:focusable="false"
+                            android:clickable="true"
                             android:textSize="20dp" />
                     </LinearLayout>
 
@@ -123,7 +128,8 @@
                         android:gravity="center_horizontal"
                         android:padding="10dp"
                         android:text="@string/color"
-                        android:textColor="@color/highlight" />
+                        android:textColor="@color/highlight"
+                        android:background="@drawable/item_background"/>
                 </LinearLayout>
 
                 <EditText
@@ -132,7 +138,8 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:editable="false"
+                    android:focusable="false"
+                    android:clickable="true"
                     android:hint="@string/location" />
 
                 <EditText
@@ -195,7 +202,8 @@
                     android:ems="10"
                     android:hint="@string/contact_detail"
                     android:inputType="textPersonName"
-                    android:editable="false"/>
+                    android:focusable="false"
+                    android:clickable="true"/>
             </LinearLayout>
 
         </LinearLayout>
