@@ -100,7 +100,7 @@ public class AttributeListFragment extends Fragment implements AbsListView.OnIte
             path = getArguments().getString(PATH);
             hasOne = getArguments().getBoolean(HASONE);
         }
-         new GetItemsTask().execute("http://192.168.1.8:3000/"+path);
+         new GetItemsTask().execute("http://192.168.1.12:3000/"+path);
         getActivity().getActionBar().setTitle((field == CreatePetFragment.Field.FIELD_SPECIES) ? "Species" : "Breed");
         try {
             switch (field) {

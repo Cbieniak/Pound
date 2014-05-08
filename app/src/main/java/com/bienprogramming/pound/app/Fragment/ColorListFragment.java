@@ -70,7 +70,7 @@ public class ColorListFragment extends ListFragment {
         colors.add(color1);
         colorAdapter = new ColorAdapter(getActivity().getApplicationContext(),R.layout.color_row,colors);
         setListAdapter(colorAdapter);
-        new GetColorsTask().execute("http://192.168.1.8:3000/colors.json");
+        new GetColorsTask().execute("http://192.168.1.12:3000/colors.json");
 
     }
 

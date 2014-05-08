@@ -450,7 +450,7 @@ public class CreatePetFragment extends Fragment {
                 HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_MILLISEC);
                 HttpClient client = new DefaultHttpClient(httpParams);
 
-                HttpPost request = new HttpPost("http://192.168.1.8:3000/pets.json");
+                HttpPost request = new HttpPost("http://192.168.1.12:3000/pets.json");
                 request.setEntity(new ByteArrayEntity(
                         json.getBytes("UTF8")));
                 request.setHeader("Accept", "application/json");
@@ -465,7 +465,7 @@ public class CreatePetFragment extends Fragment {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("pet_id",pet.getId());
                 jsonObject.put("pet_image",encodedImage);
-                HttpPost imageRequest = new HttpPost("http://192.168.1.8:3000/pet_images.json");
+                HttpPost imageRequest = new HttpPost("http://192.168.1.12:3000/pet_images.json");
                 request.setEntity(new ByteArrayEntity(
                         jsonObject.toString().getBytes("UTF8")));
                 imageRequest.setHeader("Accept", "application/json");
@@ -504,6 +504,7 @@ public class CreatePetFragment extends Fragment {
 
                 @Override
                 public void run() {
+                    Log.d("Success",pet.getBreeds().toString());
                     breedEditText.setText(pet.getBreeds().toString());
                 }
             });
