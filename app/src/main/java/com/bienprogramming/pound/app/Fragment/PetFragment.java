@@ -286,7 +286,7 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
         if (filter.getSpecies() != null) {
             if(filter.getSpecies().equals(pet.getSpecies())) return true;
         } else if (filter.getBreed() != null) {
-            if(filter.getBreed().equals(pet.getBreeds())) return true;
+            if(filter.getBreed().equals(pet.getBreed())) return true;
         } else if (filter.getColours() != null) {
             for(Color filterColor:filter.getColours())
             {

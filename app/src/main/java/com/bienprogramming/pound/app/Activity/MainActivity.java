@@ -4,12 +4,14 @@ import android.app.ActionBar;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
 import android.widget.Switch;
 
@@ -22,12 +24,27 @@ import com.bienprogramming.pound.app.Fragment.FilterFragment;
 import com.bienprogramming.pound.app.Fragment.MainFragment;
 import com.bienprogramming.pound.app.Fragment.NavigationDrawerFragment;
 import com.bienprogramming.pound.app.Fragment.PetFragment;
+import com.bienprogramming.pound.app.POJO.Breed;
 import com.bienprogramming.pound.app.POJO.DBHelper;
 import com.bienprogramming.pound.app.POJO.Filter;
 import com.bienprogramming.pound.app.POJO.Pet;
+import com.bienprogramming.pound.app.POJO.Species;
 import com.bienprogramming.pound.app.R;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 
@@ -68,7 +85,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-
+        new UpdatePetTasks().execute("Tempo");
     }
 
     @Override
@@ -217,4 +234,48 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
     public void onItemsChosen(CreatePetFragment.Field field, ArrayList<String> items) {
 
     }
+
+    public class UpdatePetTasks extends AsyncTask<String,Integer,String>
+    {
+        int TIMEOUT_MILLISEC = 10000;
+        @Override
+        protected String doInBackground(String... strings) {
+
+            try{
+                String result;
+
+                InputStream is = null;
+                HttpParams httpParams = new BasicHttpParams();
+                HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT_MILLISEC);
+                HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_MILLISEC);
+                HttpClient client = new DefaultHttpClient(httpParams);
+
+                HttpGet request = new HttpGet(getString(R.string.server_base_address)+"/pets.json");
+                request.setHeader("Accept", "application/json");
+                request.setHeader("Content-type", "application/json");
+                HttpResponse response = client.execute(request);
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),"utf-8"),8);
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line + "\n");
+                }
+                result = sb.toString();
+                Gson responseGSon = new GsonBuilder().create();
+
+                Pet[] pets = responseGSon.fromJson(result,Pet[].class);
+
+                for(Pet pet : pets)
+                {
+                    Log.d("pet",pet.toString());
+                }
+
+            }catch (Exception e){
+                Log.d("JSONRESULT", e.toString());
+            }
+            return null;
+        }
+    }
+
 }

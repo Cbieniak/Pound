@@ -111,7 +111,7 @@ public class DisplayPetFragment extends android.app.Fragment {
             FrameLayout petImageLayout = (FrameLayout) rootView.findViewById(R.id.petImageLayout);
 
 
-            breedView.setText(pet.getBreeds().toString());
+            breedView.setText(pet.getBreed().toString());
             speciesView.setText(pet.getSpecies().toString());
             noteView.setText(pet.getNotes());
             locationView.setText(pet.getPetLocation().getSuburb());

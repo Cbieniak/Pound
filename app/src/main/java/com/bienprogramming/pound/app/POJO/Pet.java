@@ -30,16 +30,11 @@ public class Pet implements Serializable {
     @Expose private String thumbURL;
     @DatabaseField
     @Expose private String name;
-
     private Species species;
     @DatabaseField
     @Expose private int speciesId;
-    private ArrayList<Breed> breeds;
-
-
-
-    @DatabaseField (dataType = DataType.SERIALIZABLE)
-    @Expose private int[] breedIds;
+    private Breed breed;
+    @Expose private int breedId;
     @DatabaseField
     @Expose private double reward;
     @DatabaseField
@@ -87,16 +82,16 @@ public class Pet implements Serializable {
     public Pet(String name, Species species, Breed breed, ArrayList<String> petColours, PetLocation petLocation, ContactDetail contactDetail){
         this.name = name;
         this.species = species;
-        this.breeds =new ArrayList<Breed>();
-        this.breeds.add(breed);
+        this.breed = breed;
+        this.breedId = breed.getId();
 
     }
 
     public Pet(String name, Species species, Breed breed){
         this.name = name;
         this.species = species;
-        this.breeds =new ArrayList<Breed>();
-        this.breeds.add(breed);
+        this.breed = breed;
+        this.breedId = breed.getId();
         this.notes = "THIS IS A REALLY LONG NOTE PROVIDING ADDITION NEWS ABOUT THE PET";
         /*
         Color color1 = new Color("Brown");
@@ -132,17 +127,13 @@ public class Pet implements Serializable {
         this.name = name;
     }
 
-    public ArrayList<Breed> getBreeds() {
-        return breeds;
+    public Breed getBreed() {
+        return breed;
     }
 
-    public void setBreeds(ArrayList<Breed> breeds) {
-        this.breeds = breeds;
-        int[] breedIds = new int[this.breeds.size()];
-        for(int i = 0; i < this.breeds.size(); i++){
-            breedIds[i] = this.breeds.get(i).getId();
-
-        }
+    public void setBreed(Breed breed) {
+        this.breed = breed;
+        this.breedId = breed.getId();
     }
 
 
@@ -241,11 +232,11 @@ public class Pet implements Serializable {
         this.speciesId = speciesId;
     }
 
-    public int[] getBreedIds() {
-        return breedIds;
+    public int getBreedId() {
+        return breedId;
     }
 
-    public void setBreedIds(int[] breedIds) {
-        this.breedIds = breedIds;
+    public void setBreedId(int breedId) {
+        this.breedId = breedId;
     }
 }

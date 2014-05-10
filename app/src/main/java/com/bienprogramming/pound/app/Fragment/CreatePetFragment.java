@@ -272,7 +272,7 @@ public class CreatePetFragment extends Fragment {
                 pet.setSpecies((Species)attribute);
                 break;
             case FIELD_BREED:
-                //pet.setBreeds((Breed)attribute);
+                pet.setBreed((Breed)attribute);
                 break;
 
         }
@@ -515,14 +515,14 @@ public class CreatePetFragment extends Fragment {
                 }
             });
         }
-        if(pet.getBreeds()!=null) {
+        if(pet.getBreed()!=null) {
             breedEditText = ((EditText) getView().findViewById(R.id.create_pet_breed));
             breedEditText.post(new Runnable() {
 
                 @Override
                 public void run() {
-                    Log.d("Success",pet.getBreeds().toString());
-                    breedEditText.setText(pet.getBreeds().toString());
+
+                    breedEditText.setText(pet.getBreed().toString());
                 }
             });
         }
