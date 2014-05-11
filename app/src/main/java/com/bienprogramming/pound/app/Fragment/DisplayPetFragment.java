@@ -90,7 +90,7 @@ public class DisplayPetFragment extends android.app.Fragment {
             if(petLocationList.size()>0)
                     pet.setPetLocation(petLocationList.get(0));
 
-
+            //FETCH SPECIES AND BREED FROM DB KKKKKKKKKKK
             List<PetColor> petColorList = petColorDao.queryForEq("petId",petId);
             ArrayList<Color> colorArrayList = new ArrayList<Color>();
             for(PetColor petColor : petColorList){
@@ -98,6 +98,7 @@ public class DisplayPetFragment extends android.app.Fragment {
 
             }
             pet.setColours(colorArrayList);
+            if(pet.getName()!=null)
             getActivity().getActionBar().setTitle(pet.getName());
             ImageView petImage = (ImageView) rootView.findViewById(R.id.displayPetImage);
             TextView breedView = (TextView) rootView.findViewById(R.id.displayBreed);

@@ -13,6 +13,7 @@ import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -48,6 +49,8 @@ public class Pet implements Serializable {
     @DatabaseField
     @Expose private boolean lost;
 
+    @DatabaseField (dataType = DataType.SERIALIZABLE)
+    @Expose private ArrayList<Integer> colorIds;
     @Expose private ArrayList<Color> colours;
     @DatabaseField(foreign = true)
     @Expose private PetLocation petLocation;
@@ -239,4 +242,14 @@ public class Pet implements Serializable {
     public void setBreedId(int breedId) {
         this.breedId = breedId;
     }
+
+
+    public ArrayList<Integer> getColorIds() {
+        return colorIds;
+    }
+
+    public void setColorIds(ArrayList<Integer> colorIds) {
+        this.colorIds = colorIds;
+    }
+
 }

@@ -230,7 +230,11 @@ public class CreatePetFragment extends Fragment {
                 pet.setReward(Double.parseDouble(rewardEditText.getText().toString()));
                 pet.setNotes(notesEditText.getText().toString());
                 pet.setContactName(contactNameEditText.getText().toString());
-
+               ArrayList<Integer> colors = new ArrayList<Integer>();
+                for(Color color : pet.getColours()){
+                    colors.add(color.getId());
+                }
+                pet.setColorIds(colors);
 
                 //Upload to server
                 new UploadPetTask().execute(pet);
@@ -475,15 +479,17 @@ public class CreatePetFragment extends Fragment {
                 pet.getPetLocation().setPetId(pet.getId());
 
                 petlocationDao.create(pet.getPetLocation());
-
+                ArrayList<Integer> colors = new ArrayList<Integer>();
                 for(Color color : pet.getColours()){
                     if(color.getId() == null) {
                         colorDao.create(color);
                     }
+                    colors.add(color.getId());
 
                     PetColor petColor = new PetColor(pet,color);
                     petColorDao.create(petColor);
                 }
+                pet.setColorIds(colors);
                 return response.toString();
 
             }catch (Exception e){
