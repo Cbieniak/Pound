@@ -32,7 +32,9 @@ import com.bienprogramming.pound.app.POJO.Species;
 import com.bienprogramming.pound.app.R;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.j256.ormlite.dao.Dao;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -265,16 +267,29 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                 Gson responseGSon = new GsonBuilder().create();
 
                 Pet[] pets = responseGSon.fromJson(result,Pet[].class);
+                Dao<Pet, Integer> petDao =  OpenHelperManager.getHelper(getBaseContext(), DBHelper.class).getPetDao();
 
                 for(Pet pet : pets)
                 {
-                    Log.d("pet",pet.toString());
+                    //If temp image get temp image
+                    if(petDao.queryForId(pet.getId())== null)
+                    {
+                        petDao.createOrUpdate(pet);
+                    }
+
+
                 }
 
             }catch (Exception e){
                 Log.d("JSONRESULT", e.toString());
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+
         }
     }
 

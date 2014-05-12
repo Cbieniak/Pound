@@ -241,15 +241,30 @@ public class AttributeListFragment extends Fragment implements AbsListView.OnIte
                 switch (field){
                     case FIELD_SPECIES:
                         Species[] speciesArray = gson.fromJson(result,Species[].class);
+                        Dao<Species, Integer> speciesDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getSpeciesDao();
+                        for(Species species : speciesArray){
+                            speciesDao.createOrUpdate(species);
+                        }
+                        items = speciesDao.queryForAll();
+
+
                         mAdapter = new ArrayAdapter<Species>(getActivity(),
-                                android.R.layout.simple_list_item_1, android.R.id.text1, speciesArray);
+                                android.R.layout.simple_list_item_1, android.R.id.text1,(List<Species>) items);
+
 
                         break;
                     case FIELD_BREED:
                         Breed[] breedArray = gson.fromJson(result,Breed[].class);
+                        Dao<Breed, Integer> breedDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getBreedDao();
+
+                        for(Breed breed : breedArray){
+                            breedDao.createOrUpdate(breed);
+                        }
+                        items = breedDao.queryForAll();
+
 
                         mAdapter = new ArrayAdapter<Breed>(getActivity(),
-                                android.R.layout.simple_list_item_1, android.R.id.text1, breedArray);
+                                android.R.layout.simple_list_item_1, android.R.id.text1,(List<Breed>) items);
 
                         break;
                 }

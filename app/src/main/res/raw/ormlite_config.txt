@@ -1,5 +1,5 @@
 #
-# generated on 2014/05/10 06:39:25
+# generated on 2014/05/12 11:27:33
 #
 # --table-start--
 dataClass=com.bienprogramming.pound.app.POJO.ContactDetail
@@ -28,6 +28,7 @@ tableName=pet
 # --field-start--
 fieldName=id
 generatedId=true
+allowGeneratedIdInsert=true
 # --field-end--
 # --field-start--
 fieldName=imageUrl
@@ -41,6 +42,9 @@ fieldName=name
 # --field-end--
 # --field-start--
 fieldName=speciesId
+# --field-end--
+# --field-start--
+fieldName=breedId
 # --field-end--
 # --field-start--
 fieldName=reward
@@ -59,6 +63,10 @@ fieldName=contactType
 # --field-end--
 # --field-start--
 fieldName=lost
+# --field-end--
+# --field-start--
+fieldName=colorIds
+dataPersister=SERIALIZABLE
 # --field-end--
 # --field-start--
 fieldName=petLocation

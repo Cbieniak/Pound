@@ -29,6 +29,7 @@ public class Breed {
 
     public void setBreed(String breed) {
         this.name = breed;
+
     }
 
     public int getSpeciesId() {

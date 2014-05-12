@@ -170,6 +170,7 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
                 Collections.sort(pets,DISTANCE_ORDER);
 
                 ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
+                ((AdapterView<ListAdapter>) mListView).invalidate();
             }
         });
 

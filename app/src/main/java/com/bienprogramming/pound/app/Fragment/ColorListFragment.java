@@ -23,9 +23,12 @@ import android.widget.ListView;
 import com.bienprogramming.pound.app.ColorAdapter;
 import com.bienprogramming.pound.app.POJO.Breed;
 import com.bienprogramming.pound.app.POJO.Color;
+import com.bienprogramming.pound.app.POJO.DBHelper;
 import com.bienprogramming.pound.app.POJO.Species;
 import com.bienprogramming.pound.app.R;
 import com.google.gson.Gson;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -45,7 +48,7 @@ import java.util.List;
  * A fragment representing a list of Items.
  * interface.
  */
-public class ColorListFragment extends Fragment implements AbsListView.OnItemClickListener{
+public class ColorListFragment extends Fragment implements AbsListView.OnItemClickListener {
 
     private ArrayList<Color> chosenColors;
     private ArrayList<Color> colors;
@@ -82,14 +85,14 @@ public class ColorListFragment extends Fragment implements AbsListView.OnItemCli
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         chosenColors = new ArrayList<Color>();
-
-        Color newColor = new Color("White","#FF1111");
-        Color color1 = new Color("orange","#111111");
         colors = new ArrayList<Color>();
-        colors.add(newColor);
-        colors.add(color1);
         selectedViews = new ArrayList<View>();
-        new GetColorsTask().execute(getString(R.string.server_base_address)+"/colors.json");
+        new GetColorsTask().execute(getString(R.string.server_base_address) + "/colors.json");
+        try {
+            Dao<Color, Integer> colorDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getColorDao();
+            colors = (ArrayList<Color>)colorDao.queryForAll();
+
+        }catch (Exception e){}
 
 
     }
@@ -106,7 +109,7 @@ public class ColorListFragment extends Fragment implements AbsListView.OnItemCli
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
 
-        colorAdapter = new ColorAdapter(getActivity().getApplicationContext(),R.layout.color_row,colors);
+        colorAdapter = new ColorAdapter(getActivity().getApplicationContext(), R.layout.color_row, colors);
         mListView.setAdapter(colorAdapter);
         mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
@@ -115,19 +118,19 @@ public class ColorListFragment extends Fragment implements AbsListView.OnItemCli
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        if(item.getItemId() == R.id.action_save_list)
-        mListener.colorsChosen(CreatePetFragment.Field.FIELD_COLOR,chosenColors);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_save_list)
+            mListener.colorsChosen(CreatePetFragment.Field.FIELD_COLOR, chosenColors);
 
         return true;
     }
+
     @Override
-    public void onCreateOptionsMenu(Menu menu,MenuInflater inflater)
-    {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.list_menu,menu);
+        inflater.inflate(R.menu.list_menu, menu);
     }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -135,7 +138,7 @@ public class ColorListFragment extends Fragment implements AbsListView.OnItemCli
             mListener = (OnColorsChosenListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                + " must implement OnFragmentInteractionListener");
+                    + " must implement OnFragmentInteractionListener");
         }
     }
 
@@ -146,19 +149,16 @@ public class ColorListFragment extends Fragment implements AbsListView.OnItemCli
     }
 
 
-
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-            // Notify the active callbacks interface (the activity, if the
-            // fragment is attached to one) that an item has been selected.
+        // Notify the active callbacks interface (the activity, if the
+        // fragment is attached to one) that an item has been selected.
         //mListView.setItemChecked(position,true);
-        if(chosenColors.contains(colorAdapter.getItem(position)))
-        {
+        if (chosenColors.contains(colorAdapter.getItem(position))) {
             selectedViews.remove(view);
             chosenColors.remove(colorAdapter.getItem(position));
-        }else {
+        } else {
             selectedViews.add(view);
             chosenColors.add(colorAdapter.getItem(position));
         }
@@ -170,26 +170,26 @@ public class ColorListFragment extends Fragment implements AbsListView.OnItemCli
 
 
     /**
-    * This interface must be implemented by activities that contain this
-    * fragment to allow an interaction in this fragment to be communicated
-    * to the activity and potentially other fragments contained in that
-    * activity.
-    * <p>
-    * See the Android Training lesson <a href=
-    * "http://developer.android.com/training/basics/fragments/communicating.html"
-    * >Communicating with Other Fragments</a> for more information.
-    */
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
     public interface OnColorsChosenListener {
         // TODO: Update argument type and name
-        public void colorsChosen(CreatePetFragment.Field field,ArrayList<Color> colors);
+        public void colorsChosen(CreatePetFragment.Field field, ArrayList<Color> colors);
     }
 
-    private class GetColorsTask extends AsyncTask<String, Integer , String>
-    {
+    private class GetColorsTask extends AsyncTask<String, Integer, String> {
         int TIMEOUT_MILLISEC = 10000;
+
         @Override
         protected String doInBackground(String... urls) {
-            try{
+            try {
                 String result;
 
                 InputStream is = null;
@@ -203,7 +203,7 @@ public class ColorListFragment extends Fragment implements AbsListView.OnItemCli
                 request.setHeader("Content-type", "application/json");
                 HttpResponse response = client.execute(request);
 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),"utf-8"),8);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "utf-8"), 8);
                 StringBuilder sb = new StringBuilder();
                 String line = null;
                 while ((line = reader.readLine()) != null) {
@@ -215,12 +215,16 @@ public class ColorListFragment extends Fragment implements AbsListView.OnItemCli
 
                 Gson gson = new Gson();
 
-                        Color[] colorArray = gson.fromJson(result,Color[].class);
-                        colorAdapter = new ColorAdapter(getActivity().getApplicationContext(),R.layout.color_row,colorArray);
+                Color[] colorArray = gson.fromJson(result, Color[].class);
+                Dao<Color, Integer> colorDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getColorDao();
+                for (Color color : colorArray) {
+                    colorDao.createOrUpdate(color);
+                }
+                colors = (ArrayList<Color>)colorDao.queryForAll();
+                colorAdapter = new ColorAdapter(getActivity().getApplicationContext(), R.layout.color_row, colors);
 
 
-
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.d("JSONRESULT", e.toString());
             }
             return null;
@@ -236,12 +240,10 @@ public class ColorListFragment extends Fragment implements AbsListView.OnItemCli
 
     }
 
-    private void setSelectedViews()
-    {
-        for(View view :selectedViews)
-        {
-            if(!view.isSelected())
-            view.setSelected(true);
+    private void setSelectedViews() {
+        for (View view : selectedViews) {
+            if (!view.isSelected())
+                view.setSelected(true);
 
         }
     }

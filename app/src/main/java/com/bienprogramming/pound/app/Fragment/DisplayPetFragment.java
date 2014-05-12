@@ -15,11 +15,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bienprogramming.pound.app.POJO.Breed;
 import com.bienprogramming.pound.app.POJO.Color;
 import com.bienprogramming.pound.app.POJO.DBHelper;
 import com.bienprogramming.pound.app.POJO.Pet;
 import com.bienprogramming.pound.app.POJO.PetColor;
 import com.bienprogramming.pound.app.POJO.PetLocation;
+import com.bienprogramming.pound.app.POJO.Species;
 import com.bienprogramming.pound.app.R;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
@@ -85,12 +87,18 @@ public class DisplayPetFragment extends android.app.Fragment {
             Dao<Color, Integer> colorDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getColorDao();
             Dao<PetColor, Integer> petColorDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetColorDao();
             Dao<PetLocation, Integer> petLocationDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetLocationDao();
+            Dao<Species, Integer> speciesDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getSpeciesDao();
+            Dao<Breed, Integer> breedDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getBreedDao();
             pet = petDao.queryForId(petId);
+            Species species = speciesDao.queryForId(pet.getSpeciesId());
+            List<Breed> breedList = breedDao.queryForAll();
+            Breed breed = breedDao.queryForId(pet.getBreedId());
+            pet.setSpecies(species);
+            pet.setBreed(breed);
             List<PetLocation> petLocationList = petLocationDao.queryForEq("petId",petId);
             if(petLocationList.size()>0)
                     pet.setPetLocation(petLocationList.get(0));
 
-            //FETCH SPECIES AND BREED FROM DB KKKKKKKKKKK
             List<PetColor> petColorList = petColorDao.queryForEq("petId",petId);
             ArrayList<Color> colorArrayList = new ArrayList<Color>();
             for(PetColor petColor : petColorList){
@@ -135,7 +143,7 @@ public class DisplayPetFragment extends android.app.Fragment {
 
         } catch (Exception e){
 
-            Log.d("TAG",e.getMessage());
+
         }
 
 

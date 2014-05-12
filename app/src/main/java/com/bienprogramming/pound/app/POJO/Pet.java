@@ -23,7 +23,7 @@ import java.util.ArrayList;
 @DatabaseTable
 public class Pet implements Serializable {
     //Pet
-    @DatabaseField(generatedId = true)
+    @DatabaseField(generatedId = true,allowGeneratedIdInsert=true )
     private int id;
     @DatabaseField(index = true)
     @Expose private String imageUrl;
@@ -35,6 +35,7 @@ public class Pet implements Serializable {
     @DatabaseField
     @Expose private int speciesId;
     private Breed breed;
+    @DatabaseField
     @Expose private int breedId;
     @DatabaseField
     @Expose private double reward;
