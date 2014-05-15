@@ -1,6 +1,7 @@
 package com.bienprogramming.pound.app.Activity;
 
 import android.app.ActionBar;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.net.Uri;
@@ -288,7 +289,9 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
 
         @Override
         protected void onPostExecute(String result) {
-
+            //Use TAG?
+            Fragment fragment = getFragmentManager().findFragmentById(R.layout.fragment_main);
+            getFragmentManager().beginTransaction().detach(fragment).attach(fragment).commit();
 
         }
     }
