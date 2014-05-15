@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.renderscript.Element;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
@@ -26,35 +27,35 @@ public class Pet implements Serializable {
     @DatabaseField(generatedId = true,allowGeneratedIdInsert=true )
     private int id;
     @DatabaseField(index = true)
-    @Expose private String imageUrl;
+    @SerializedName("image_url") @Expose  private String imageUrl;
     @DatabaseField
     @Expose private String thumbURL;
     @DatabaseField
     @Expose private String name;
     private Species species;
     @DatabaseField
-    @Expose private int speciesId;
+    @SerializedName("species_id")@Expose private int speciesId;
     private Breed breed;
     @DatabaseField
-    @Expose private int breedId;
+    @SerializedName("breed_id")@Expose private int breedId;
     @DatabaseField
     @Expose private double reward;
     @DatabaseField
     @Expose private String notes;
     @DatabaseField
-    @Expose private String contactName;
+    @SerializedName("contact_name")@Expose private String contactName;
     @DatabaseField
-    @Expose private String contactDetail;
+    @SerializedName("contact_detail")@Expose private String contactDetail;
     @DatabaseField
-    @Expose private int contactType;
+    @SerializedName("contact_type")@Expose private int contactType;
     @DatabaseField
     @Expose private boolean lost;
 
     @DatabaseField (dataType = DataType.SERIALIZABLE)
-    @Expose private ArrayList<Integer> colorIds;
-    @Expose private ArrayList<Color> colours;
+    @SerializedName("color_ids")@Expose private ArrayList<Integer> colorIds;
+    @SerializedName("colors")@Expose private ArrayList<Color> colours;
     @DatabaseField(foreign = true)
-    @Expose private PetLocation petLocation;
+    @SerializedName("pet_location")@Expose private PetLocation petLocation;
 
 
     @DatabaseField(dataType = DataType.BYTE_ARRAY)

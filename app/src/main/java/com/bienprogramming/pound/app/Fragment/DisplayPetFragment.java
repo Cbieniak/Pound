@@ -105,6 +105,10 @@ public class DisplayPetFragment extends android.app.Fragment {
                  colorArrayList.add(colorDao.queryForId(petColor.getColorId()));
 
             }
+//            for(int id : pet.getColorIds())
+//            {
+//                colorArrayList.add(colorDao.queryForId(id));
+//            }
             pet.setColours(colorArrayList);
             if(pet.getName()!=null)
             getActivity().getActionBar().setTitle(pet.getName());

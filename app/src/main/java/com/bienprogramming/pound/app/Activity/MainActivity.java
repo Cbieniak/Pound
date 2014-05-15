@@ -26,9 +26,12 @@ import com.bienprogramming.pound.app.Fragment.MainFragment;
 import com.bienprogramming.pound.app.Fragment.NavigationDrawerFragment;
 import com.bienprogramming.pound.app.Fragment.PetFragment;
 import com.bienprogramming.pound.app.POJO.Breed;
+import com.bienprogramming.pound.app.POJO.Color;
 import com.bienprogramming.pound.app.POJO.DBHelper;
 import com.bienprogramming.pound.app.POJO.Filter;
 import com.bienprogramming.pound.app.POJO.Pet;
+import com.bienprogramming.pound.app.POJO.PetColor;
+import com.bienprogramming.pound.app.POJO.PetLocation;
 import com.bienprogramming.pound.app.POJO.Species;
 import com.bienprogramming.pound.app.R;
 import com.google.gson.Gson;
@@ -268,7 +271,14 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                 Gson responseGSon = new GsonBuilder().create();
 
                 Pet[] pets = responseGSon.fromJson(result,Pet[].class);
+
                 Dao<Pet, Integer> petDao =  OpenHelperManager.getHelper(getBaseContext(), DBHelper.class).getPetDao();
+                Dao<PetLocation, Integer> petlocationDao = OpenHelperManager.getHelper(getBaseContext(), DBHelper.class).getPetLocationDao();
+                Dao<Color, Integer> colorDao =  OpenHelperManager.getHelper(getApplicationContext(), DBHelper.class).getColorDao();
+                Dao<PetColor, Integer> petColorDao =  OpenHelperManager.getHelper(getApplicationContext(), DBHelper.class).getPetColorDao();
+                Dao<Breed, Integer> breedDao =  OpenHelperManager.getHelper(getApplicationContext(), DBHelper.class).getBreedDao();
+                Dao<Species, Integer> speciesDao =  OpenHelperManager.getHelper(getApplicationContext(), DBHelper.class).getSpeciesDao();
+
 
                 for(Pet pet : pets)
                 {
@@ -277,7 +287,28 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                     {
                         petDao.createOrUpdate(pet);
                     }
+                    if(pet.getPetLocation() != null)
+                    {
+                        petlocationDao.createOrUpdate(pet.getPetLocation());
+                    }
 
+                    //Pet color creates a new color. going to have to search by pet color to see if it exists
+                    //Possibly using query builder. "Pet_id" eq and "Color_id" eq
+                    for(Color color : pet.getColours()){
+                        colorDao.createOrUpdate(color);
+                        PetColor petColor = new PetColor(pet,color);
+                        petColorDao.create(petColor);
+                    }
+
+                    if(pet.getSpecies() != null)
+                    {
+                        speciesDao.createOrUpdate(pet.getSpecies());
+                    }
+
+                    if(pet.getBreed() != null)
+                    {
+                        breedDao.createOrUpdate(pet.getBreed());
+                    }
 
                 }
 
@@ -290,8 +321,8 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
         @Override
         protected void onPostExecute(String result) {
             //Use TAG?
-            Fragment fragment = getFragmentManager().findFragmentById(R.layout.fragment_main);
-            getFragmentManager().beginTransaction().detach(fragment).attach(fragment).commit();
+            //Fragment fragment = getFragmentManager().findFragmentById(R.layout.fragment_main);
+            //getFragmentManager().beginTransaction().detach(fragment).attach(fragment).commit();
 
         }
     }

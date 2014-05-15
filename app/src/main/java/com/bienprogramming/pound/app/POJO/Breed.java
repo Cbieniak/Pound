@@ -7,7 +7,7 @@ import com.j256.ormlite.field.DatabaseField;
  * Created by Christian on 4/05/2014.
  */
 public class Breed {
-    @DatabaseField(generatedId = true)
+    @DatabaseField(generatedId = true,allowGeneratedIdInsert=true )
     @Expose private Integer id;
     @DatabaseField
     @Expose  private String name;

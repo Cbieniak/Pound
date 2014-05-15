@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 @DatabaseTable
 public class Color implements Serializable{
-    @DatabaseField(generatedId = true)
+    @DatabaseField(generatedId = true,allowGeneratedIdInsert=true )
     @Expose private Integer id;
     @DatabaseField
     @Expose  private String name;

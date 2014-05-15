@@ -163,7 +163,6 @@ public class MainFragment extends android.app.Fragment {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         mainLayout.setLayoutParams(mllp);
-        Collections.reverse(pets);
         for (Pet pet : pets) {
             final int id = pet.getId();
             //create layout
