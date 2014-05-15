@@ -31,6 +31,7 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.bienprogramming.pound.app.R.id.foundPetsScrollView;
@@ -137,7 +138,7 @@ public class MainFragment extends android.app.Fragment {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         mainLayout.setLayoutParams(mllp);
-
+        Collections.reverse(pets);
         for (Pet pet : pets) {
             final int id = pet.getId();
             //create layout
