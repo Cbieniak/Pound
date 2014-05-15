@@ -19,6 +19,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bienprogramming.pound.app.Activity.MainActivity;
 import com.bienprogramming.pound.app.POJO.Breed;
@@ -29,7 +30,13 @@ import com.bienprogramming.pound.app.POJO.Species;
 import com.bienprogramming.pound.app.R;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.QueryBuilder;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -98,8 +105,15 @@ public class MainFragment extends android.app.Fragment {
         try {
             Dao<Pet, Integer> petDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetDao();
             //List<Pet> pets = petDao.queryForAll();
-
-            new FillPetTask().execute(petDao.queryForEq("lost",true),petDao.queryForEq("lost",false));
+            QueryBuilder<Pet, Integer> lostPetQueryBuilder = petDao.queryBuilder();
+            lostPetQueryBuilder.orderBy("id",false);
+            lostPetQueryBuilder.where().eq("lost",true);
+            lostPetQueryBuilder.limit((long) 10);
+            QueryBuilder<Pet, Integer> foundPetQueryBuilder = petDao.queryBuilder();
+            foundPetQueryBuilder.orderBy("id",false);
+            foundPetQueryBuilder.where().eq("lost", false);
+            foundPetQueryBuilder.limit((long)10);
+            new FillPetTask().execute(lostPetQueryBuilder.query(),foundPetQueryBuilder.query());
         } catch(Exception e){
             Log.d("MAD EXCEPTIONS",e.getLocalizedMessage());
         }
@@ -115,10 +129,21 @@ public class MainFragment extends android.app.Fragment {
         @Override
         protected ArrayList<LinearLayout> doInBackground(List<Pet>... pets) {
             ArrayList<LinearLayout> resultArrayList = new ArrayList<LinearLayout>();
+            for(Pet pet:pets[0])
+            {
+
+            }
             resultArrayList.add(fillPets(pets[0]));
             resultArrayList.add(fillPets(pets[1]));
             return resultArrayList;
         }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            Toast.makeText(getActivity().getApplicationContext(),"Updating Pets",Toast.LENGTH_SHORT);
+
+        }
+
         @Override
         protected void onPostExecute(ArrayList<LinearLayout> result) {
             lostPets.addView(result.get(0));
@@ -151,7 +176,6 @@ public class MainFragment extends android.app.Fragment {
             layout.setPadding(20, 20, 20, 20);
 
             ImageView imageView = new ImageView(this.getActivity().getApplicationContext());
-            //Download image set placeholder
             imageView.setAdjustViewBounds(true);
             LinearLayout.LayoutParams ilp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -159,12 +183,41 @@ public class MainFragment extends android.app.Fragment {
             imageView.setLayoutParams(ilp);
             imageView.setPadding(5,5,5,5);
             imageView.setBackgroundColor(getResources().getColor(R.color.highlight));
-
-            if(pet.getImageBlob() != null) {
-                Bitmap bmp = BitmapFactory.decodeByteArray(pet.getImageBlob(), 0, pet.getImageBlob().length);
+            if (pet.getImageBlob() == null && pet.getImageUrl() != null)
+            {
+                //Download the image.
+                InputStream in = null;
+                Bitmap bmp = null;
+                int responseCode = -1;
                 try{
 
-                }catch (Exception e){Log.d("THE ERROR MAN",e.getLocalizedMessage());}
+                    URL url = new URL(getString(R.string.server_base_address)+pet.getImageUrl());
+                    HttpURLConnection con = (HttpURLConnection)url.openConnection();
+                    con.setDoInput(true);
+                    con.connect();
+                    responseCode = con.getResponseCode();
+                    if(responseCode == HttpURLConnection.HTTP_OK)
+                    {
+                        //download
+                        in = con.getInputStream();
+                        pet.setImageBlob(getBytes(in));
+                        in.close();
+                    }
+                    Dao<Pet, Integer> petDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetDao();
+                    petDao.update(pet);
+
+                }
+                catch(Exception ex){
+                    Log.e("Exception",ex.toString());
+                }
+            }
+            if(pet.getImageBlob() != null) {
+                Bitmap bmp = BitmapFactory.decodeByteArray(pet.getImageBlob(), 0, pet.getImageBlob().length);
+                try {
+
+                } catch (Exception e) {
+                    Log.d("THE ERROR MAN", e.getLocalizedMessage());
+                }
 
                 //imageView.setImageBitmap(ThumbnailUtils.extractThumbnail(bmp, imageView.getWidth(), imageView.getHeight()));
                 //imageView.setImageResource(R.drawable.paw_print);
@@ -172,8 +225,7 @@ public class MainFragment extends android.app.Fragment {
 
                 imageView.setImageBitmap(bmp);
                 imageView.setImageBitmap(ThumbnailUtils.extractThumbnail(bmp, 450, 300));
-
-            }else {
+            } else {
                 imageView.setImageResource(R.drawable.paw_print);
                 layout.addView(imageView);
             }
@@ -212,7 +264,19 @@ public class MainFragment extends android.app.Fragment {
 
 
     }
-    //Download images
+
+
+    public byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
+    }
 }
 
 

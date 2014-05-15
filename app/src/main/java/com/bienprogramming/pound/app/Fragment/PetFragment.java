@@ -162,7 +162,6 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
 
                         double pet1Dist = distFrom (currentLocation.getLatitude(), currentLocation.getLongitude(), pet1.getPetLocation().getLatitude(), pet1.getPetLocation().getLongitude() );
                         double pet2Dist = distFrom (currentLocation.getLatitude(), currentLocation.getLongitude(), pet2.getPetLocation().getLatitude(), pet2.getPetLocation().getLongitude() );
-                        Log.d("pet1dis"+pet1Dist,"pet2dis"+pet2Dist);
                         return  (int)(pet1Dist-pet2Dist);
 
 
@@ -171,6 +170,7 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
                 Collections.sort(pets,DISTANCE_ORDER);
 
                 ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
+                ((AdapterView<ListAdapter>) mListView).invalidate();
             }
         });
 
