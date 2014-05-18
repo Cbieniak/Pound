@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/lostAPet"
-            android:background="@drawable/button_background"
+            android:background="?button_background_drawable"
             android:layout_marginRight="5dp"/>
 
         <Button
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/foundAPet"
-            android:background="@drawable/button_background"/>
+            android:background="?button_background_drawable" />
     </LinearLayout>
 
     <TextView

@@ -11,14 +11,15 @@
         android:layout_margin="@dimen/mediumPadding"
         android:orientation="vertical"
         android:layout_weight="1"
-        android:background="?raised_color">
+        android:background="?raised_color"
+        android:padding="@dimen/mediumPadding">
+
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="20dp"
             android:text="@string/settings_settings"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            />
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -34,7 +35,7 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_weight=".2"
+                android:layout_weight=".4"
                 android:orientation="vertical">
 
 
@@ -42,25 +43,28 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Large Text"
+                    android:text="@string/settings_location"
                     android:layout_weight="1"
-                    android:id="@+id/textView3" />
+                    android:id="@+id/textView3"
+                    android:gravity="center_vertical" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Large Text"
+                    android:text="@string/settings_push"
                     android:layout_weight="1"
-                    android:id="@+id/textView2" />
+                    android:id="@+id/textView2"
+                    android:gravity="center_vertical" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Large Text"
+                    android:text="@string/settings_data"
                     android:layout_weight="1"
-                    android:id="@+id/textView" />
+                    android:id="@+id/textView"
+                    android:gravity="center_vertical" />
             </LinearLayout>
 
             <LinearLayout
@@ -75,26 +79,29 @@
                     android:layout_height="wrap_content"
                     android:text="New Switch"
                     android:layout_weight="1"
-                    android:id="@+id/switch1" />
+                    android:id="@+id/switch_location"
+                    android:checked="true" />
 
                 <Switch
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="New Switch"
                     android:layout_weight="1"
-                    android:id="@+id/switch2" />
+                    android:id="@+id/switch_push"
+                    android:checked="true" />
 
                 <Switch
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="New Switch"
                     android:layout_weight="1"
-                    android:id="@+id/switch3" />
-            </LinearLayout>
-
+                    android:id="@+id/switch_data"
+                    android:checked="true" />
             </LinearLayout>
 
         </LinearLayout>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -102,19 +109,65 @@
         android:layout_weight="1"
         android:layout_margin="@dimen/mediumPadding"
         android:orientation="vertical"
-        android:background="?raised_color">
+        android:background="?raised_color"
+        android:padding="@dimen/mediumPadding">
+
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="20dp"
             android:text="@string/settings_themes"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            />
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:background="?highlight_color" />
+
+        <RadioGroup
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:padding="@dimen/mediumPadding">
+
+            <RadioButton
+                android:id="@+id/radioFrog"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/themes_frog"
+                android:checked="true" />
+
+            <RadioButton
+                android:id="@+id/radioGreen"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/themes_green"
+                android:checked="false" />
+
+
+            <RadioButton
+                android:id="@+id/radioPolar"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/themes_polar"
+                android:checked="false" />
+
+
+            <RadioButton
+                android:id="@+id/radioRed"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/themes_red"
+                android:checked="false" />
+
+
+            <RadioButton
+                android:id="@+id/radioPurple"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/themes_purple"
+                android:checked="false" />
+
+        </RadioGroup>
 
     </LinearLayout>
 

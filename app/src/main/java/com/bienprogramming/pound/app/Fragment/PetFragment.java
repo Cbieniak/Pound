@@ -3,12 +3,14 @@ package com.bienprogramming.pound.app.Fragment;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,10 +40,10 @@ import java.util.logging.Filter;
 
 /**
  * A fragment representing a list of Items.
- * <p />
+ * <p/>
  * Large screen devices (such as tablets) are supported by replacing the ListView
  * with a GridView.
- * <p />
+ * <p/>
  */
 public class PetFragment extends Fragment implements AbsListView.OnItemClickListener, LocationListener {
 
@@ -81,12 +83,13 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-    try {
-        Dao<Pet, Integer> petDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetDao();
-        pets = petDao.queryForAll();
-        mAdapter = new ArrayAdapter<Pet>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, pets);
-    }catch (Exception e){}
+        try {
+            Dao<Pet, Integer> petDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetDao();
+            pets = petDao.queryForAll();
+            mAdapter = new ArrayAdapter<Pet>(getActivity(),
+                    android.R.layout.simple_list_item_1, android.R.id.text1, pets);
+        } catch (Exception e) {
+        }
 
     }
 
@@ -101,38 +104,45 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
 
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
-        sortNameButton = (Button)  rootView.findViewById(R.id.list_button_name);
+        sortNameButton = (Button) rootView.findViewById(R.id.list_button_name);
         sortLocationButton = (Button) rootView.findViewById(R.id.list_button_location);
 
         //GET LOCATION
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
 
+        //Get Colours
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = getActivity().getTheme();
+        theme.resolveAttribute(R.attr.highlight_color, typedValue, true);
+        final int highlightColor = typedValue.data;
+        theme.resolveAttribute(R.attr.background_color, typedValue, true);
+        final int backgroundColor = typedValue.data;
 
         Comparator<Pet> ALPHABETICAL_ORDER = new Comparator<Pet>() {
             public int compare(Pet object1, Pet object2) {
-                if(object1.getName() == null)
+                if (object1.getName() == null)
                     object1.setName("");
-                if(object2.getName() == null)
+                if (object2.getName() == null)
                     object2.setName("");
                 return String.CASE_INSENSITIVE_ORDER.compare(object1.toString(), object2.toString());
 
             }
         };
-        Collections.sort(pets,ALPHABETICAL_ORDER);
+        Collections.sort(pets, ALPHABETICAL_ORDER);
 
         ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 
         sortNameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sortLocationButton.setBackgroundColor(getResources().getColor(R.color.highlight));
-                sortNameButton.setBackgroundColor(getResources().getColor(R.color.background));
+                sortLocationButton.setBackgroundColor(highlightColor);
+                sortNameButton.setBackgroundColor(backgroundColor);
                 Comparator<Pet> ALPHABETICAL_ORDER = new Comparator<Pet>() {
                     public int compare(Pet object1, Pet object2) {
-                        if(object1.getName() == null)
+                        if (object1.getName() == null)
                             object1.setName("");
-                        if(object2.getName() == null)
+                        if (object2.getName() == null)
                             object2.setName("");
 
 
@@ -140,7 +150,7 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
 
                     }
                 };
-                Collections.sort(pets,ALPHABETICAL_ORDER);
+                Collections.sort(pets, ALPHABETICAL_ORDER);
 
                 ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 
@@ -150,24 +160,24 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
         sortLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sortNameButton.setBackgroundColor(getResources().getColor(R.color.highlight));
-                sortLocationButton.setBackgroundColor(getResources().getColor(R.color.background));
+
+                sortNameButton.setBackgroundColor(highlightColor);
+                sortLocationButton.setBackgroundColor(backgroundColor);
 
                 Comparator<Pet> DISTANCE_ORDER = new Comparator<Pet>() {
                     public int compare(Pet pet1, Pet pet2) {
-                        if(pet1.getPetLocation() == null || pet2.getPetLocation() == null)
-                        {
+                        if (pet1.getPetLocation() == null || pet2.getPetLocation() == null) {
                             return 100000000;
                         }
 
-                        double pet1Dist = distFrom (currentLocation.getLatitude(), currentLocation.getLongitude(), pet1.getPetLocation().getLatitude(), pet1.getPetLocation().getLongitude() );
-                        double pet2Dist = distFrom (currentLocation.getLatitude(), currentLocation.getLongitude(), pet2.getPetLocation().getLatitude(), pet2.getPetLocation().getLongitude() );
-                        return  (int)(pet1Dist-pet2Dist);
+                        double pet1Dist = distFrom(currentLocation.getLatitude(), currentLocation.getLongitude(), pet1.getPetLocation().getLatitude(), pet1.getPetLocation().getLongitude());
+                        double pet2Dist = distFrom(currentLocation.getLatitude(), currentLocation.getLongitude(), pet2.getPetLocation().getLatitude(), pet2.getPetLocation().getLongitude());
+                        return (int) (pet1Dist - pet2Dist);
 
 
                     }
                 };
-                Collections.sort(pets,DISTANCE_ORDER);
+                Collections.sort(pets, DISTANCE_ORDER);
 
                 ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
                 ((AdapterView<ListAdapter>) mListView).invalidate();
@@ -178,15 +188,13 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu,MenuInflater inflater)
-    {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.pet_list_menu,menu);
+        inflater.inflate(R.menu.pet_list_menu, menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         //Filter
 
         return true;
@@ -199,7 +207,7 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
             mListener = (OnPetClickedListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                + " must implement OnPetClickedListener");
+                    + " must implement OnPetClickedListener");
         }
     }
 
@@ -253,77 +261,73 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
     }
 
     /**
-    * This interface must be implemented by activities that contain this
-    * fragment to allow an interaction in this fragment to be communicated
-    * to the activity and potentially other fragments contained in that
-    * activity.
-    * <p>
-    * See the Android Training lesson <a href=
-    * "http://developer.android.com/training/basics/fragments/communicating.html"
-    * >Communicating with Other Fragments</a> for more information.
-    */
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
     public interface OnPetClickedListener {
         // TODO: Update argument type and name
         public void OnPetClicked(int id);
     }
 
-    public void filterResults(com.bienprogramming.pound.app.POJO.Filter filter)
-    {
+    public void filterResults(com.bienprogramming.pound.app.POJO.Filter filter) {
         List<Pet> results = new ArrayList<Pet>();
         results.addAll(pets);
         for (Pet pet : pets) {
-            if(!filter(filter,pet))
+            if (!filter(filter, pet))
                 results.remove(pet);
         }
         pets = null;
         pets = results;
-        Log.d("PETSIZE",pets.size()+"");
+        Log.d("PETSIZE", pets.size() + "");
 
         ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
     }
 
-    public Boolean filter(com.bienprogramming.pound.app.POJO.Filter filter, Pet pet)
-    {
+    public Boolean filter(com.bienprogramming.pound.app.POJO.Filter filter, Pet pet) {
         if (filter.getSpecies() != null) {
-            if(filter.getSpecies().equals(pet.getSpecies())) return true;
+            if (filter.getSpecies().equals(pet.getSpecies())) return true;
         } else if (filter.getBreed() != null) {
-            if(filter.getBreed().equals(pet.getBreed())) return true;
+            if (filter.getBreed().equals(pet.getBreed())) return true;
         } else if (filter.getColours() != null) {
-            for(Color filterColor:filter.getColours())
-            {
-                for(Color petColor : pet.getColours())
-                {
-                    if(filterColor.getName().equals(petColor.getName()))
+            for (Color filterColor : filter.getColours()) {
+                for (Color petColor : pet.getColours()) {
+                    if (filterColor.getName().equals(petColor.getName()))
                         return true;
                 }
             }
         } else if (filter.getLocation() != null) {
-            if(filter.getLocation().toString().equals(pet.getPetLocation().toString())) return true;
+            if (filter.getLocation().toString().equals(pet.getPetLocation().toString()))
+                return true;
         } else if (filter.getRewards() != null) {
-            if(filter.getRewards().equals(pet.getReward())) return true;
+            if (filter.getRewards().equals(pet.getReward())) return true;
         } else if (filter.getNotes() != null) {
-            for(String note : filter.getNotes().split(" "))
-            {
-                for(String petNote : pet.getNotes().split(" "))
-                {
-                    if(note.equals(petNote)) return true;
+            for (String note : filter.getNotes().split(" ")) {
+                for (String petNote : pet.getNotes().split(" ")) {
+                    if (note.equals(petNote)) return true;
                 }
             }
-
 
 
         }
         return false;
     }
+
     //From http://stackoverflow.com/questions/5396286/sort-list-of-lon-lat-points-start-with-nearest
     static double distFrom(double fromLat, double fromLon, double toLat, double toLon) {
         double radius = 6378137;   // approximate Earth radius, *in meters*
         double deltaLat = toLat - fromLat;
         double deltaLon = toLon - fromLon;
-        double angle = 2 * Math.asin( Math.sqrt(
-                Math.pow(Math.sin(deltaLat/2), 2) +
+        double angle = 2 * Math.asin(Math.sqrt(
+                Math.pow(Math.sin(deltaLat / 2), 2) +
                         Math.cos(fromLat) * Math.cos(toLat) *
-                                Math.pow(Math.sin(deltaLon/2), 2) ) );
+                                Math.pow(Math.sin(deltaLon / 2), 2)
+        ));
         return radius * angle;
     }
 

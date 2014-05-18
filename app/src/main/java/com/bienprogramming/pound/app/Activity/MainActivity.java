@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
 import android.widget.Switch;
 
+import com.bienprogramming.pound.app.Fragment.AboutFragment;
 import com.bienprogramming.pound.app.Fragment.AttributeListFragment;
 import com.bienprogramming.pound.app.Fragment.ColorListFragment;
 import com.bienprogramming.pound.app.Fragment.ContactDetailFragment;
@@ -25,6 +26,7 @@ import com.bienprogramming.pound.app.Fragment.FilterFragment;
 import com.bienprogramming.pound.app.Fragment.MainFragment;
 import com.bienprogramming.pound.app.Fragment.NavigationDrawerFragment;
 import com.bienprogramming.pound.app.Fragment.PetFragment;
+import com.bienprogramming.pound.app.Fragment.SettingsFragment;
 import com.bienprogramming.pound.app.POJO.Breed;
 import com.bienprogramming.pound.app.POJO.Color;
 import com.bienprogramming.pound.app.POJO.DBHelper;
@@ -55,8 +57,8 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends OrmLiteBaseActivity<DBHelper>
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, CreatePetFragment.OnPetCreatedListener, AttributeListFragment.OnItemChosenListener,AttributeListFragment.OnItemsChosenListener,
-    ColorListFragment.OnColorsChosenListener, ContactDetailFragment.OnContactChosenListener, PetFragment.OnPetClickedListener, FilterFragment.OnFiltersChosenListener{
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, CreatePetFragment.OnPetCreatedListener, AttributeListFragment.OnItemChosenListener, AttributeListFragment.OnItemsChosenListener,
+        ColorListFragment.OnColorsChosenListener, ContactDetailFragment.OnContactChosenListener, PetFragment.OnPetClickedListener, FilterFragment.OnFiltersChosenListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -98,40 +100,44 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        switch(position)
-        {
+        switch (position) {
             case 0:
                 ft.replace(R.id.container, MainFragment.newInstance()).commit();
                 break;
             case 1:
                 searchFragment = PetFragment.newInstance();
-                ft.replace(R.id.container,searchFragment);
+                ft.replace(R.id.container, searchFragment);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
             case 2:
                 createdPet = CreatePetFragment.newInstance(false);
-                ft.replace(R.id.container,createdPet);
+                ft.replace(R.id.container, createdPet);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
             case 3:
-                createdPet= CreatePetFragment.newInstance(true);
-                ft.replace(R.id.container,createdPet);
+                createdPet = CreatePetFragment.newInstance(true);
+                ft.replace(R.id.container, createdPet);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
             case 4:
-                //ABout
+                Fragment aboutFragment = AboutFragment.newInstance();
+                ft.replace(R.id.container, aboutFragment);
+                ft.addToBackStack(null);
+                ft.commit();
                 break;
             case 5:
-               //Settings
+                Fragment settingsFragment = SettingsFragment.newInstance();
+                ft.replace(R.id.container, settingsFragment);
+                ft.addToBackStack(null);
+                ft.commit();
                 break;
         }
 
 
     }
-
 
 
     public void restoreActionBar() {
@@ -165,49 +171,49 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
-        } else if(item.getItemId() == R.id.action_search) {
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                PetFragment fragment = PetFragment.newInstance();
-                searchFragment = fragment;
-                ft.replace(R.id.container,fragment);
-                ft.addToBackStack(null);
-                ft.commit();
-                return true;
-            } else if(item.getItemId() == R.id.action_filter) {
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                FilterFragment fragment = FilterFragment.newInstance(0);
-                filterFragment = fragment;
-                ft.replace(R.id.container, fragment);
-                ft.addToBackStack(null);
-                ft.commit();
+        } else if (item.getItemId() == R.id.action_search) {
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            PetFragment fragment = PetFragment.newInstance();
+            searchFragment = fragment;
+            ft.replace(R.id.container, fragment);
+            ft.addToBackStack(null);
+            ft.commit();
+            return true;
+        } else if (item.getItemId() == R.id.action_filter) {
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            FilterFragment fragment = FilterFragment.newInstance(0);
+            filterFragment = fragment;
+            ft.replace(R.id.container, fragment);
+            ft.addToBackStack(null);
+            ft.commit();
 
         }
         return super.onOptionsItemSelected(item);
     }
-    public void setCreatedPet(CreatePetFragment fragment)
-    {
+
+    public void setCreatedPet(CreatePetFragment fragment) {
         createdPet = fragment;
         getMenuInflater().inflate(R.menu.create, menu);
     }
+
     @Override
     public void onPetCreated(int id) {
         createdPet = null;
     }
 
     @Override
-    public void onItemChosenListener(CreatePetFragment.Field field,Object item) {
-        if(createdPet != null)
+    public void onItemChosenListener(CreatePetFragment.Field field, Object item) {
+        if (createdPet != null)
             createdPet.updateField(field, item);
         else
-            filterFragment.updateField(field,item);
+            filterFragment.updateField(field, item);
     }
 
 
-
     @Override
-    public void colorsChosen(CreatePetFragment.Field field,ArrayList<com.bienprogramming.pound.app.POJO.Color> colors) {
-        if(createdPet !=null)
-            createdPet.updateField(field,colors);
+    public void colorsChosen(CreatePetFragment.Field field, ArrayList<com.bienprogramming.pound.app.POJO.Color> colors) {
+        if (createdPet != null)
+            createdPet.updateField(field, colors);
         else
             filterFragment.updateField(field, colors);
         getFragmentManager().popBackStack();
@@ -215,14 +221,14 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
 
     @Override
     public void onContactChosen(int type, String contactDetail) {
-        createdPet.updateField(CreatePetFragment.Field.FIELD_CONTACT_DETAIL,contactDetail,type);
+        createdPet.updateField(CreatePetFragment.Field.FIELD_CONTACT_DETAIL, contactDetail, type);
     }
 
     @Override
     public void OnPetClicked(int id) {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         DisplayPetFragment fragment = DisplayPetFragment.newInstance(id);
-        ft.replace(R.id.container,fragment);
+        ft.replace(R.id.container, fragment);
         ft.addToBackStack(null);
 
 
@@ -241,13 +247,13 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
 
     }
 
-    public class UpdatePetTasks extends AsyncTask<String,Integer,String>
-    {
+    public class UpdatePetTasks extends AsyncTask<String, Integer, String> {
         int TIMEOUT_MILLISEC = 10000;
+
         @Override
         protected String doInBackground(String... strings) {
 
-            try{
+            try {
                 String result;
 
                 InputStream is = null;
@@ -256,12 +262,12 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                 HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_MILLISEC);
                 HttpClient client = new DefaultHttpClient(httpParams);
 
-                HttpGet request = new HttpGet(getString(R.string.server_base_address)+"/pets.json");
+                HttpGet request = new HttpGet(getString(R.string.server_base_address) + "/pets.json");
                 request.setHeader("Accept", "application/json");
                 request.setHeader("Content-type", "application/json");
                 HttpResponse response = client.execute(request);
 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),"utf-8"),8);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "utf-8"), 8);
                 StringBuilder sb = new StringBuilder();
                 String line = null;
                 while ((line = reader.readLine()) != null) {
@@ -270,49 +276,44 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                 result = sb.toString();
                 Gson responseGSon = new GsonBuilder().create();
 
-                Pet[] pets = responseGSon.fromJson(result,Pet[].class);
+                Pet[] pets = responseGSon.fromJson(result, Pet[].class);
 
-                Dao<Pet, Integer> petDao =  OpenHelperManager.getHelper(getBaseContext(), DBHelper.class).getPetDao();
+                Dao<Pet, Integer> petDao = OpenHelperManager.getHelper(getBaseContext(), DBHelper.class).getPetDao();
                 Dao<PetLocation, Integer> petlocationDao = OpenHelperManager.getHelper(getBaseContext(), DBHelper.class).getPetLocationDao();
-                Dao<Color, Integer> colorDao =  OpenHelperManager.getHelper(getApplicationContext(), DBHelper.class).getColorDao();
-                Dao<PetColor, Integer> petColorDao =  OpenHelperManager.getHelper(getApplicationContext(), DBHelper.class).getPetColorDao();
-                Dao<Breed, Integer> breedDao =  OpenHelperManager.getHelper(getApplicationContext(), DBHelper.class).getBreedDao();
-                Dao<Species, Integer> speciesDao =  OpenHelperManager.getHelper(getApplicationContext(), DBHelper.class).getSpeciesDao();
+                Dao<Color, Integer> colorDao = OpenHelperManager.getHelper(getApplicationContext(), DBHelper.class).getColorDao();
+                Dao<PetColor, Integer> petColorDao = OpenHelperManager.getHelper(getApplicationContext(), DBHelper.class).getPetColorDao();
+                Dao<Breed, Integer> breedDao = OpenHelperManager.getHelper(getApplicationContext(), DBHelper.class).getBreedDao();
+                Dao<Species, Integer> speciesDao = OpenHelperManager.getHelper(getApplicationContext(), DBHelper.class).getSpeciesDao();
 
 
-                for(Pet pet : pets)
-                {
+                for (Pet pet : pets) {
                     //If temp image get temp image
-                    if(petDao.queryForId(pet.getId())== null)
-                    {
+                    if (petDao.queryForId(pet.getId()) == null) {
                         petDao.createOrUpdate(pet);
                     }
-                    if(pet.getPetLocation() != null)
-                    {
+                    if (pet.getPetLocation() != null) {
                         petlocationDao.createOrUpdate(pet.getPetLocation());
                     }
 
-                    for(Color color : pet.getColours()){
+                    for (Color color : pet.getColours()) {
                         colorDao.createOrUpdate(color);
-                        if(colorDao.queryBuilder().where().eq("petId",pet.getId()).and().eq("colorId",color.getId()) == null) {
+                        if (petColorDao.queryBuilder().where().eq("petId", pet.getId()).and().eq("colorId", color.getId()) == null) {
                             PetColor petColor = new PetColor(pet, color);
                             petColorDao.create(petColor);
                         }
                     }
 
-                    if(pet.getSpecies() != null)
-                    {
+                    if (pet.getSpecies() != null) {
                         speciesDao.createOrUpdate(pet.getSpecies());
                     }
 
-                    if(pet.getBreed() != null)
-                    {
+                    if (pet.getBreed() != null) {
                         breedDao.createOrUpdate(pet.getBreed());
                     }
 
                 }
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.d("JSONRESULT", e.toString());
             }
             return null;

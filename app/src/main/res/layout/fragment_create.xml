@@ -22,7 +22,7 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/raised"
+                android:background="?raised_color"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/mediumPadding"
                 android:paddingLeft="10dp"
@@ -41,7 +41,7 @@
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
-                    android:background="@color/highlight" />
+                    android:background="?highlight_color" />
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -70,7 +70,7 @@
                             android:gravity="center"
                             android:text="+"
                             android:textColor="?highlight_color"
-                            android:background="@drawable/item_background"
+                            android:background="?item_background_drawable"
                             android:id="@+id/create_pet_image_progress"
                             android:textSize="50dp" />
 
@@ -95,8 +95,7 @@
                             android:focusable="false"
                             android:clickable="true"
                             android:hint="@string/species"
-                            android:textSize="20dp"
-                            />
+                            android:textSize="20dp" />
 
                         <EditText
                             android:id="@+id/create_pet_breed"
@@ -128,7 +127,7 @@
                         android:padding="10dp"
                         android:text="@string/color"
                         android:textColor="?highlight_color"
-                        android:background="@drawable/item_background"/>
+                        android:background="?item_background_drawable" />
                 </LinearLayout>
 
                 <EditText
@@ -184,7 +183,7 @@
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
-                    android:background="@color/highlight" />
+                    android:background="?highlight_color" />
 
                 <EditText
                     android:id="@+id/create_pet_owner_name"
@@ -202,7 +201,7 @@
                     android:hint="@string/contact_detail"
                     android:inputType="textPersonName"
                     android:focusable="false"
-                    android:clickable="true"/>
+                    android:clickable="true" />
             </LinearLayout>
 
         </LinearLayout>

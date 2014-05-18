@@ -8,6 +8,8 @@
         <item name="background_color">@color/green_background</item>
         <item name="raised_color">@color/raised</item>
         <item name="highlight_color">@color/highlight</item>
+        <item name="button_background_drawable">@drawable/green_button_background</item>
+        <item name="item_background_drawable">@drawable/green_item_background</item>
         <item name="android:actionBarStyle">@style/MyActionBar</item>
     </style>
 
@@ -18,6 +20,8 @@
         <item name="background_color">@color/frog_background</item>
         <item name="raised_color">@color/frog_raised</item>
         <item name="highlight_color">@color/frog_highlight</item>
+        <item name="button_background_drawable">@drawable/frog_button_background</item>
+        <item name="item_background_drawable">@drawable/frog_item_background</item>
         <item name="android:actionBarStyle">@style/MyActionBar</item>
 
     </style>
@@ -29,6 +33,8 @@
         <item name="background_color">@color/polar_background</item>
         <item name="raised_color">@color/raised</item>
         <item name="highlight_color">@color/highlight</item>
+        <item name="button_background_drawable">@drawable/polar_button_background</item>
+        <item name="item_background_drawable">@drawable/polar_item_background</item>
         <item name="android:actionBarStyle">@style/MyActionBar</item>
 
     </style>
@@ -40,6 +46,8 @@
         <item name="background_color">@color/red_background</item>
         <item name="raised_color">@color/raised</item>
         <item name="highlight_color">@color/highlight</item>
+        <item name="button_background_drawable">@drawable/red_button_background</item>
+        <item name="item_background_drawable">@drawable/red_item_background</item>
         <item name="android:actionBarStyle">@style/MyActionBar</item>
 
     </style>
@@ -51,6 +59,8 @@
         <item name="background_color">@color/purple_background</item>
         <item name="raised_color">@color/raised</item>
         <item name="highlight_color">@color/highlight</item>
+        <item name="button_background_drawable">@drawable/purple_button_background</item>
+        <item name="item_background_drawable">@drawable/purple_item_background</item>
         <item name="android:actionBarStyle">@style/MyActionBar</item>
 
     </style>

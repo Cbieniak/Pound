@@ -2,6 +2,7 @@ package com.bienprogramming.pound.app.Fragment;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -9,6 +10,7 @@ import android.media.ThumbnailUtils;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -45,7 +47,6 @@ import static com.bienprogramming.pound.app.R.id.foundPetsScrollView;
 import static com.bienprogramming.pound.app.R.id.missingPetsScrollView;
 
 
-
 public class MainFragment extends android.app.Fragment {
     static HorizontalScrollView lostPets;
     static HorizontalScrollView foundPets;
@@ -68,7 +69,6 @@ public class MainFragment extends android.app.Fragment {
     }
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -83,7 +83,7 @@ public class MainFragment extends android.app.Fragment {
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 CreatePetFragment fragment = CreatePetFragment.newInstance(false);
                 ((MainActivity) getActivity()).setCreatedPet(fragment);
-                ft.replace(R.id.container,fragment);
+                ft.replace(R.id.container, fragment);
                 ft.addToBackStack(null);
                 ft.commit();
 
@@ -96,7 +96,7 @@ public class MainFragment extends android.app.Fragment {
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 CreatePetFragment fragment = CreatePetFragment.newInstance(true);
                 ((MainActivity) getActivity()).setCreatedPet(fragment);
-                ft.replace(R.id.container,fragment);
+                ft.replace(R.id.container, fragment);
                 ft.addToBackStack(null);
                 ft.commit();
 
@@ -106,28 +106,25 @@ public class MainFragment extends android.app.Fragment {
             Dao<Pet, Integer> petDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetDao();
             //List<Pet> pets = petDao.queryForAll();
             QueryBuilder<Pet, Integer> lostPetQueryBuilder = petDao.queryBuilder();
-            lostPetQueryBuilder.orderBy("id",false);
-            lostPetQueryBuilder.where().eq("lost",true);
+            lostPetQueryBuilder.orderBy("id", false);
+            lostPetQueryBuilder.where().eq("lost", true);
             lostPetQueryBuilder.limit((long) 10);
             QueryBuilder<Pet, Integer> foundPetQueryBuilder = petDao.queryBuilder();
-            foundPetQueryBuilder.orderBy("id",false);
+            foundPetQueryBuilder.orderBy("id", false);
             foundPetQueryBuilder.where().eq("lost", false);
-            foundPetQueryBuilder.limit((long)10);
+            foundPetQueryBuilder.limit((long) 10);
 
 
-            new FillPetTask().execute(lostPetQueryBuilder.query(),foundPetQueryBuilder.query());
-        } catch(Exception e){
-            Log.d("MAD EXCEPTIONS",e.getLocalizedMessage());
+            new FillPetTask().execute(lostPetQueryBuilder.query(), foundPetQueryBuilder.query());
+        } catch (Exception e) {
+            Log.d("MAD EXCEPTIONS", e.getLocalizedMessage());
         }
-
-
 
 
         return rootView;
     }
 
-    private class FillPetTask extends AsyncTask<List<Pet>, LinearLayout , ArrayList<LinearLayout>>
-    {
+    private class FillPetTask extends AsyncTask<List<Pet>, LinearLayout, ArrayList<LinearLayout>> {
         @Override
         protected ArrayList<LinearLayout> doInBackground(List<Pet>... pets) {
             ArrayList<LinearLayout> resultArrayList = new ArrayList<LinearLayout>();
@@ -150,9 +147,6 @@ public class MainFragment extends android.app.Fragment {
             foundPets.addView(result.get(0));
 
         }
-
-
-
 
 
     }
@@ -180,23 +174,25 @@ public class MainFragment extends android.app.Fragment {
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT, 6f);
             imageView.setLayoutParams(ilp);
-            imageView.setPadding(5,5,5,5);
-            imageView.setBackgroundColor(getResources().getColor(R.color.highlight));
-            if (pet.getImageBlob() == null && pet.getImageUrl() != null)
-            {
+            imageView.setPadding(5, 5, 5, 5);
+            TypedValue typedValue = new TypedValue();
+            Resources.Theme theme = getActivity().getTheme();
+            theme.resolveAttribute(R.attr.highlight_color, typedValue, true);
+            int color = typedValue.data;
+            imageView.setBackgroundColor(color);
+            if (pet.getImageBlob() == null && pet.getImageUrl() != null) {
                 //Download the image.
                 InputStream in = null;
                 Bitmap bmp = null;
                 int responseCode = -1;
-                try{
+                try {
 
-                    URL url = new URL(getString(R.string.server_base_address)+pet.getImageUrl());
-                    HttpURLConnection con = (HttpURLConnection)url.openConnection();
+                    URL url = new URL(getString(R.string.server_base_address) + pet.getImageUrl());
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
                     con.setDoInput(true);
                     con.connect();
                     responseCode = con.getResponseCode();
-                    if(responseCode == HttpURLConnection.HTTP_OK)
-                    {
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
                         //download
                         in = con.getInputStream();
                         pet.setImageBlob(getBytes(in));
@@ -205,12 +201,11 @@ public class MainFragment extends android.app.Fragment {
                     Dao<Pet, Integer> petDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetDao();
                     petDao.update(pet);
 
-                }
-                catch(Exception ex){
-                    Log.e("Exception",ex.toString());
+                } catch (Exception ex) {
+                    Log.e("Exception", ex.toString());
                 }
             }
-            if(pet.getImageBlob() != null) {
+            if (pet.getImageBlob() != null) {
                 Bitmap bmp = BitmapFactory.decodeByteArray(pet.getImageBlob(), 0, pet.getImageBlob().length);
                 try {
 
@@ -236,7 +231,6 @@ public class MainFragment extends android.app.Fragment {
             petName.setGravity(Gravity.CENTER_HORIZONTAL);
 
 
-
             layout.addView(petName);
             final Pet petCopy = pet;
             //Set onclickListener
@@ -247,7 +241,7 @@ public class MainFragment extends android.app.Fragment {
                     DisplayPetFragment fragment = DisplayPetFragment.newInstance(id);
 
                     fragment.setPet(petCopy);
-                    ft.replace(R.id.container,fragment);
+                    ft.replace(R.id.container, fragment);
                     ft.addToBackStack(null);
 
 
