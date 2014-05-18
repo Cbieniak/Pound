@@ -14,7 +14,7 @@
         android:layout_margin="@dimen/mediumPadding"
         android:paddingLeft="@dimen/mediumPadding"
         android:paddingBottom="@dimen/mediumPadding"
-        android:background="@color/raised"
+        android:background="?raised_color"
         >
 
         <TextView
@@ -25,7 +25,7 @@
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:orientation="horizontal"
-            android:background="@color/highlight"/>
+            android:background="?highlight_color"/>
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -120,7 +120,7 @@
                         android:text="@string/color"
                         android:gravity="center"
                         android:padding="@dimen/mediumPadding"
-                        android:background="@color/highlight"
+                        android:background="?highlight_color"
                         android:id="@+id/filter_color_text"/>
                 </LinearLayout>
 

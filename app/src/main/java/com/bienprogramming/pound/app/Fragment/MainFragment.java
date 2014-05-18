@@ -113,6 +113,8 @@ public class MainFragment extends android.app.Fragment {
             foundPetQueryBuilder.orderBy("id",false);
             foundPetQueryBuilder.where().eq("lost", false);
             foundPetQueryBuilder.limit((long)10);
+
+
             new FillPetTask().execute(lostPetQueryBuilder.query(),foundPetQueryBuilder.query());
         } catch(Exception e){
             Log.d("MAD EXCEPTIONS",e.getLocalizedMessage());
@@ -124,30 +126,28 @@ public class MainFragment extends android.app.Fragment {
         return rootView;
     }
 
-    private class FillPetTask extends AsyncTask<List<Pet>, Integer , ArrayList<LinearLayout>>
+    private class FillPetTask extends AsyncTask<List<Pet>, LinearLayout , ArrayList<LinearLayout>>
     {
         @Override
         protected ArrayList<LinearLayout> doInBackground(List<Pet>... pets) {
             ArrayList<LinearLayout> resultArrayList = new ArrayList<LinearLayout>();
-            for(Pet pet:pets[0])
-            {
 
-            }
-            resultArrayList.add(fillPets(pets[0]));
+            //resultArrayList.add(fillPets(pets[0]));
+            publishProgress(fillPets(pets[0]));
             resultArrayList.add(fillPets(pets[1]));
             return resultArrayList;
         }
 
         @Override
-        protected void onProgressUpdate(Integer... values) {
-            Toast.makeText(getActivity().getApplicationContext(),"Updating Pets",Toast.LENGTH_SHORT);
+        protected void onProgressUpdate(LinearLayout... values) {
+            lostPets.addView(values[0]);
 
         }
 
         @Override
         protected void onPostExecute(ArrayList<LinearLayout> result) {
-            lostPets.addView(result.get(0));
-            foundPets.addView(result.get(1));
+            //lostPets.addView(result.get(0));
+            foundPets.addView(result.get(0));
 
         }
 

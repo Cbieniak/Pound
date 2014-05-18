@@ -13,7 +13,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@color/highlight"
+        android:background="?highlight_color"
         android:padding="5dp"
         >
 
@@ -46,7 +46,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:background="@color/highlight"
+        android:background="?highlight_color"
         android:layout_marginBottom="10dp"/>
 
     <HorizontalScrollView
@@ -54,7 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:background="@color/raised" />
+        android:background="?raised_color" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -68,7 +68,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:background="@color/highlight"
+        android:background="?highlight_color"
         android:layout_marginBottom="10dp"/>
 
     <HorizontalScrollView
@@ -76,6 +76,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:background="@color/raised" />
+        android:background="?raised_color" />
 </LinearLayout>
 

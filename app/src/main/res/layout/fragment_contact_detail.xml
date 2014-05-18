@@ -35,7 +35,7 @@
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
-                    android:background="@color/highlight" />
+                    android:background="?highlight_color" />
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -55,7 +55,7 @@
                         android:layout_weight="1"
                         android:gravity="center_horizontal"
                         android:text="+"
-                        android:textColor="@color/highlight"
+                        android:textColor="?highlight_color"
                         android:textSize="30dp"
                         android:id="@+id/contact_add_phone_number" />
 
@@ -67,7 +67,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/mediumPadding"
-                android:background="@color/raised"
+                android:background="?raised_color"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/mediumPadding"
                 android:paddingLeft="@dimen/mediumPadding"
@@ -86,7 +86,7 @@
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
-                    android:background="@color/highlight" />
+                    android:background="?highlight_color" />
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -106,7 +106,7 @@
                         android:layout_weight="1"
                         android:gravity="center_horizontal"
                         android:text="+"
-                        android:textColor="@color/highlight"
+                        android:textColor="?highlight_color"
                         android:textSize="30dp"
                         android:id="@+id/contact_add_email" />
 
@@ -136,7 +136,7 @@
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
-                    android:background="@color/highlight" />
+                    android:background="?highlight_color" />
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -156,7 +156,7 @@
                         android:layout_weight="1"
                         android:gravity="center_horizontal"
                         android:text="+"
-                        android:textColor="@color/highlight"
+                        android:textColor="?highlight_color"
                         android:textSize="30dp"
                         android:id="@+id/contact_add_address" />
 

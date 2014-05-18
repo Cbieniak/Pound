@@ -1,20 +1,57 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+    <style name="GreenTheme" parent="android:Theme.Holo.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="android:colorBackground">@color/background</item>
-        <item name="android:windowBackground">@color/background</item>
+        <item name="android:colorBackground">@color/green_background</item>
+        <item name="android:windowBackground">@color/green_background</item>
+        <item name="background_color">@color/green_background</item>
+        <item name="raised_color">@color/raised</item>
+        <item name="highlight_color">@color/highlight</item>
         <item name="android:actionBarStyle">@style/MyActionBar</item>
+    </style>
 
+    <style name="FrogTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:colorBackground">@color/frog_background</item>
+        <item name="android:windowBackground">@color/frog_background</item>
+        <item name="background_color">@color/frog_background</item>
+        <item name="raised_color">@color/frog_raised</item>
+        <item name="highlight_color">@color/frog_highlight</item>
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
 
     </style>
 
-    <style name="newTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+    <style name="PolarTheme" parent="android:Theme.Holo.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="android:colorBackground">@color/polar_background</item>
         <item name="android:windowBackground">@color/polar_background</item>
-        <item name="android:actionBarStyle">@style/PolarActionBar</item>
+        <item name="background_color">@color/polar_background</item>
+        <item name="raised_color">@color/raised</item>
+        <item name="highlight_color">@color/highlight</item>
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+
+    </style>
+
+    <style name="RedTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:colorBackground">@color/red_background</item>
+        <item name="android:windowBackground">@color/red_background</item>
+        <item name="background_color">@color/red_background</item>
+        <item name="raised_color">@color/raised</item>
+        <item name="highlight_color">@color/highlight</item>
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+
+    </style>
+
+    <style name="PurpleTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:colorBackground">@color/purple_background</item>
+        <item name="android:windowBackground">@color/purple_background</item>
+        <item name="background_color">@color/purple_background</item>
+        <item name="raised_color">@color/raised</item>
+        <item name="highlight_color">@color/highlight</item>
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
 
     </style>
 
@@ -23,12 +60,9 @@
     <!-- ActionBar styles -->
     <style name="MyActionBar"
         parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@color/highlight</item>
+        <item name="android:background">?highlight_color</item>
     </style>
 
-    <style name="PolarActionBar"
-        parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@color/polar_highlight</item>
-    </style>
+
 
 </resources>

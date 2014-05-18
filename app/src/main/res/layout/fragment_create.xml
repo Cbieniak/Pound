@@ -62,14 +62,14 @@
                         android:layout_height="fill_parent"
                         android:layout_margin="10dp"
                         android:layout_weight=".6"
-                        android:background="@color/background">
+                        android:background="?background_color">
 
                         <TextView
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:gravity="center"
                             android:text="+"
-                            android:textColor="@color/highlight"
+                            android:textColor="?highlight_color"
                             android:background="@drawable/item_background"
                             android:id="@+id/create_pet_image_progress"
                             android:textSize="50dp" />
@@ -118,7 +118,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_weight="1"
-                    android:background="@color/background">
+                    android:background="?background_color">
 
                     <TextView
                         android:id="@+id/colour_text"
@@ -127,7 +127,7 @@
                         android:gravity="center_horizontal"
                         android:padding="10dp"
                         android:text="@string/color"
-                        android:textColor="@color/highlight"
+                        android:textColor="?highlight_color"
                         android:background="@drawable/item_background"/>
                 </LinearLayout>
 
@@ -165,7 +165,7 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="@dimen/mediumPadding"
                 android:layout_weight="3"
-                android:background="@color/raised"
+                android:background="?raised_color"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/mediumPadding"
                 android:paddingLeft="10dp"

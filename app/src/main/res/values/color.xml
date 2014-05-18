@@ -3,11 +3,21 @@
     <!--<color name="background">#F0F0F0</color>
     <color name="highlight">#FFA913</color>
     <color name="raised">#FFFFFF</color>-->
-    <color name="background">#D1E29C</color>
-    <color name="delete">#F59777</color>
-    <color name="highlight">#A4C639</color>
-    <color name="raised">#E4EBCE</color>
 
+    <color name="frog_background">#D1E29C</color>
+    <color name="frog_delete">#F59777</color>
+    <color name="frog_highlight">#A4C639</color>
+    <color name="frog_raised">#E4EBCE</color>
+
+
+
+    <color name="delete">#F59777</color>
+    <color name="highlight">#2c3e50</color>
+    <color name="raised">#ECF0F1</color>
+
+    <color name="green_background">#27ae60</color>
     <color name="polar_background">#2980b9</color>
-    <color name="polar_highlight">#3498db</color>
+    <color name="red_background">#c0392b</color>
+    <color name="purple_background">#8e44ad</color>
+
 </resources>

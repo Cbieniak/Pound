@@ -292,12 +292,12 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                         petlocationDao.createOrUpdate(pet.getPetLocation());
                     }
 
-                    //Pet color creates a new color. going to have to search by pet color to see if it exists
-                    //Possibly using query builder. "Pet_id" eq and "Color_id" eq
                     for(Color color : pet.getColours()){
                         colorDao.createOrUpdate(color);
-                        PetColor petColor = new PetColor(pet,color);
-                        petColorDao.create(petColor);
+                        if(colorDao.queryBuilder().where().eq("petId",pet.getId()).and().eq("colorId",color.getId()) == null) {
+                            PetColor petColor = new PetColor(pet, color);
+                            petColorDao.create(petColor);
+                        }
                     }
 
                     if(pet.getSpecies() != null)

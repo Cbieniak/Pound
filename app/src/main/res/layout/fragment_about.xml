@@ -11,6 +11,6 @@
         android:text="@string/about_detail"
         android:layout_margin="@dimen/mediumPadding"
         android:padding="@dimen/mediumPadding"
-        android:background="@color/raised"/>
+        android:background="?raised_color"/>
 
 </FrameLayout>

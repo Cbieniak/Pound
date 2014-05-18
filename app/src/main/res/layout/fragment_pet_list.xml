@@ -16,14 +16,14 @@
             android:layout_weight="1"
             android:text="@string/name"
             android:id="@+id/list_button_name"
-            android:background="@color/background"/>
+            android:background="?background_color"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/location"
             android:id="@+id/list_button_location"
-            android:background="@color/highlight"/>
+            android:background="?highlight_color"/>
         </LinearLayout>
     <ListView
         android:id="@android:id/list"
