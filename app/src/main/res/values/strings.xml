@@ -43,7 +43,7 @@
     <string name="themes_purple">Purple</string>
 
 
-    <string name="server_base_address">http://192.168.1.8:3000</string>
+    <string name="server_base_address">http://protected-island-2244.herokuapp.com</string>
 
     <string name="about_title">About</string>
     <string name="about_detail">Pound is your best tool to find you missing pet\nUse the community to help find
