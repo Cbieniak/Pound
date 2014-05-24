@@ -16,12 +16,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 
+import com.bienprogramming.pound.app.Helper.InternetHelper;
 import com.bienprogramming.pound.app.POJO.Breed;
 import com.bienprogramming.pound.app.POJO.DBHelper;
 import com.bienprogramming.pound.app.POJO.Pet;
 import com.bienprogramming.pound.app.POJO.Species;
 import com.bienprogramming.pound.app.R;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 
@@ -38,6 +40,7 @@ import org.apache.http.params.HttpParams;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -114,7 +117,7 @@ public class AttributeListFragment extends Fragment implements AbsListView.OnIte
                     break;
                 case FIELD_BREED:
                     Dao<Breed, Integer> breedDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getBreedDao();
-                    items = breedDao.queryForEq("speciesId",1);
+                    items = breedDao.queryForEq("speciesId",path.split("=")[1]);
                     mAdapter = new ArrayAdapter<Breed>(getActivity(),
                             android.R.layout.simple_list_item_1, android.R.id.text1, (List<Breed>)items);
                     mListView.setAdapter(mAdapter);
@@ -213,34 +216,13 @@ public class AttributeListFragment extends Fragment implements AbsListView.OnIte
         int TIMEOUT_MILLISEC = 10000;
         @Override
         protected String doInBackground(String... urls) {
+
             try{
-            String result;
 
-            InputStream is = null;
-            HttpParams httpParams = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT_MILLISEC);
-            HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_MILLISEC);
-            HttpClient client = new DefaultHttpClient(httpParams);
-
-            HttpGet request = new HttpGet(urls[0]);
-            request.setHeader("Accept", "application/json");
-            request.setHeader("Content-type", "application/json");
-            HttpResponse response = client.execute(request);
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),"utf-8"),8);
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-               sb.append(line + "\n");
-            }
-            result = sb.toString();
-            Log.d("JSONRESULT", result);
-
-
-                Gson gson = new Gson();
+                String result = InternetHelper.fetchData(urls[0],TIMEOUT_MILLISEC);
                 switch (field){
                     case FIELD_SPECIES:
-                        Species[] speciesArray = gson.fromJson(result,Species[].class);
+                        Species[] speciesArray = new Gson().fromJson(result,Species[].class);
                         Dao<Species, Integer> speciesDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getSpeciesDao();
                         for(Species species : speciesArray){
                             speciesDao.createOrUpdate(species);
@@ -254,7 +236,7 @@ public class AttributeListFragment extends Fragment implements AbsListView.OnIte
 
                         break;
                     case FIELD_BREED:
-                        Breed[] breedArray = gson.fromJson(result,Breed[].class);
+                        Breed[] breedArray = new Gson().fromJson(result,Breed[].class);
                         Dao<Breed, Integer> breedDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getBreedDao();
 
                         for(Breed breed : breedArray){

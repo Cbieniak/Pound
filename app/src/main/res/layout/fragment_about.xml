@@ -26,9 +26,15 @@
 
         <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/about_detail"
         android:layout_margin="@dimen/mediumPadding" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/about_creator"
+            android:layout_gravity="bottom"/>
     </LinearLayout>
 
 </FrameLayout>

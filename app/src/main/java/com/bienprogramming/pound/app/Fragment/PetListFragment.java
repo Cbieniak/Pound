@@ -28,6 +28,7 @@ import com.bienprogramming.pound.app.Activity.MainActivity;
 import com.bienprogramming.pound.app.POJO.Color;
 import com.bienprogramming.pound.app.POJO.DBHelper;
 import com.bienprogramming.pound.app.POJO.Pet;
+import com.bienprogramming.pound.app.POJO.PetLocation;
 import com.bienprogramming.pound.app.R;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
@@ -45,7 +46,7 @@ import java.util.logging.Filter;
  * with a GridView.
  * <p/>
  */
-public class PetFragment extends Fragment implements AbsListView.OnItemClickListener, LocationListener {
+public class PetListFragment extends Fragment implements AbsListView.OnItemClickListener, LocationListener {
 
     private LocationManager locationManager;
     private Location currentLocation;
@@ -67,8 +68,8 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
     private ListAdapter mAdapter;
 
     // TODO: Rename and change types of parameters
-    public static PetFragment newInstance() {
-        PetFragment fragment = new PetFragment();
+    public static PetListFragment newInstance() {
+        PetListFragment fragment = new PetListFragment();
         return fragment;
     }
 
@@ -76,7 +77,7 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public PetFragment() {
+    public PetListFragment() {
     }
 
     @Override
@@ -85,7 +86,15 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
         setHasOptionsMenu(true);
         try {
             Dao<Pet, Integer> petDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetDao();
+            Dao<PetLocation, Integer> petLocationDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetLocationDao();
+
             pets = petDao.queryForAll();
+            for(Pet pet:pets)
+            {
+                try {
+                    pet.setPetLocation(petLocationDao.queryForEq("petId", pet.getId()).get(0));
+                }catch (Exception e){}
+            }
             mAdapter = new ArrayAdapter<Pet>(getActivity(),
                     android.R.layout.simple_list_item_1, android.R.id.text1, pets);
         } catch (Exception e) {
@@ -172,6 +181,7 @@ public class PetFragment extends Fragment implements AbsListView.OnItemClickList
 
                         double pet1Dist = distFrom(currentLocation.getLatitude(), currentLocation.getLongitude(), pet1.getPetLocation().getLatitude(), pet1.getPetLocation().getLongitude());
                         double pet2Dist = distFrom(currentLocation.getLatitude(), currentLocation.getLongitude(), pet2.getPetLocation().getLatitude(), pet2.getPetLocation().getLongitude());
+                        Log.d(pet1Dist+"DISTANCE",pet2Dist+"");
                         return (int) (pet1Dist - pet2Dist);
 
 

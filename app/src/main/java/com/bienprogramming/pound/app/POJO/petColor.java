@@ -8,7 +8,7 @@ import com.j256.ormlite.table.DatabaseTable;
  */
 @DatabaseTable
 public class PetColor {
-    @DatabaseField(generatedId = true)
+    @DatabaseField(generatedId = true,allowGeneratedIdInsert=true )
     private int id;
     @DatabaseField
     private int colorId;

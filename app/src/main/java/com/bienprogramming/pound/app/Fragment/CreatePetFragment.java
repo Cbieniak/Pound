@@ -435,16 +435,11 @@ public class CreatePetFragment extends Fragment {
                 request.setHeader("Content-type", "application/json");
                 HttpResponse response = client.execute(request);
                 String responseBody = EntityUtils.toString(response.getEntity());
-                Log.d("JSON",responseBody);
-                /*
-                JsonParser parser = new JsonParser();
-                JsonArray array = parser.parse(responseBody).getAsJsonArray();
-                */
+
                 Gson responseGSon = new GsonBuilder().create();
-                //Pet pet1 = responseGSon.fromJson(responseBody,Pet.class);
+
                 pet.setId(Integer.valueOf(responseBody));
 
-                //return  response.toString();
                 //Post the image
                 if(pet.getImageBlob()!=null) {
                     String encodedImage = Base64.encodeToString(pet.getImageBlob(), Base64.DEFAULT);
@@ -453,7 +448,6 @@ public class CreatePetFragment extends Fragment {
                     jsonObject.put("pet_id", pet.getId());
                     jsonObject.put("image", encodedImage);
                     classObject.put("pet_image",jsonObject);
-                    Log.d("JSONSTRING",classObject.toString());
                     HttpPost imageRequest = new HttpPost(getString(R.string.server_base_address) + "/pet_images.json");
                     imageRequest.setEntity(new ByteArrayEntity(
                             classObject.toString().getBytes("UTF8")));
@@ -461,7 +455,6 @@ public class CreatePetFragment extends Fragment {
                     imageRequest.setHeader("Content-type", "application/json");
                     response = client.execute(imageRequest);
                     responseBody = EntityUtils.toString(response.getEntity());
-                    Log.d("JSON",responseBody);
                     Pet pet2 = responseGSon.fromJson(responseBody,Pet.class);
                     pet.setImageUrl(pet2.getImageUrl());
 
@@ -492,10 +485,7 @@ public class CreatePetFragment extends Fragment {
                 pet.setColorIds(colors);
                 return response.toString();
 
-            }catch (Exception e){
-                Log.d("Stuff e",e.getMessage()+"error");
-
-            }
+            }catch (Exception e){}
 
 
 
@@ -503,7 +493,6 @@ public class CreatePetFragment extends Fragment {
         }
         @Override
         protected void onPostExecute(String result) {
-            Log.d("Stuff",result);
             getFragmentManager().popBackStack();
         }
     }

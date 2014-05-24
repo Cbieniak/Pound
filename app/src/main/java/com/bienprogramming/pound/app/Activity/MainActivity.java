@@ -4,6 +4,8 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,8 +27,9 @@ import com.bienprogramming.pound.app.Fragment.DisplayPetFragment;
 import com.bienprogramming.pound.app.Fragment.FilterFragment;
 import com.bienprogramming.pound.app.Fragment.MainFragment;
 import com.bienprogramming.pound.app.Fragment.NavigationDrawerFragment;
-import com.bienprogramming.pound.app.Fragment.PetFragment;
+import com.bienprogramming.pound.app.Fragment.PetListFragment;
 import com.bienprogramming.pound.app.Fragment.SettingsFragment;
+import com.bienprogramming.pound.app.Helper.InternetHelper;
 import com.bienprogramming.pound.app.POJO.Breed;
 import com.bienprogramming.pound.app.POJO.Color;
 import com.bienprogramming.pound.app.POJO.DBHelper;
@@ -58,7 +61,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends OrmLiteBaseActivity<DBHelper>
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, CreatePetFragment.OnPetCreatedListener, AttributeListFragment.OnItemChosenListener, AttributeListFragment.OnItemsChosenListener,
-        ColorListFragment.OnColorsChosenListener, ContactDetailFragment.OnContactChosenListener, PetFragment.OnPetClickedListener, FilterFragment.OnFiltersChosenListener {
+        ColorListFragment.OnColorsChosenListener, ContactDetailFragment.OnContactChosenListener, PetListFragment.OnPetClickedListener, FilterFragment.OnFiltersChosenListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -67,7 +70,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
     private Pet currentPet;
     private CreatePetFragment createdPet;
     private FilterFragment filterFragment;
-    private PetFragment searchFragment;
+    private PetListFragment searchFragment;
     private Filter filter;
 
     private Menu menu;
@@ -79,8 +82,33 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
     static HorizontalScrollView lostPets;
     static HorizontalScrollView foundPets;
 
+    //Settings Values
+    Boolean settingLocation,settingPush,settingLocal;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        switch (sharedPref.getInt("theme",0)){
+            case R.id.radioFrog :
+                setTheme(R.style.FrogTheme);
+                break;
+            case R.id.radioGreen :
+                setTheme(R.style.GreenTheme);
+                break;
+            case R.id.radioPolar :
+                setTheme(R.style.PolarTheme);
+                break;
+            case R.id.radioRed :
+                setTheme(R.style.RedTheme);
+                break;
+            case R.id.radioPurple :
+                setTheme(R.style.PurpleTheme);
+                break;
+            default:
+                setTheme(R.style.GreenTheme);
+                break;
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -93,6 +121,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+        updateSettings();
         new UpdatePetTasks().execute("Tempo");
     }
 
@@ -105,7 +134,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                 ft.replace(R.id.container, MainFragment.newInstance()).commit();
                 break;
             case 1:
-                searchFragment = PetFragment.newInstance();
+                searchFragment = PetListFragment.newInstance();
                 ft.replace(R.id.container, searchFragment);
                 ft.addToBackStack(null);
                 ft.commit();
@@ -173,7 +202,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
             return true;
         } else if (item.getItemId() == R.id.action_search) {
             FragmentTransaction ft = getFragmentManager().beginTransaction();
-            PetFragment fragment = PetFragment.newInstance();
+            PetListFragment fragment = PetListFragment.newInstance();
             searchFragment = fragment;
             ft.replace(R.id.container, fragment);
             ft.addToBackStack(null);
@@ -247,33 +276,22 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
 
     }
 
+    public void updateSettings()
+    {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        settingLocation = sharedPref.getBoolean("location",true);
+        settingPush = sharedPref.getBoolean("push",true);
+        settingLocal = sharedPref.getBoolean("local",true);
+    }
+
     public class UpdatePetTasks extends AsyncTask<String, Integer, String> {
         int TIMEOUT_MILLISEC = 10000;
 
         @Override
-        protected String doInBackground(String... strings) {
+        protected String doInBackground(String... urls) {
 
             try {
-                String result;
-
-                InputStream is = null;
-                HttpParams httpParams = new BasicHttpParams();
-                HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT_MILLISEC);
-                HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_MILLISEC);
-                HttpClient client = new DefaultHttpClient(httpParams);
-
-                HttpGet request = new HttpGet(getString(R.string.server_base_address) + "/pets.json");
-                request.setHeader("Accept", "application/json");
-                request.setHeader("Content-type", "application/json");
-                HttpResponse response = client.execute(request);
-
-                BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "utf-8"), 8);
-                StringBuilder sb = new StringBuilder();
-                String line = null;
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line + "\n");
-                }
-                result = sb.toString();
+                String result = InternetHelper.fetchData(urls[0], TIMEOUT_MILLISEC);
                 Gson responseGSon = new GsonBuilder().create();
 
                 Pet[] pets = responseGSon.fromJson(result, Pet[].class);
@@ -292,6 +310,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                         petDao.createOrUpdate(pet);
                     }
                     if (pet.getPetLocation() != null) {
+                        pet.getPetLocation().setPetId(pet.getId());
                         petlocationDao.createOrUpdate(pet.getPetLocation());
                     }
 

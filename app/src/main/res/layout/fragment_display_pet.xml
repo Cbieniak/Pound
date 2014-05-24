@@ -52,7 +52,8 @@
 
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="0dp">
+                android:layout_height="0dp"
+                android:layout_weight="1">
 
                 <TextView
                     android:id="@+id/displayBreed"
@@ -60,6 +61,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Breed"
+                    android:gravity="center"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
                 <TextView
@@ -68,6 +70,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Species"
+                    android:gravity="center"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
             </LinearLayout>
 

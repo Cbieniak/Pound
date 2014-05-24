@@ -11,7 +11,7 @@ import com.j256.ormlite.table.DatabaseTable;
  */
 @DatabaseTable
 public class PetLocation {
-    @DatabaseField(generatedId = true)
+    @DatabaseField(generatedId = true,allowGeneratedIdInsert=true)
     @Expose private int id;
     @DatabaseField
     @Expose private String suburb;

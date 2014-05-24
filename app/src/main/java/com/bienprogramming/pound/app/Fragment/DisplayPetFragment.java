@@ -2,8 +2,10 @@ package com.bienprogramming.pound.app.Fragment;
 
 
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,7 +16,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bienprogramming.pound.app.Helper.InternetHelper;
 import com.bienprogramming.pound.app.POJO.Breed;
 import com.bienprogramming.pound.app.POJO.Color;
 import com.bienprogramming.pound.app.POJO.DBHelper;
@@ -26,6 +30,7 @@ import com.bienprogramming.pound.app.R;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +49,9 @@ public class DisplayPetFragment extends android.app.Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-    public DisplayPetFragment() {
-    }
+
+    public DisplayPetFragment() {}
+
     public void setPet(Pet pet){
         this.pet = pet;
     }
@@ -71,7 +77,6 @@ public class DisplayPetFragment extends android.app.Fragment {
                     LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             0 );
-                    Log.d("" + baseY, "" + motionEvent.getY());
                     i = i - (baseY - motionEvent.getY());
                     param.weight = i;
                     petImageLayout.setLayoutParams(param);
@@ -79,39 +84,34 @@ public class DisplayPetFragment extends android.app.Fragment {
                 }
                 return false;
             }
-
         });
 
         try {
-            Dao<Pet,Integer> petDao = OpenHelperManager.getHelper(rootView.getContext(),DBHelper.class).getPetDao();;
-            Dao<Color, Integer> colorDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getColorDao();
-            Dao<PetColor, Integer> petColorDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetColorDao();
-            Dao<PetLocation, Integer> petLocationDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetLocationDao();
-            Dao<Species, Integer> speciesDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getSpeciesDao();
-            Dao<Breed, Integer> breedDao =  OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getBreedDao();
-            pet = petDao.queryForId(petId);
-            Species species = speciesDao.queryForId(pet.getSpeciesId());
-            List<Breed> breedList = breedDao.queryForAll();
-            Breed breed = breedDao.queryForId(pet.getBreedId());
-            pet.setSpecies(species);
-            pet.setBreed(breed);
-            List<PetLocation> petLocationList = petLocationDao.queryForEq("petId",petId);
-            if(petLocationList.size()>0)
-                    pet.setPetLocation(petLocationList.get(0));
+           pet = InternetHelper.fetchPet(rootView.getContext(),petId);
+        }catch (SQLException e) {
+            Toast.makeText(rootView.getContext(),"Unable to find Pet details",Toast.LENGTH_SHORT);
+        }
+        //setUpForPet(rootView,pet);
 
-            List<PetColor> petColorList = petColorDao.queryForEq("petId",petId);
-            ArrayList<Color> colorArrayList = new ArrayList<Color>();
-            for(PetColor petColor : petColorList){
-                 colorArrayList.add(colorDao.queryForId(petColor.getColorId()));
 
-            }
-//            for(int id : pet.getColorIds())
-//            {
-//                colorArrayList.add(colorDao.queryForId(id));
-//            }
-            pet.setColours(colorArrayList);
+
+        return rootView;
+
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setUpForPet(view,pet);
+        view.invalidate();
+    }
+
+    private void setUpForPet(View rootView,Pet pet)
+    {
+
+
             if(pet.getName()!=null)
-            getActivity().getActionBar().setTitle(pet.getName());
+                getActivity().getActionBar().setTitle(pet.getName());
             ImageView petImage = (ImageView) rootView.findViewById(R.id.displayPetImage);
             TextView breedView = (TextView) rootView.findViewById(R.id.displayBreed);
             TextView speciesView = (TextView) rootView.findViewById(R.id.displaySpecies);
@@ -143,17 +143,12 @@ public class DisplayPetFragment extends android.app.Fragment {
             }
 
             Bitmap bmp = BitmapFactory.decodeByteArray(pet.getImageBlob(), 0, pet.getImageBlob().length);
-            petImage.setImageBitmap(bmp);
-
-        } catch (Exception e){
-
-
-        }
-
-
-        return rootView;
+            int size = (bmp.getWidth() > bmp.getHeight()) ? bmp.getHeight() : bmp.getWidth();
+            petImage.setImageBitmap(ThumbnailUtils.extractThumbnail(bmp,size,size));
 
     }
+
+
 
 }
 

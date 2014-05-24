@@ -1,7 +1,6 @@
-package com.bienprogramming.pound.app;
+package com.bienprogramming.pound.app.Adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,43 +8,34 @@ import android.widget.ArrayAdapter;
 import android.widget.Checkable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.bienprogramming.pound.app.POJO.Color;
-
-import java.util.ArrayList;
+import com.bienprogramming.pound.app.R;
 import java.util.List;
 
 /**
  * Created by Christian on 5/05/2014.
  */
 public class ColorAdapter extends ArrayAdapter<Color> implements Checkable{
-    public ColorAdapter(Context context, int textViewResourceId) {
-        super(context, textViewResourceId);
-    }
+    int listResource;
 
-    public ColorAdapter(Context context, int resource, int textViewResourceId) {
-        super(context, resource, textViewResourceId);
-    }
 
     public ColorAdapter(Context context, int resource, List<Color> objects) {
         super(context, resource, objects);
-    }
+        listResource = resource;
 
-    public ColorAdapter(Context context, int resource, Color[] objects) {
-        super(context, resource, objects);
-    }
 
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
         View v = convertView;
-
         if (v == null) {
 
             LayoutInflater vi;
+
             vi = LayoutInflater.from(getContext());
-            v = vi.inflate(R.layout.color_row, null);
+            v = vi.inflate(listResource, null);
 
         }
 
@@ -72,18 +62,16 @@ public class ColorAdapter extends ArrayAdapter<Color> implements Checkable{
 
     @Override
     public void setChecked(boolean b) {
-        Log.d("CHEC:","CJJA");
+
     }
 
     @Override
     public boolean isChecked() {
-        Log.d("CHEC:","CA");
         return false;
     }
 
     @Override
     public void toggle() {
-        Log.d("C:","CJJA");
 
     }
 }

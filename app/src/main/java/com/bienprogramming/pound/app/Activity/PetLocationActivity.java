@@ -2,6 +2,7 @@ package com.bienprogramming.pound.app.Activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -33,7 +34,9 @@ public class PetLocationActivity extends FragmentActivity  implements LocationLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pet_location);
         setUpMapIfNeeded();
-        mMap.setMyLocationEnabled(true);
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+
+        mMap.setMyLocationEnabled(sharedPref.getBoolean("location",true));
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
@@ -52,12 +55,9 @@ public class PetLocationActivity extends FragmentActivity  implements LocationLi
 
         int id = item.getItemId();
         if (id == R.id.action_done) {
-            if(markedLocation == null)
-            {
-                Toast.makeText(getApplicationContext(),"Please choose a location",Toast.LENGTH_SHORT);
-            } else {
-                finish();
-            }
+
+            finish();
+
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -136,14 +136,21 @@ public class PetLocationActivity extends FragmentActivity  implements LocationLi
 
     }
 
+
     @Override
     public void finish() {
         // Prepare data intent
         Intent data = new Intent();
-        data.putExtra("Latitude", markedLocation.getPosition().latitude);
-        data.putExtra("Longitude", markedLocation.getPosition().longitude);
-        // Activity finished ok, return the data
-        setResult(RESULT_OK, data);
+        if(markedLocation !=null) {
+
+
+            data.putExtra("Latitude", markedLocation.getPosition().latitude);
+            data.putExtra("Longitude", markedLocation.getPosition().longitude);
+            // Activity finished ok, return the data
+            setResult(RESULT_OK, data);
+        } else {
+            setResult(RESULT_CANCELED);
+        }
         super.finish();
     }
 }

@@ -50,11 +50,6 @@ import static com.bienprogramming.pound.app.R.id.missingPetsScrollView;
 public class MainFragment extends android.app.Fragment {
     static HorizontalScrollView lostPets;
     static HorizontalScrollView foundPets;
-    /**
-     * The fragment argument representing the section number for this
-     * fragment.
-     */
-
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -104,7 +99,6 @@ public class MainFragment extends android.app.Fragment {
         });
         try {
             Dao<Pet, Integer> petDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetDao();
-            //List<Pet> pets = petDao.queryForAll();
             QueryBuilder<Pet, Integer> lostPetQueryBuilder = petDao.queryBuilder();
             lostPetQueryBuilder.orderBy("id", false);
             lostPetQueryBuilder.where().eq("lost", true);
@@ -129,7 +123,6 @@ public class MainFragment extends android.app.Fragment {
         protected ArrayList<LinearLayout> doInBackground(List<Pet>... pets) {
             ArrayList<LinearLayout> resultArrayList = new ArrayList<LinearLayout>();
 
-            //resultArrayList.add(fillPets(pets[0]));
             publishProgress(fillPets(pets[0]));
             resultArrayList.add(fillPets(pets[1]));
             return resultArrayList;
@@ -183,11 +176,10 @@ public class MainFragment extends android.app.Fragment {
             if (pet.getImageBlob() == null && pet.getImageUrl() != null) {
                 //Download the image.
                 InputStream in = null;
-                Bitmap bmp = null;
                 int responseCode = -1;
                 try {
 
-                    URL url = new URL(getString(R.string.server_base_address) + pet.getImageUrl());
+                    URL url = new URL(pet.getImageUrl());
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
                     con.setDoInput(true);
                     con.connect();
@@ -201,20 +193,13 @@ public class MainFragment extends android.app.Fragment {
                     Dao<Pet, Integer> petDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetDao();
                     petDao.update(pet);
 
-                } catch (Exception ex) {
-                    Log.e("Exception", ex.toString());
+                } catch (Exception e) {
+                    Log.e("Exception", e.toString());
                 }
             }
             if (pet.getImageBlob() != null) {
                 Bitmap bmp = BitmapFactory.decodeByteArray(pet.getImageBlob(), 0, pet.getImageBlob().length);
-                try {
 
-                } catch (Exception e) {
-                    Log.d("THE ERROR MAN", e.getLocalizedMessage());
-                }
-
-                //imageView.setImageBitmap(ThumbnailUtils.extractThumbnail(bmp, imageView.getWidth(), imageView.getHeight()));
-                //imageView.setImageResource(R.drawable.paw_print);
                 layout.addView(imageView);
 
                 imageView.setImageBitmap(bmp);
@@ -228,6 +213,7 @@ public class MainFragment extends android.app.Fragment {
             //textview
             TextView petName = new TextView(this.getActivity().getApplicationContext());
             petName.setText(pet.getName());
+            petName.setTextColor(typedValue.data);
             petName.setGravity(Gravity.CENTER_HORIZONTAL);
 
 

@@ -43,12 +43,13 @@
     <string name="themes_purple">Purple</string>
 
 
-    <string name="server_base_address">http://protected-island-2244.herokuapp.com</string>
+    <string name="server_base_address">http://pound-backend.herokuapp.com</string>
 
     <string name="about_title">About</string>
     <string name="about_detail">Pound is your best tool to find you missing pet\nUse the community to help find
     your pet faster.\nPost pets you find to public board to help them find their home again</string>
 
+    <string name="about_creator">Built by Christian Bieniak</string>
 
         <string-array name="menu_items">
             <item>@string/title_activity_pet_location</item>

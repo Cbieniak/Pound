@@ -2,11 +2,10 @@ package com.bienprogramming.pound.app.Fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.DialogInterface;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,34 +14,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
 
-import com.bienprogramming.pound.app.ColorAdapter;
-import com.bienprogramming.pound.app.POJO.Breed;
+import com.bienprogramming.pound.app.Adapter.ColorAdapter;
+import com.bienprogramming.pound.app.Helper.InternetHelper;
 import com.bienprogramming.pound.app.POJO.Color;
 import com.bienprogramming.pound.app.POJO.DBHelper;
-import com.bienprogramming.pound.app.POJO.Species;
 import com.bienprogramming.pound.app.R;
 import com.google.gson.Gson;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -109,7 +94,7 @@ public class ColorListFragment extends Fragment implements AbsListView.OnItemCli
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
 
-        colorAdapter = new ColorAdapter(getActivity().getApplicationContext(), R.layout.color_row, colors);
+        colorAdapter = new ColorAdapter(getActivity().getApplicationContext(), getThemedLayout(), colors);
         mListView.setAdapter(colorAdapter);
         mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
@@ -190,50 +175,27 @@ public class ColorListFragment extends Fragment implements AbsListView.OnItemCli
         @Override
         protected String doInBackground(String... urls) {
             try {
-                String result;
+                String result = InternetHelper.fetchData(urls[0], TIMEOUT_MILLISEC);
 
-                InputStream is = null;
-                HttpParams httpParams = new BasicHttpParams();
-                HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT_MILLISEC);
-                HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_MILLISEC);
-                HttpClient client = new DefaultHttpClient(httpParams);
-
-                HttpGet request = new HttpGet(urls[0]);
-                request.setHeader("Accept", "application/json");
-                request.setHeader("Content-type", "application/json");
-                HttpResponse response = client.execute(request);
-
-                BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "utf-8"), 8);
-                StringBuilder sb = new StringBuilder();
-                String line = null;
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line + "\n");
-                }
-                result = sb.toString();
-                Log.d("JSONRESULT", result);
-
-
-                Gson gson = new Gson();
-
-                Color[] colorArray = gson.fromJson(result, Color[].class);
+                Color[] colorArray = new Gson().fromJson(result, Color[].class);
                 Dao<Color, Integer> colorDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getColorDao();
                 for (Color color : colorArray) {
                     colorDao.createOrUpdate(color);
                 }
+
                 colors = (ArrayList<Color>)colorDao.queryForAll();
-                colorAdapter = new ColorAdapter(getActivity().getApplicationContext(), R.layout.color_row, colors);
 
+                colorAdapter = new ColorAdapter(getActivity().getApplicationContext(),getThemedLayout(), colors);
 
-            } catch (Exception e) {
-                Log.d("JSONRESULT", e.toString());
-            }
+            } catch (Exception e) {}
             return null;
         }
 
         @Override
         protected void onPostExecute(String result) {
-
-            mListView.setAdapter(colorAdapter);
+            try {
+                mListView.setAdapter(colorAdapter);
+            }catch (Exception e){}
 
         }
 
@@ -245,6 +207,25 @@ public class ColorListFragment extends Fragment implements AbsListView.OnItemCli
             if (!view.isSelected())
                 view.setSelected(true);
 
+        }
+    }
+
+    private int getThemedLayout()
+    {
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        switch (sharedPref.getInt("theme",0)){
+            case R.id.radioFrog :
+                return R.layout.color_row_frog;
+            case R.id.radioGreen :
+                return R.layout.color_row_green;
+            case R.id.radioPolar :
+                return R.layout.color_row_polar;
+            case R.id.radioRed :
+                return R.layout.color_row_red;
+            case R.id.radioPurple :
+                return R.layout.color_row_polar;
+            default:
+                return R.layout.color_row_red;
         }
     }
 
