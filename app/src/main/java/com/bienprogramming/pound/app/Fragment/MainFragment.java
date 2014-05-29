@@ -136,7 +136,6 @@ public class MainFragment extends android.app.Fragment {
 
         @Override
         protected void onPostExecute(ArrayList<LinearLayout> result) {
-            //lostPets.addView(result.get(0));
             foundPets.addView(result.get(0));
 
         }

@@ -109,7 +109,7 @@ public class AttributeListFragment extends Fragment implements AbsListView.OnIte
             switch (field) {
                 case FIELD_SPECIES:
                     Dao<Species, Integer> speciesDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getSpeciesDao();
-                    items = speciesDao.queryForAll();
+                    items = speciesDao.queryBuilder().orderBy("name",true).query();
                     mAdapter = new ArrayAdapter<Species>(getActivity(),
                             android.R.layout.simple_list_item_1, android.R.id.text1,(List<Species>)items);
                     mListView.setAdapter(mAdapter);
@@ -117,7 +117,7 @@ public class AttributeListFragment extends Fragment implements AbsListView.OnIte
                     break;
                 case FIELD_BREED:
                     Dao<Breed, Integer> breedDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getBreedDao();
-                    items = breedDao.queryForEq("speciesId",path.split("=")[1]);
+                    items = breedDao.queryBuilder().orderBy("name",true).where().eq("speciesId",path.split("=")[1]).query();
                     mAdapter = new ArrayAdapter<Breed>(getActivity(),
                             android.R.layout.simple_list_item_1, android.R.id.text1, (List<Breed>)items);
                     mListView.setAdapter(mAdapter);
@@ -227,7 +227,7 @@ public class AttributeListFragment extends Fragment implements AbsListView.OnIte
                         for(Species species : speciesArray){
                             speciesDao.createOrUpdate(species);
                         }
-                        items = speciesDao.queryForAll();
+                        items = speciesDao.queryBuilder().orderBy("name",true).query();
 
 
                         mAdapter = new ArrayAdapter<Species>(getActivity(),
@@ -242,7 +242,7 @@ public class AttributeListFragment extends Fragment implements AbsListView.OnIte
                         for(Breed breed : breedArray){
                             breedDao.createOrUpdate(breed);
                         }
-                        items = breedDao.queryForAll();
+                        items = breedDao.queryBuilder().orderBy("name",true).where().eq("speciesId",path.split("=")[1]).query();
 
 
                         mAdapter = new ArrayAdapter<Breed>(getActivity(),

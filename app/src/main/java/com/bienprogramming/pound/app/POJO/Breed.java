@@ -1,6 +1,7 @@
 package com.bienprogramming.pound.app.POJO;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 
 /**
@@ -13,7 +14,7 @@ public class Breed {
     @Expose  private String name;
 
     @DatabaseField
-    @Expose private int speciesId;
+    @SerializedName("species_id")@Expose private int speciesId;
 
     public Breed() {
     }

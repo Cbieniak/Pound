@@ -17,7 +17,7 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/raised"
+                android:background="?raised_color"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/mediumPadding"
                 android:paddingLeft="@dimen/mediumPadding"
@@ -118,7 +118,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/mediumPadding"
-                android:background="@color/raised"
+                android:background="?raised_color"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/mediumPadding"
                 android:paddingLeft="@dimen/mediumPadding"

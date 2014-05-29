@@ -10,14 +10,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.bienprogramming.pound.app.POJO.Color;
 import com.bienprogramming.pound.app.R;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Christian on 5/05/2014.
  */
-public class ColorAdapter extends ArrayAdapter<Color> implements Checkable{
+public class ColorAdapter extends ArrayAdapter<Color> {
     int listResource;
-
 
     public ColorAdapter(Context context, int resource, List<Color> objects) {
         super(context, resource, objects);
@@ -56,22 +57,9 @@ public class ColorAdapter extends ArrayAdapter<Color> implements Checkable{
             }
         }
 
+
+
         return v;
-
-    }
-
-    @Override
-    public void setChecked(boolean b) {
-
-    }
-
-    @Override
-    public boolean isChecked() {
-        return false;
-    }
-
-    @Override
-    public void toggle() {
 
     }
 }

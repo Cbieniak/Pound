@@ -6,6 +6,10 @@
             android:drawable="@color/frog_highlight"
             />
     <item
+        android:state_activated="true"
+        android:drawable="@color/frog_highlight"
+        />
+    <item
         android:state_pressed="true"
         android:drawable="@color/frog_highlight"/>
     <item
@@ -13,7 +17,6 @@
 
     <item android:state_checked="true"
         android:drawable="@color/frog_highlight" />
-
 
 
 </selector>

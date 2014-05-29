@@ -2,6 +2,7 @@ package com.bienprogramming.pound.app.POJO;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.Checkable;
 
 import com.google.gson.annotations.Expose;
 import com.j256.ormlite.field.DatabaseField;
@@ -13,7 +14,7 @@ import java.io.Serializable;
  * Created by Christian on 13/04/2014.
  */
 @DatabaseTable
-public class Color implements Serializable{
+public class Color implements Serializable {
     @DatabaseField(generatedId = true,allowGeneratedIdInsert=true )
     @Expose private Integer id;
     @DatabaseField
@@ -53,4 +54,5 @@ public class Color implements Serializable{
     public void setValue(String value) {
         this.value = value;
     }
+
 }
