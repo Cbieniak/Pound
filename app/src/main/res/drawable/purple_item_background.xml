@@ -8,7 +8,7 @@
     <item
         android:state_activated="true"
         android:drawable="@color/highlight"
-        />
+        />  
     <item
         android:state_pressed="true"
         android:drawable="@color/highlight"/>

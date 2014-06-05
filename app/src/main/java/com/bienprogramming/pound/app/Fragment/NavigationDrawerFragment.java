@@ -104,7 +104,7 @@ public class NavigationDrawerFragment extends Fragment {
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
                 new String[]{
-                        "Home","Search","Found a Pet", "Lost a Pet", "About", "Settings"
+                        "Home","Log in with Facebook","Search","Found a Pet", "Lost a Pet", "Settings", "About"
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;

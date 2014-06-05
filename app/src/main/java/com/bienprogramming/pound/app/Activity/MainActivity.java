@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -17,6 +18,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.bienprogramming.pound.app.Fragment.AboutFragment;
 import com.bienprogramming.pound.app.Fragment.AttributeListFragment;
@@ -25,6 +27,7 @@ import com.bienprogramming.pound.app.Fragment.ContactDetailFragment;
 import com.bienprogramming.pound.app.Fragment.CreatePetFragment;
 import com.bienprogramming.pound.app.Fragment.DisplayPetFragment;
 import com.bienprogramming.pound.app.Fragment.FilterFragment;
+import com.bienprogramming.pound.app.Fragment.LoginFragment;
 import com.bienprogramming.pound.app.Fragment.MainFragment;
 import com.bienprogramming.pound.app.Fragment.NavigationDrawerFragment;
 import com.bienprogramming.pound.app.Fragment.PetListFragment;
@@ -39,6 +42,9 @@ import com.bienprogramming.pound.app.POJO.PetColor;
 import com.bienprogramming.pound.app.POJO.PetLocation;
 import com.bienprogramming.pound.app.POJO.Species;
 import com.bienprogramming.pound.app.R;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -54,6 +60,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -72,6 +79,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
     private FilterFragment filterFragment;
     private PetListFragment searchFragment;
     private Filter filter;
+    private UiLifecycleHelper uiHelper;
 
     private Menu menu;
     /**
@@ -123,7 +131,12 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
 
         updateSettings();
         new UpdatePetTasks().execute("Tempo");
+
+        //Facebook helper
+        uiHelper = new UiLifecycleHelper(this, callback);
+        uiHelper.onCreate(savedInstanceState);
     }
+
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
@@ -134,30 +147,36 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                 ft.replace(R.id.container, MainFragment.newInstance()).commit();
                 break;
             case 1:
+                LoginFragment frags = LoginFragment.newInstance();
+                ft.replace(R.id.container, frags);
+                ft.addToBackStack(null);
+                ft.commit();
+                break;
+            case 2:
                 searchFragment = PetListFragment.newInstance();
                 ft.replace(R.id.container, searchFragment);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
-            case 2:
+            case 3:
                 createdPet = CreatePetFragment.newInstance(false);
                 ft.replace(R.id.container, createdPet);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
-            case 3:
+            case 4:
                 createdPet = CreatePetFragment.newInstance(true);
                 ft.replace(R.id.container, createdPet);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
-            case 4:
+            case 5:
                 Fragment aboutFragment = AboutFragment.newInstance();
                 ft.replace(R.id.container, aboutFragment);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
-            case 5:
+            case 6:
                 Fragment settingsFragment = SettingsFragment.newInstance();
                 ft.replace(R.id.container, settingsFragment);
                 ft.addToBackStack(null);
@@ -275,7 +294,29 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
     public void onItemsChosen(CreatePetFragment.Field field, ArrayList<String> items) {
 
     }
+    //Facebook session information
 
+
+
+
+        private void onSessionStateChange(Session session, SessionState state, Exception exception) {
+            if (state.isOpened()) {
+                Log.d("TAG", session.getAccessToken());
+                //Take auth token, send to server,.
+                //new LogInUserToBackend().execute(session.getAccessToken());
+            } else if (state.isClosed()) {
+                Log.i("TEAG", "Logged out...");
+            }
+        }
+
+    private Session.StatusCallback callback = new Session.StatusCallback() {
+        @Override
+        public void call(Session session, SessionState state, Exception exception) {
+            Log.d("FACEBOOK STATUS", session.getAccessToken());
+            Toast.makeText(getBaseContext(),state.isOpened() + "=state",Toast.LENGTH_SHORT).show();
+
+        }
+    };
     public void updateSettings()
     {
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
@@ -345,6 +386,81 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
             //getFragmentManager().beginTransaction().detach(fragment).attach(fragment).commit();
 
         }
+    }
+
+
+    public class LogInUserToBackend extends AsyncTask<String, Integer, String> {
+        int TIMEOUT_MILLISEC = 10000;
+
+        @Override
+        protected String doInBackground(String... accessToken) {
+            try {
+                HttpParams httpParams = new BasicHttpParams();
+                HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT_MILLISEC);
+                HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_MILLISEC);
+                HttpClient client = new DefaultHttpClient(httpParams);
+
+                HttpGet request = new HttpGet(getString(R.string.server_base_address) + "/facebook_logins/check_mobile_login?token=" + accessToken);
+                request.setHeader("Accept", "application/json");
+                request.setHeader("Content-type", "application/json");
+                HttpResponse response = client.execute(request);
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "utf-8"), 8);
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line + "\n");
+                }
+                Log.d("TAGZ",sb.toString());
+                return sb.toString();
+            } catch (Exception e){}
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            //Use TAG?
+            //Fragment fragment = getFragmentManager().findFragmentById(R.layout.fragment_main);
+            //getFragmentManager().beginTransaction().detach(fragment).attach(fragment).commit();
+
+        }
+    }
+
+
+    //Life cycle methods
+    @Override
+    public void onResume() {
+        super.onResume();
+        Session session = Session.getActiveSession();
+        if (session != null &&
+                (session.isOpened() || session.isClosed()) ) {
+            onSessionStateChange(session, session.getState(), null);
+        }
+        uiHelper.onResume();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        uiHelper.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        uiHelper.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        uiHelper.onDestroy();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        uiHelper.onSaveInstanceState(outState);
     }
 
 }

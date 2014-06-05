@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':facebook'
 include ':google-play-services_lib'

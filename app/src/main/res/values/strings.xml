@@ -44,6 +44,7 @@
 
 
     <string name="server_base_address">http://pound-backend.herokuapp.com</string>
+    <string name="app_id">621666267930187</string>
 
     <string name="about_title">About</string>
     <string name="about_detail">Pound is your best tool to find you missing pet\nUse the community to help find

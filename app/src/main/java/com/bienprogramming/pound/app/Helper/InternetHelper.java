@@ -62,6 +62,8 @@ public class InternetHelper {
         return sb.toString();
     }
 
+
+
     public static Pet fetchPet(Context context, Integer petId) throws SQLException{
         Pet pet = new Pet();
         Dao<Pet,Integer> petDao = OpenHelperManager.getHelper(context,DBHelper.class).getPetDao();
