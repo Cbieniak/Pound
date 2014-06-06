@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.bienprogramming.pound.app.Helper.InternetHelper;
 import com.bienprogramming.pound.app.POJO.Breed;
 import com.bienprogramming.pound.app.POJO.Color;
+import com.bienprogramming.pound.app.POJO.ContactDetail;
 import com.bienprogramming.pound.app.POJO.DBHelper;
 import com.bienprogramming.pound.app.POJO.Pet;
 import com.bienprogramming.pound.app.POJO.PetColor;
@@ -120,7 +122,7 @@ public class DisplayPetFragment extends android.app.Fragment {
             TextView locationView = (TextView) rootView.findViewById(R.id.displayLocation);
             TextView noteView = (TextView) rootView.findViewById(R.id.displayNotes);
             TextView rewardView = (TextView) rootView.findViewById(R.id.displayReward);
-            TextView ownerView = (TextView) rootView.findViewById(R.id.displayContactOwner);
+            Button contactOwnerButton = (Button) rootView.findViewById(R.id.displayContactOwner);
             FrameLayout petImageLayout = (FrameLayout) rootView.findViewById(R.id.petImageLayout);
 
 
@@ -129,7 +131,30 @@ public class DisplayPetFragment extends android.app.Fragment {
             noteView.setText(pet.getNotes());
             locationView.setText(pet.getPetLocation().getSuburb());
             rewardView.setText("$" + pet.getReward());
-            ownerView.setText("Contact Owner");
+
+            final ContactDetail contactDetail = new ContactDetail(pet.getContactType(),pet.getContactDetail());
+            contactOwnerButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    switch (contactDetail.getType()) {
+                        case(0):
+                            //Phone
+                            //Phone Intent
+                            //Ask first?
+                            break;
+                        case (1):
+                            //Email
+                            //Open email with to already filled in.
+                            break;
+                        case (2):
+                            //Address
+                            //Show dialog. The owner has provided an address please contact them at
+
+                            break;
+                    }
+                }
+            });
             for(Color color: pet.getColours()){
 
                 LinearLayout col = new LinearLayout(rootView.getContext());
@@ -145,6 +170,8 @@ public class DisplayPetFragment extends android.app.Fragment {
             Bitmap bmp = BitmapFactory.decodeByteArray(pet.getImageBlob(), 0, pet.getImageBlob().length);
             int size = (bmp.getWidth() > bmp.getHeight()) ? bmp.getHeight() : bmp.getWidth();
             petImage.setImageBitmap(ThumbnailUtils.extractThumbnail(bmp,size,size));
+
+
 
     }
 

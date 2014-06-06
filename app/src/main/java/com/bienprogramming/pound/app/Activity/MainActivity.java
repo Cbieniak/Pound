@@ -41,6 +41,7 @@ import com.bienprogramming.pound.app.POJO.Pet;
 import com.bienprogramming.pound.app.POJO.PetColor;
 import com.bienprogramming.pound.app.POJO.PetLocation;
 import com.bienprogramming.pound.app.POJO.Species;
+import com.bienprogramming.pound.app.POJO.User;
 import com.bienprogramming.pound.app.R;
 import com.facebook.Session;
 import com.facebook.SessionState;
@@ -64,6 +65,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends OrmLiteBaseActivity<DBHelper>
@@ -130,7 +132,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
         updateSettings();
-        new UpdatePetTasks().execute("Tempo");
+        new UpdatePetTasks().execute(getString(R.string.server_base_address)+"/pets.json");
 
         //Facebook helper
         uiHelper = new UiLifecycleHelper(this, callback);
@@ -357,9 +359,10 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
 
                     for (Color color : pet.getColours()) {
                         colorDao.createOrUpdate(color);
-                        if (petColorDao.queryBuilder().where().eq("petId", pet.getId()).and().eq("colorId", color.getId()) == null) {
+          
+                        if (petColorDao.queryBuilder().where().eq("petId", pet.getId()).and().eq("colorId", color.getId()).query().size()  == 0) {
                             PetColor petColor = new PetColor(pet, color);
-                            petColorDao.create(petColor);
+                            petColorDao.createOrUpdate(petColor);
                         }
                     }
 
@@ -411,7 +414,6 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                 while ((line = reader.readLine()) != null) {
                     sb.append(line + "\n");
                 }
-                Log.d("TAGZ",sb.toString());
                 return sb.toString();
             } catch (Exception e){}
             return null;
@@ -419,10 +421,8 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
 
         @Override
         protected void onPostExecute(String result) {
-            //Use TAG?
-            //Fragment fragment = getFragmentManager().findFragmentById(R.layout.fragment_main);
-            //getFragmentManager().beginTransaction().detach(fragment).attach(fragment).commit();
-
+            User user = new GsonBuilder().create().fromJson(result,User.class);
+            Toast.makeText(getApplicationContext(), "Welcome "+user.getName(),Toast.LENGTH_SHORT);
         }
     }
 

@@ -2,10 +2,10 @@
 <merger>
 
     <dataSet config="main" >
-        <source path="/Users/gladys/Work/Pound/facebook/src/main/assets" />
+        <source path="/Users/Christian/Documents/Projects/Pound/facebook/src/main/assets" />
     </dataSet>
     <dataSet config="release" >
-        <source path="/Users/gladys/Work/Pound/facebook/src/release/assets" />
+        <source path="/Users/Christian/Documents/Projects/Pound/facebook/src/release/assets" />
     </dataSet>
 
 </merger>

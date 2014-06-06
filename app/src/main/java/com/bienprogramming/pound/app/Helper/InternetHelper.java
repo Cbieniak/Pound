@@ -80,7 +80,7 @@ public class InternetHelper {
         List<PetLocation> petLocationList = petLocationDao.queryForEq("petId",petId);
         if(petLocationList.size()>0)
             pet.setPetLocation(petLocationList.get(0));
-
+        List<PetColor> petCOlo = petColorDao.queryForAll();
         List<PetColor> petColorList = petColorDao.queryForEq("petId",petId);
         ArrayList<Color> colorArrayList = new ArrayList<Color>();
         for(PetColor petColor : petColorList){
@@ -89,6 +89,7 @@ public class InternetHelper {
         }
 
         pet.setColours(colorArrayList);
+
 
         return pet;
     }

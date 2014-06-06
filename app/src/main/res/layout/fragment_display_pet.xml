@@ -99,11 +99,14 @@
                 android:text="Reward"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
-            <TextView
+            <Button
+                android:background="?item_background_drawable"
                 android:id="@+id/displayContactOwner"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Owner"
+                android:text="@string/contact_owner"
+                android:padding="@dimen/mediumPadding"
+                android:layout_marginRight="@dimen/mediumPadding"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView

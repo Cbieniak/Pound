@@ -21,6 +21,7 @@
     <string name="color">Color</string>
     <string name="location">Location</string>
     <string name="owner_details">Owner Details</string>
+    <string name="contact_owner">Contact Owner</string>
     <string name="pet_details">Pet Details</string>
     <string name="finder_details">Finder Details</string>
     <string name="contact_detail">Contact Details</string>
