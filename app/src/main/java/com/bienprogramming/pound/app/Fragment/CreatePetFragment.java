@@ -418,9 +418,6 @@ public class CreatePetFragment extends Fragment {
 
             Gson gSon = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
             String json = gSon.toJson(pets[0]);
-
-            // = gSon.toJson(pets);
-            Log.d("JSON",json);
             try {
                 //Post the pet
                 HttpParams httpParams = new BasicHttpParams();
@@ -533,8 +530,6 @@ public class CreatePetFragment extends Fragment {
         }
 
         if(pet.getColours() !=null){
-            //colorHolder.removeAllViews();
-            //colorHolder.removeAllViewsInLayout();
             TextView colorText =(TextView) getView().findViewById(R.id.colour_text);
             colorText.setVisibility(View.GONE);
             for(Color color: pet.getColours()){

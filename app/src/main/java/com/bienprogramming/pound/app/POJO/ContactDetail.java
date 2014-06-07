@@ -23,6 +23,7 @@ public class ContactDetail {
     }
     public ContactDetail(int type, String detail){
         this.detail = detail;
+        this.type = type;
 
     }
 

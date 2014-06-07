@@ -3,9 +3,11 @@ package com.bienprogramming.pound.app.Fragment;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -140,17 +142,22 @@ public class DisplayPetFragment extends android.app.Fragment {
                     switch (contactDetail.getType()) {
                         case(0):
                             //Phone
-                            //Phone Intent
-                            //Ask first?
+                            String uri = "tel:" + contactDetail.getDetail().trim() ;
+                            Intent intent = new Intent(Intent.ACTION_DIAL);
+                            intent.setData(Uri.parse(uri));
+                            startActivity(intent);
                             break;
                         case (1):
                             //Email
-                            //Open email with to already filled in.
+                            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                            emailIntent.setType("text/html");
+                            emailIntent.putExtra(Intent.EXTRA_EMAIL, contactDetail.getDetail());
+                            startActivity(Intent.createChooser(emailIntent, "Send Email"));
                             break;
                         case (2):
                             //Address
-                            //Show dialog. The owner has provided an address please contact them at
-
+                            Intent geoIntent = new Intent (android.content.Intent.ACTION_VIEW, Uri.parse ("geo:0,0?q=" + contactDetail.getDetail()));
+                            startActivity(geoIntent);
                             break;
                     }
                 }
@@ -166,10 +173,11 @@ public class DisplayPetFragment extends android.app.Fragment {
                 col.setBackgroundColor(android.graphics.Color.parseColor(color.getValue()));
                 colorView.addView(col);
             }
-
-            Bitmap bmp = BitmapFactory.decodeByteArray(pet.getImageBlob(), 0, pet.getImageBlob().length);
-            int size = (bmp.getWidth() > bmp.getHeight()) ? bmp.getHeight() : bmp.getWidth();
-            petImage.setImageBitmap(ThumbnailUtils.extractThumbnail(bmp,size,size));
+            if(pet.getImageBlob() != null) {
+                Bitmap bmp = BitmapFactory.decodeByteArray(pet.getImageBlob(), 0, pet.getImageBlob().length);
+                int size = (bmp.getWidth() > bmp.getHeight()) ? bmp.getHeight() : bmp.getWidth();
+                petImage.setImageBitmap(ThumbnailUtils.extractThumbnail(bmp, size, size));
+            }
 
 
 

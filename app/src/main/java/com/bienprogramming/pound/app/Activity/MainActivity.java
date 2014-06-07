@@ -359,7 +359,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
 
                     for (Color color : pet.getColours()) {
                         colorDao.createOrUpdate(color);
-          
+
                         if (petColorDao.queryBuilder().where().eq("petId", pet.getId()).and().eq("colorId", color.getId()).query().size()  == 0) {
                             PetColor petColor = new PetColor(pet, color);
                             petColorDao.createOrUpdate(petColor);
