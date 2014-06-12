@@ -1,6 +1,7 @@
 package com.bienprogramming.pound.app.Fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bienprogramming.pound.app.Activity.MainActivity;
 import com.bienprogramming.pound.app.POJO.Breed;
 import com.bienprogramming.pound.app.POJO.Color;
 import com.bienprogramming.pound.app.POJO.ContactDetail;
@@ -36,6 +38,7 @@ import com.bienprogramming.pound.app.POJO.PetColor;
 import com.bienprogramming.pound.app.POJO.PetLocation;
 import com.bienprogramming.pound.app.Activity.PetLocationActivity;
 import com.bienprogramming.pound.app.POJO.Species;
+import com.bienprogramming.pound.app.POJO.User;
 import com.bienprogramming.pound.app.R;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -95,6 +98,7 @@ public class CreatePetFragment extends Fragment {
 
     private boolean lost;
     private Pet pet;
+    private User user;
     private OnPetCreatedListener mListener;
 
 
@@ -117,6 +121,11 @@ public class CreatePetFragment extends Fragment {
         if (getArguments() != null) {
             lost = getArguments().getBoolean("Lost");
             pet.setLost(lost);
+            if (((MainActivity)getActivity()).getCurrentUser() != null) {
+                user = ((MainActivity) getActivity()).getCurrentUser();
+                pet.setCreator(user.getId());
+                pet.setContactName(user.getName());
+            }
         }
     }
 
@@ -188,6 +197,7 @@ public class CreatePetFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent locationActivityIntent = new Intent(view.getContext(),PetLocationActivity.class);
+                locationActivityIntent.putExtra("location",((MainActivity)getActivity()).getSettingLocation());
                 startActivityForResult(locationActivityIntent, SELECT_LOCATION);
             }
         });
@@ -351,10 +361,9 @@ public class CreatePetFragment extends Fragment {
                 publishProgress(2);
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 publishProgress(3);
-                //chosenImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
 
                 publishProgress(4);
-                //byte[] byteArray = stream.toByteArray();
+
                 publishProgress(5);
 
                 InputStream iStream =   getActivity().getContentResolver().openInputStream(selectedImage);
@@ -376,6 +385,7 @@ public class CreatePetFragment extends Fragment {
         }
 
         protected void onPostExecute(ImageView result) {
+
             refreshUI();
         }
 
@@ -405,12 +415,25 @@ public class CreatePetFragment extends Fragment {
         }
         protected void onPostExecute(PetLocation result) {
             pet.setPetLocation(result);
+
             refreshUI();
+
         }
     }
 
     private class UploadPetTask extends AsyncTask<Pet, Integer , String>
     {
+        ProgressDialog progressDialog;
+        @Override
+        protected void onPreExecute() {
+            if (progressDialog == null) {
+                progressDialog = new ProgressDialog(getActivity());
+                progressDialog.setMessage("Synchronizing, please wait...");
+                progressDialog.show();
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.setCancelable(false);
+            }
+        }
 
         @Override
         protected String doInBackground(Pet... pets) {
@@ -490,86 +513,88 @@ public class CreatePetFragment extends Fragment {
         }
         @Override
         protected void onPostExecute(String result) {
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
             getFragmentManager().popBackStack();
         }
     }
 
     public void refreshUI()
     {
+        if(isVisible()) {
+            if (pet.getSpecies() != null) {
+                speciesEditText = ((EditText) getView().findViewById(R.id.create_pet_species));
+                speciesEditText.post(new Runnable() {
 
-        if(pet.getSpecies()!=null) {
-            speciesEditText = ((EditText) getView().findViewById(R.id.create_pet_species));
-            speciesEditText.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        speciesEditText.setText(pet.getSpecies().toString());
+                    }
+                });
+            }
+            if (pet.getBreed() != null) {
+                breedEditText = ((EditText) getView().findViewById(R.id.create_pet_breed));
+                breedEditText.post(new Runnable() {
 
-                @Override
-                public void run() {
-                    speciesEditText.setText(pet.getSpecies().toString());
+                    @Override
+                    public void run() {
+
+                        breedEditText.setText(pet.getBreed().toString());
+                    }
+                });
+            }
+            if (pet.getPetLocation() != null) {
+                locationEditText = ((EditText) getView().findViewById(R.id.create_pet_location));
+                locationEditText.post(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        locationEditText.setText(pet.getPetLocation().toString());
+                    }
+                });
+            }
+
+            if (pet.getColours() != null) {
+                TextView colorText = (TextView) getView().findViewById(R.id.colour_text);
+                colorText.setVisibility(View.GONE);
+                for (Color color : pet.getColours()) {
+
+                    LinearLayout col = new LinearLayout(getView().getContext());
+                    LinearLayout.LayoutParams ilp = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.MATCH_PARENT);
+                    ilp.weight = 1;
+                    col.setLayoutParams(ilp);
+                    col.setBackgroundColor(android.graphics.Color.parseColor(color.getValue()));
+                    colorHolder.addView(col);
                 }
-            });
-        }
-        if(pet.getBreed()!=null) {
-            breedEditText = ((EditText) getView().findViewById(R.id.create_pet_breed));
-            breedEditText.post(new Runnable() {
+            }
+            if (pet.getContactDetail() != null) {
+                contactDetailEditText = ((EditText) getView().findViewById(R.id.create_pet_contact_detail));
+                contactDetailEditText.post(new Runnable() {
 
-                @Override
-                public void run() {
+                    @Override
+                    public void run() {
+                        contactDetailEditText.setText(pet.getContactDetail());
+                    }
+                });
+            }
+            if (pet.getImageBlob() != null) {
+                petImageLayout = ((RelativeLayout) getView().findViewById(R.id.create_pet_add_image));
 
-                    breedEditText.setText(pet.getBreed().toString());
-                }
-            });
-        }
-        if(pet.getPetLocation()!=null) {
-            locationEditText = ((EditText) getView().findViewById(R.id.create_pet_location));
-            locationEditText.post(new Runnable() {
+                petImageLayout.post(new Runnable() {
 
-                @Override
-                public void run() {
-                    locationEditText.setText(pet.getPetLocation().toString());
-                }
-            });
-        }
-
-        if(pet.getColours() !=null){
-            TextView colorText =(TextView) getView().findViewById(R.id.colour_text);
-            colorText.setVisibility(View.GONE);
-            for(Color color: pet.getColours()){
-
-                LinearLayout col = new LinearLayout(getView().getContext());
-                LinearLayout.LayoutParams ilp = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT);
-                ilp.weight=1;
-                col.setLayoutParams(ilp);
-                col.setBackgroundColor(android.graphics.Color.parseColor(color.getValue()));
-                colorHolder.addView(col);
+                    @Override
+                    public void run() {
+                        Bitmap bmp = BitmapFactory.decodeByteArray(pet.getImageBlob(), 0, pet.getImageBlob().length);
+                        ImageView petImage = new ImageView(getView().getContext());
+                        petImage.setImageBitmap(ThumbnailUtils.extractThumbnail(bmp, petImageLayout.getWidth(), petImageLayout.getHeight()));
+                        petImageLayout.addView(petImage);
+                    }
+                });
             }
         }
-        if(pet.getContactDetail() !=null)
-        {
-            contactDetailEditText = ((EditText) getView().findViewById(R.id.create_pet_contact_detail));
-            contactDetailEditText.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    contactDetailEditText.setText(pet.getContactDetail());
-                }
-            });
-        }
-        if(pet.getImageBlob() !=null) {
-            petImageLayout = ((RelativeLayout) getView().findViewById(R.id.create_pet_add_image));
-
-            petImageLayout.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    Bitmap bmp = BitmapFactory.decodeByteArray(pet.getImageBlob(), 0, pet.getImageBlob().length);
-                    ImageView petImage = new ImageView(getView().getContext());
-                    petImage.setImageBitmap(ThumbnailUtils.extractThumbnail(bmp, petImageLayout.getWidth(), petImageLayout.getHeight()));
-                    petImageLayout.addView(petImage);
-                }
-            });
-        }
-
     }
 
     public byte[] getBytes(InputStream inputStream) throws IOException {

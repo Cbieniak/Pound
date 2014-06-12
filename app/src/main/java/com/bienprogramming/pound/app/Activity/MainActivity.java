@@ -66,6 +66,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class MainActivity extends OrmLiteBaseActivity<DBHelper>
@@ -77,11 +78,13 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private Pet currentPet;
+    private User currentUser;
     private CreatePetFragment createdPet;
     private FilterFragment filterFragment;
     private PetListFragment searchFragment;
     private Filter filter;
     private UiLifecycleHelper uiHelper;
+    public AtomicBoolean canUpdate;
 
     private Menu menu;
     /**
@@ -137,6 +140,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
         //Facebook helper
         uiHelper = new UiLifecycleHelper(this, callback);
         uiHelper.onCreate(savedInstanceState);
+        canUpdate = new AtomicBoolean(true);
     }
 
 
@@ -146,7 +150,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         switch (position) {
             case 0:
-                ft.replace(R.id.container, MainFragment.newInstance()).commit();
+                ft.replace(R.id.container, MainFragment.newInstance(), "MAIN").commit();
                 break;
             case 1:
                 LoginFragment frags = LoginFragment.newInstance();
@@ -173,17 +177,18 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                 ft.commit();
                 break;
             case 5:
-                Fragment aboutFragment = AboutFragment.newInstance();
-                ft.replace(R.id.container, aboutFragment);
-                ft.addToBackStack(null);
-                ft.commit();
-                break;
-            case 6:
                 Fragment settingsFragment = SettingsFragment.newInstance();
                 ft.replace(R.id.container, settingsFragment);
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
+            case 6:
+                Fragment aboutFragment = AboutFragment.newInstance();
+                ft.replace(R.id.container, aboutFragment);
+                ft.addToBackStack(null);
+                ft.commit();
+                break;
+
         }
 
 
@@ -201,9 +206,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
+
             menu = m;
             getMenuInflater().inflate(R.menu.main, menu);
             restoreActionBar();
@@ -215,9 +218,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
@@ -301,37 +302,32 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
 
 
 
-        private void onSessionStateChange(Session session, SessionState state, Exception exception) {
-            if (state.isOpened()) {
-                Log.d("TAG", session.getAccessToken());
-                //Take auth token, send to server,.
-                //new LogInUserToBackend().execute(session.getAccessToken());
-            } else if (state.isClosed()) {
-                Log.i("TEAG", "Logged out...");
-            }
-        }
+    private void onSessionStateChange(Session session, SessionState state, Exception exception) {}
 
     private Session.StatusCallback callback = new Session.StatusCallback() {
         @Override
         public void call(Session session, SessionState state, Exception exception) {
-            Log.d("FACEBOOK STATUS", session.getAccessToken());
-            Toast.makeText(getBaseContext(),state.isOpened() + "=state",Toast.LENGTH_SHORT).show();
+
+            if(state.isOpened())
+                new LogInUserToBackend().execute(session.getAccessToken());
+            else if (state.isClosed())
+                currentUser = null;
 
         }
     };
     public void updateSettings()
     {
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         settingLocation = sharedPref.getBoolean("location",true);
         settingPush = sharedPref.getBoolean("push",true);
         settingLocal = sharedPref.getBoolean("local",true);
     }
 
-    public class UpdatePetTasks extends AsyncTask<String, Integer, String> {
+    public class UpdatePetTasks extends AsyncTask<String, Integer, Void> {
         int TIMEOUT_MILLISEC = 10000;
 
         @Override
-        protected String doInBackground(String... urls) {
+        protected Void doInBackground(String... urls) {
 
             try {
                 String result = InternetHelper.fetchData(urls[0], TIMEOUT_MILLISEC);
@@ -383,10 +379,13 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            //Use TAG?
-            //Fragment fragment = getFragmentManager().findFragmentById(R.layout.fragment_main);
-            //getFragmentManager().beginTransaction().detach(fragment).attach(fragment).commit();
+        protected void onPostExecute(Void result) {
+            if(canUpdate.get()) {
+                getFragmentManager().beginTransaction().replace(R.id.container, MainFragment.newInstance()).commit();
+                //canUpdate.set(false);
+            } else {
+                canUpdate.set(true);
+            }
 
         }
     }
@@ -403,7 +402,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                 HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_MILLISEC);
                 HttpClient client = new DefaultHttpClient(httpParams);
 
-                HttpGet request = new HttpGet(getString(R.string.server_base_address) + "/facebook_logins/check_mobile_login?token=" + accessToken);
+                HttpGet request = new HttpGet(getString(R.string.server_base_address) + "/facebook_logins/check_mobile_login?token=" + accessToken[0]);
                 request.setHeader("Accept", "application/json");
                 request.setHeader("Content-type", "application/json");
                 HttpResponse response = client.execute(request);
@@ -421,8 +420,9 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
 
         @Override
         protected void onPostExecute(String result) {
-            User user = new GsonBuilder().create().fromJson(result,User.class);
-            Toast.makeText(getApplicationContext(), "Welcome "+user.getName(),Toast.LENGTH_SHORT);
+            currentUser = new GsonBuilder().create().fromJson(result,User.class);
+
+            Toast.makeText(getApplicationContext(), "Welcome "+currentUser.getName(),Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -463,4 +463,18 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
         uiHelper.onSaveInstanceState(outState);
     }
 
+
+    public User getCurrentUser(){
+        return currentUser;
+    }
+
+    public Boolean getSettingLocation() { return settingLocation; }
+
+    public Boolean getSettingPush() { return settingPush; }
+
+    public Boolean getSettingLocal() { return settingLocal; }
+
+    public void refreshMain() {
+        getFragmentManager().beginTransaction().replace(R.id.container, MainFragment.newInstance()).commit();
+    }
 }

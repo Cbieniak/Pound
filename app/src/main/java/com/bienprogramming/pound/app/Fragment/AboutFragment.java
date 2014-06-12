@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bienprogramming.pound.app.Activity.MainActivity;
+import com.bienprogramming.pound.app.POJO.User;
 import com.bienprogramming.pound.app.R;
 
 /**
@@ -35,6 +37,8 @@ public class AboutFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_about, container, false);
+
+
         return rootView;
     }
 

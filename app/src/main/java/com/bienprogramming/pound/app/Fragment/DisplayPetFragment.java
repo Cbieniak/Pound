@@ -8,9 +8,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bienprogramming.pound.app.Activity.MainActivity;
 import com.bienprogramming.pound.app.Helper.InternetHelper;
 import com.bienprogramming.pound.app.POJO.Breed;
 import com.bienprogramming.pound.app.POJO.Color;
@@ -30,19 +35,26 @@ import com.bienprogramming.pound.app.POJO.Pet;
 import com.bienprogramming.pound.app.POJO.PetColor;
 import com.bienprogramming.pound.app.POJO.PetLocation;
 import com.bienprogramming.pound.app.POJO.Species;
+import com.bienprogramming.pound.app.POJO.User;
 import com.bienprogramming.pound.app.R;
+import com.google.gson.GsonBuilder;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/**
- * A simple {@link android.support.v4.app.Fragment} subclass.
- *
- */
 public class DisplayPetFragment extends android.app.Fragment {
     Pet pet;
 
@@ -55,6 +67,36 @@ public class DisplayPetFragment extends android.app.Fragment {
     }
 
     public DisplayPetFragment() {}
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu,MenuInflater inflater)
+    {
+        menu.clear();
+        inflater.inflate(R.menu.menu_display_pet,menu);
+        User u = ((MainActivity)getActivity()).getCurrentUser();
+        if(u != null && pet.getCreator() != 0 && pet.getCreator() == (((MainActivity)getActivity()).getCurrentUser().getId()))
+            menu.findItem(R.id.action_delete).setVisible(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        if(item.getItemId() == R.id.action_delete) {
+            try {
+                new deletePet().execute();
+            }catch (Exception e)
+            {
+                Log.d("Unable to delete", e.toString());
+            }
+        }
+        return true;
+    }
 
     public void setPet(Pet pet){
         this.pet = pet;
@@ -95,10 +137,6 @@ public class DisplayPetFragment extends android.app.Fragment {
         }catch (SQLException e) {
             Toast.makeText(rootView.getContext(),"Unable to find Pet details",Toast.LENGTH_SHORT);
         }
-        //setUpForPet(rootView,pet);
-
-
-
         return rootView;
 
     }
@@ -175,12 +213,39 @@ public class DisplayPetFragment extends android.app.Fragment {
             }
             if(pet.getImageBlob() != null) {
                 Bitmap bmp = BitmapFactory.decodeByteArray(pet.getImageBlob(), 0, pet.getImageBlob().length);
-                int size = (bmp.getWidth() > bmp.getHeight()) ? bmp.getHeight() : bmp.getWidth();
-                petImage.setImageBitmap(ThumbnailUtils.extractThumbnail(bmp, size, size));
+                try {
+                    int size = (bmp.getWidth() > bmp.getHeight()) ? bmp.getHeight() : bmp.getWidth();
+                    petImage.setImageBitmap(ThumbnailUtils.extractThumbnail(bmp, size, size));
+                }catch(Exception e) {
+                    //In case of out of memory exception
+                    petImage.setImageBitmap(bmp);
+                }
+            } else {
+                petImage.setImageResource(R.drawable.paw_print);
             }
 
 
 
+    }
+
+
+    public class deletePet extends AsyncTask<String, Integer, String> {
+        int TIMEOUT_MILLISEC = 10000;
+
+        @Override
+        protected String doInBackground(String... url) {
+            try {
+                InternetHelper.deleteData(getString(R.string.server_base_address) + "/pets/" + pet.getId() + ".json",((MainActivity)getActivity()).getCurrentUser().getAuthenticationToken(),TIMEOUT_MILLISEC);
+                OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetDao().deleteById(pet.getId());
+
+            } catch (Exception e){}
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            getFragmentManager().popBackStack();
+        }
     }
 
 

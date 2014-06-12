@@ -1,29 +1,40 @@
 package com.bienprogramming.pound.app.POJO;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Christian on 6/06/2014.
  */
 public class User {
+    private int id;
+
     String name;
 
-    String token;
+    @SerializedName("authentication_token") String authenticationToken;
 
 
     public User() {
     }
 
-    public User(String name, String token) {
+    public User(String name, String authenticationToken) {
         this.name = name;
-        this.token = token;
+        this.authenticationToken = authenticationToken;
     }
 
-
-    public String getToken() {
-        return token;
+    public int getId() {
+        return id;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getAuthenticationToken() {
+        return authenticationToken;
+    }
+
+    public void setAuthenticationToken(String authenticationToken) {
+        this.authenticationToken = authenticationToken;
     }
 
     public String getName() {

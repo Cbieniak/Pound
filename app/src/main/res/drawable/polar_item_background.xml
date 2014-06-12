@@ -13,7 +13,7 @@
 
     <item
         android:state_pressed="true"
-        android:drawable="@color/frog_highlight"/>
+        android:drawable="@color/highlight"/>
     <item
         android:drawable="@color/polar_background" />
 

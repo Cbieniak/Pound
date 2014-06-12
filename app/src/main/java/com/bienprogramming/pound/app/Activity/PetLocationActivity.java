@@ -28,18 +28,22 @@ public class PetLocationActivity extends FragmentActivity  implements LocationLi
     private static final float MIN_DISTANCE = 1000;
     private Marker markedLocation;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private boolean useLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pet_location);
         setUpMapIfNeeded();
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-
-        mMap.setMyLocationEnabled(sharedPref.getBoolean("location",true));
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
+        useLocation = getIntent().getExtras().getBoolean("location");
+        mMap.setMyLocationEnabled(useLocation);
+        if(useLocation) {
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
+        }else {
+            LatLng melbourneLatLng = new LatLng(-37.81319, 144.96298);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(melbourneLatLng, 15));
+        }
 
     }
 
@@ -97,12 +101,6 @@ public class PetLocationActivity extends FragmentActivity  implements LocationLi
         }
     }
 
-    /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
-     * <p>
-     * This should only be called once and when we are sure that {@link #mMap} is not null.
-     */
     private void setUpMap() {
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -142,8 +140,6 @@ public class PetLocationActivity extends FragmentActivity  implements LocationLi
         // Prepare data intent
         Intent data = new Intent();
         if(markedLocation !=null) {
-
-
             data.putExtra("Latitude", markedLocation.getPosition().latitude);
             data.putExtra("Longitude", markedLocation.getPosition().longitude);
             // Activity finished ok, return the data

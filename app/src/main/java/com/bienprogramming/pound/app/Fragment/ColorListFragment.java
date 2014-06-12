@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -172,9 +173,12 @@ public class ColorListFragment extends Fragment implements AbsListView.OnItemCli
 
         @Override
         protected void onPostExecute(String result) {
-
-            chosenColors.clear();
-            mListView.setAdapter(colorAdapter);
+            try {
+                chosenColors.clear();
+                mListView.setAdapter(colorAdapter);
+            } catch (Exception e) {
+                Log.d("Background task", "Unable to update list");
+            }
 
         }
 

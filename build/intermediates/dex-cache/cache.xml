@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pre-dex-items>
+
+    <item
+        dex="/Users/Christian/Documents/Projects/Pound/app/build/intermediates/pre-dexed/debug/ormlite-core-4.45-261b78beb2aac72ecaba2f0935c557559fffde5a.jar"
+        jar="/Users/Christian/.gradle/caches/modules-2/files-2.1/com.j256.ormlite/ormlite-core/4.45/3db7b73aecea723803e10b068777cf09ed42d4be/ormlite-core-4.45.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="3db7b73aecea723803e10b068777cf09ed42d4be"/>
+    <item
+        dex="/Users/Christian/Documents/Projects/Pound/app/build/intermediates/pre-dexed/debug/ormlite-android-4.45-1bad6b0e740c58b78db91fd7e01a400c8a454523.jar"
+        jar="/Users/Christian/.gradle/caches/modules-2/files-2.1/com.j256.ormlite/ormlite-android/4.45/8ff8c21e8d0162333559f35cafd6a2238a33e5ba/ormlite-android-4.45.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="8ff8c21e8d0162333559f35cafd6a2238a33e5ba"/>
+    <item
+        dex="/Users/Christian/Documents/Projects/Pound/app/build/intermediates/pre-dexed/debug/support-v4-19.1.0-6b7b2b6310032103c01065af60b3223c8151d732.jar"
+        jar="/Users/Christian/Documents/AndroidSDK/extras/android/m2repository/com/android/support/support-v4/19.1.0/support-v4-19.1.0.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="85f201b380937e61a9dce6ca90ccf6872abbfb67"/>
+    <item
+        dex="/Users/Christian/Documents/Projects/Pound/app/build/intermediates/pre-dexed/debug/classes-628743927f7f30864b148896249416905d30d42a.jar"
+        jar="/Users/Christian/Documents/Projects/Pound/build/intermediates/exploded-aar/com.android.support/appcompat-v7/19.1.0/classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="3499ceba05ca1f6037c6a2fad73df8f636224a28"/>
+    <item
+        dex="/Users/Christian/Documents/Projects/Pound/app/build/intermediates/pre-dexed/debug/classes-9a4b548aba7f90582f9dc5481ef8fdd3056d12b4.jar"
+        jar="/Users/Christian/Documents/Projects/Pound/build/intermediates/exploded-aar/com.google.android.gms/play-services/4.3.23/classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="7676c0cb230efa6ac41c47867d372ed5913029d4"/>
+    <item
+        dex="/Users/Christian/Documents/Projects/Pound/app/build/intermediates/pre-dexed/debug/classes-321934ba9198305fe59a0c2adfccdd20cac29424.jar"
+        jar="/Users/Christian/Documents/Projects/Pound/build/intermediates/exploded-aar/Pound/facebook/unspecified/classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="dac9fdd8e30c9b8a60b83a3fa3c05cce67e3923e"/>
+    <item
+        dex="/Users/Christian/Documents/Projects/Pound/app/build/intermediates/pre-dexed/debug/gson-2.2.4-9bb61b3838952cf2ec0b254029d90c8ec221afde.jar"
+        jar="/Users/Christian/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.2.4/a60a5e993c98c864010053cb901b7eab25306568/gson-2.2.4.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="a60a5e993c98c864010053cb901b7eab25306568"/>
+    <item
+        dex="/Users/Christian/Documents/Projects/Pound/app/build/intermediates/pre-dexed/debug/bolts-14aaba19a889643dca46a986d24b1a35577d6736.jar"
+        jar="/Users/Christian/Documents/Projects/Pound/build/intermediates/exploded-aar/Pound/facebook/unspecified/libs/bolts.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="1e5ba33c837d05dcca9dc40a0ab458f8599d7aef"/>
+
+</pre-dex-items>

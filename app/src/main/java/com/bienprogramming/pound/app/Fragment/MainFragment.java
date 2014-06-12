@@ -50,7 +50,7 @@ import static com.bienprogramming.pound.app.R.id.missingPetsScrollView;
 public class MainFragment extends android.app.Fragment {
     static HorizontalScrollView lostPets;
     static HorizontalScrollView foundPets;
-
+    FillPetTask fillPetTask;
     /**
      * Returns a new instance of this fragment for the given section
      * number.
@@ -97,6 +97,14 @@ public class MainFragment extends android.app.Fragment {
 
             }
         });
+        fillPetTask = new FillPetTask();
+        refreshPets();
+
+        return rootView;
+    }
+
+    public void refreshPets() {
+        ((MainActivity)getActivity()).canUpdate.set(false);
         try {
             Dao<Pet, Integer> petDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getPetDao();
             QueryBuilder<Pet, Integer> lostPetQueryBuilder = petDao.queryBuilder();
@@ -108,14 +116,10 @@ public class MainFragment extends android.app.Fragment {
             foundPetQueryBuilder.where().eq("lost", false);
             foundPetQueryBuilder.limit((long) 10);
 
-
             new FillPetTask().execute(lostPetQueryBuilder.query(), foundPetQueryBuilder.query());
         } catch (Exception e) {
             Log.d("MAD EXCEPTIONS", e.getLocalizedMessage());
         }
-
-
-        return rootView;
     }
 
     private class FillPetTask extends AsyncTask<List<Pet>, LinearLayout, ArrayList<LinearLayout>> {
@@ -130,13 +134,23 @@ public class MainFragment extends android.app.Fragment {
 
         @Override
         protected void onProgressUpdate(LinearLayout... values) {
+            if(lostPets != null)
             lostPets.addView(values[0]);
 
         }
 
         @Override
         protected void onPostExecute(ArrayList<LinearLayout> result) {
+            if(foundPets != null)
             foundPets.addView(result.get(0));
+            if (((MainActivity)getActivity()).canUpdate.get()) {
+                ((MainActivity)getActivity()).refreshMain();
+                Log.d("refreshing", "pets");
+            } else {
+                ((MainActivity)getActivity()).canUpdate.set(false);
+            }
+
+
 
         }
 

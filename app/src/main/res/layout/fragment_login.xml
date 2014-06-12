@@ -4,13 +4,53 @@
     android:layout_height="match_parent"
     tools:context="com.bienprogramming.pound.app.Fragment.LoginFragment">
 
-    <com.facebook.widget.LoginButton
-        android:id="@+id/authButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
-        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?raised_color"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/mediumPadding"
+        android:padding="@dimen/mediumPadding">
+
+        <TextView
+            android:id="@+id/create_pet_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:text="@string/login"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+
+            />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="?highlight_color" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/welcome"
+            android:id = "@+id/welcome"
+            android:layout_marginBottom="@dimen/mediumPadding"
+            android:layout_marginTop="@dimen/mediumPadding"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login_description"/>
+
+        <com.facebook.widget.LoginButton
+            android:id="@+id/authButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            />
+        </LinearLayout>
+
+
+
 
 
 

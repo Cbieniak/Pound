@@ -54,7 +54,7 @@ public class SettingsFragment extends Fragment {
         });
 
         Switch pushSwitch = (Switch) rootView.findViewById(R.id.switch_push);
-        pushSwitch.setChecked(sharedPref.getBoolean("push",true));
+        pushSwitch.setChecked(sharedPref.getBoolean("push",false));
         pushSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {

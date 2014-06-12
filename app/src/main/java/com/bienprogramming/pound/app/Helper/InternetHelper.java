@@ -19,6 +19,7 @@ import com.j256.ormlite.dao.Dao;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
@@ -49,6 +50,28 @@ public class InternetHelper {
         HttpClient client = new DefaultHttpClient(httpParams);
 
         HttpGet request = new HttpGet(url);
+        request.setHeader("Accept", "application/json");
+        request.setHeader("Content-type", "application/json");
+        HttpResponse response = client.execute(request);
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),"utf-8"),8);
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line + "\n");
+        }
+        return sb.toString();
+    }
+
+    public static String deleteData(String url,String token,int timeout) throws IOException
+    {
+
+        HttpParams httpParams = new BasicHttpParams();
+        HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
+        HttpConnectionParams.setSoTimeout(httpParams, timeout);
+        HttpClient client = new DefaultHttpClient(httpParams);
+
+        HttpDelete request = new HttpDelete(url+"?auth_token="+token);
         request.setHeader("Accept", "application/json");
         request.setHeader("Content-type", "application/json");
         HttpResponse response = client.execute(request);

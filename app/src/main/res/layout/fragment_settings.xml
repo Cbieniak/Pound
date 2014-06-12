@@ -88,7 +88,8 @@
                     android:text="New Switch"
                     android:layout_weight="1"
                     android:id="@+id/switch_push"
-                    android:checked="true" />
+                    android:checked="false"
+                    android:enabled="false"/>
 
                 <Switch
                     android:layout_width="wrap_content"
@@ -96,7 +97,8 @@
                     android:text="New Switch"
                     android:layout_weight="1"
                     android:id="@+id/switch_data"
-                    android:checked="true" />
+                    android:checked="true"
+                    android:enabled="false"/>
             </LinearLayout>
 
         </LinearLayout>

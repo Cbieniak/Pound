@@ -117,8 +117,12 @@ public class PetListFragment extends Fragment implements AbsListView.OnItemClick
         sortLocationButton = (Button) rootView.findViewById(R.id.list_button_location);
 
         //GET LOCATION
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
+        if(((MainActivity)getActivity()).getSettingLocation()) {
+            locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
+        } else {
+            sortLocationButton.setEnabled(false);
+        }
 
         //Get Colours
         TypedValue typedValue = new TypedValue();
@@ -270,18 +274,7 @@ public class PetListFragment extends Fragment implements AbsListView.OnItemClick
 
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnPetClickedListener {
-        // TODO: Update argument type and name
         public void OnPetClicked(int id);
     }
 

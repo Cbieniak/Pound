@@ -57,6 +57,9 @@ public class Pet implements Serializable {
     @DatabaseField(foreign = true)
     @SerializedName("pet_location")@Expose private PetLocation petLocation;
 
+    @DatabaseField
+    @Expose private int creator;
+
 
     @DatabaseField(dataType = DataType.BYTE_ARRAY)
     private byte[] imageBlob;
@@ -254,4 +257,11 @@ public class Pet implements Serializable {
         this.colorIds = colorIds;
     }
 
+    public int getCreator() {
+        return creator;
+    }
+
+    public void setCreator(int creator) {
+        this.creator = creator;
+    }
 }

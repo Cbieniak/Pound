@@ -10,6 +10,7 @@
     <string name="action_save">Save</string>
     <string name="action_done">Done</string>
     <string name="action_upload">Upload</string>
+    <string name="action_delete">Delete</string>
     <string name="section_label">Section Label</string>
     <string name="lostAPet">Lost A Pet</string>
     <string name="foundAPet">Found A Pet</string>
@@ -27,7 +28,9 @@
     <string name="contact_detail">Contact Details</string>
     <string name="reward">Reward</string>
     <string name="notes">Notes</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login">Login</string>
+    <string name="welcome">Welcome</string>
+    <string name="login_description">Log in with facebook to link you to your pet posts. It allows you to delete posts that you have made and in the future will allow you to share your pets on your timeline</string>
     <string name="title_activity_pet_location">Map</string>
     <string name="contact_details_phone">Phone Number</string>
     <string name="contact_details_email">Email</string>
@@ -49,7 +52,7 @@
 
     <string name="about_title">About</string>
     <string name="about_detail">Pound is your best tool to find you missing pet\nUse the community to help find
-    your pet faster.\nPost pets you find to public board to help them find their home again</string>
+    your pet faster.\nPost pets you find to public board to help them find their home again\n\n\nPlease enjoy using this app. Contact me with any feedback at bienprogramming@gmail.com\n</string>
 
     <string name="about_creator">Built by Christian Bieniak</string>
 
