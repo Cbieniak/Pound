@@ -1,9 +1,9 @@
 package com.bienprogramming.pound.app.Fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,37 +12,17 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
-
 
 import com.bienprogramming.pound.app.Helper.InternetHelper;
 import com.bienprogramming.pound.app.POJO.Breed;
 import com.bienprogramming.pound.app.POJO.DBHelper;
-import com.bienprogramming.pound.app.POJO.Pet;
 import com.bienprogramming.pound.app.POJO.Species;
 import com.bienprogramming.pound.app.R;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 

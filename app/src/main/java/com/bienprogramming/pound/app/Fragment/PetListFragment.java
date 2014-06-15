@@ -1,14 +1,13 @@
 package com.bienprogramming.pound.app.Fragment;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -37,13 +36,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Filter;
 
 /**
- * A fragment representing a list of Items.
+ * A fragment representing a list of Pets.
  * <p/>
  * Large screen devices (such as tablets) are supported by replacing the ListView
- * with a GridView.
+ * with a GridView. //Not tested on tablets
  * <p/>
  */
 public class PetListFragment extends Fragment implements AbsListView.OnItemClickListener, LocationListener {
@@ -67,7 +65,6 @@ public class PetListFragment extends Fragment implements AbsListView.OnItemClick
      */
     private ListAdapter mAdapter;
 
-    // TODO: Rename and change types of parameters
     public static PetListFragment newInstance() {
         PetListFragment fragment = new PetListFragment();
         return fragment;
@@ -98,6 +95,7 @@ public class PetListFragment extends Fragment implements AbsListView.OnItemClick
             mAdapter = new ArrayAdapter<Pet>(getActivity(),
                     android.R.layout.simple_list_item_1, android.R.id.text1, pets);
         } catch (Exception e) {
+            Log.d("Failed to retrieve pets", e.getLocalizedMessage());
         }
 
     }
@@ -131,7 +129,7 @@ public class PetListFragment extends Fragment implements AbsListView.OnItemClick
         final int highlightColor = typedValue.data;
         theme.resolveAttribute(R.attr.background_color, typedValue, true);
         final int backgroundColor = typedValue.data;
-
+        //Order alphabetically initially - doesn't make sense who searches for pets by name.
         Comparator<Pet> ALPHABETICAL_ORDER = new Comparator<Pet>() {
             public int compare(Pet object1, Pet object2) {
                 if (object1.getName() == null)
@@ -169,7 +167,7 @@ public class PetListFragment extends Fragment implements AbsListView.OnItemClick
 
             }
         });
-
+        //Sorts the pets by location nearest. not enabled if the user has disabled locations
         sortLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -185,7 +183,6 @@ public class PetListFragment extends Fragment implements AbsListView.OnItemClick
 
                         double pet1Dist = distFrom(currentLocation.getLatitude(), currentLocation.getLongitude(), pet1.getPetLocation().getLatitude(), pet1.getPetLocation().getLongitude());
                         double pet2Dist = distFrom(currentLocation.getLatitude(), currentLocation.getLongitude(), pet2.getPetLocation().getLatitude(), pet2.getPetLocation().getLongitude());
-                        Log.d(pet1Dist+"DISTANCE",pet2Dist+"");
                         return (int) (pet1Dist - pet2Dist);
 
 
@@ -253,7 +250,7 @@ public class PetListFragment extends Fragment implements AbsListView.OnItemClick
             ((TextView) emptyView).setText(emptyText);
         }
     }
-
+    //Location methods
     @Override
     public void onLocationChanged(Location location) {
         currentLocation = location;
@@ -278,6 +275,10 @@ public class PetListFragment extends Fragment implements AbsListView.OnItemClick
         public void OnPetClicked(int id);
     }
 
+    /**Filter results. Still not working correctyl
+     *
+     * @param filter
+     */
     public void filterResults(com.bienprogramming.pound.app.POJO.Filter filter) {
         List<Pet> results = new ArrayList<Pet>();
         results.addAll(pets);
@@ -322,6 +323,15 @@ public class PetListFragment extends Fragment implements AbsListView.OnItemClick
     }
 
     //From http://stackoverflow.com/questions/5396286/sort-list-of-lon-lat-points-start-with-nearest
+
+    /**
+     * methods to give values to sort by using distance from
+     * @param fromLat - pet lat
+     * @param fromLon - pet long
+     * @param toLat - user lat
+     * @param toLon - user long
+     * @return a double representing the distance
+     */
     static double distFrom(double fromLat, double fromLon, double toLat, double toLon) {
         double radius = 6378137;   // approximate Earth radius, *in meters*
         double deltaLat = toLat - fromLat;

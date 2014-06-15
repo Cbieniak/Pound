@@ -1,11 +1,8 @@
 package com.bienprogramming.pound.app.Fragment;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
 import android.app.Fragment;
-import android.util.Log;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +13,9 @@ import com.bienprogramming.pound.app.POJO.User;
 import com.bienprogramming.pound.app.R;
 import com.facebook.Session;
 
-
+/**Simple login fragment. Updates depending on if the user is currently logged in or not. Holds facebook on activity results
+ *
+ */
 public class LoginFragment extends Fragment {
 
     public static LoginFragment newInstance() {

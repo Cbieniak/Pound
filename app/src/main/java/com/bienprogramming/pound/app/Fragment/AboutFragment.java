@@ -1,21 +1,16 @@
 package com.bienprogramming.pound.app.Fragment;
 
 
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.bienprogramming.pound.app.Activity.MainActivity;
-import com.bienprogramming.pound.app.POJO.User;
 import com.bienprogramming.pound.app.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AboutFragment#newInstance} factory method to
- * create an instance of this fragment.
+/**About framgent. Not a lot going on at all. May add email link in the future
+ *
  */
 public class AboutFragment extends Fragment {
 

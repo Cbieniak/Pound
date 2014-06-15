@@ -3,7 +3,6 @@ package com.bienprogramming.pound.app.POJO;
 import com.j256.ormlite.android.apptools.OrmLiteConfigUtil;
 
 import java.io.File;
-import java.io.IOError;
 import java.io.IOException;
 import java.sql.SQLException;
 

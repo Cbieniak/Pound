@@ -1,11 +1,9 @@
 package com.bienprogramming.pound.app.Fragment;
 
-import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.media.ThumbnailUtils;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,7 +11,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -21,14 +18,10 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bienprogramming.pound.app.Activity.MainActivity;
-import com.bienprogramming.pound.app.POJO.Breed;
 import com.bienprogramming.pound.app.POJO.DBHelper;
 import com.bienprogramming.pound.app.POJO.Pet;
-import com.bienprogramming.pound.app.POJO.PetLocation;
-import com.bienprogramming.pound.app.POJO.Species;
 import com.bienprogramming.pound.app.R;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
@@ -40,7 +33,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static com.bienprogramming.pound.app.R.id.foundPetsScrollView;

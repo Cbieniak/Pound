@@ -1,9 +1,8 @@
 package com.bienprogramming.pound.app.Fragment;
 
 import android.app.Activity;
-import android.net.Uri;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,25 +15,18 @@ import android.widget.TextView;
 
 import com.bienprogramming.pound.app.POJO.ContactDetail;
 import com.bienprogramming.pound.app.POJO.DBHelper;
-import com.bienprogramming.pound.app.POJO.Pet;
 import com.bienprogramming.pound.app.R;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 
-
 import java.util.List;
 
 
-/**
- * A simple {@link android.support.v4.app.Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link com.bienprogramming.pound.app.Fragment.ContactDetailFragment.OnContactChosenListener} interface
- * to handle interaction events.
- * Use the {@link ContactDetailFragment#newInstance} factory method to
- * create an instance of this fragment.
+/** A fragment that allows users to select or enter contact details that other users will be able to contact them on.
+ *
  */
 public class ContactDetailFragment extends Fragment {
-
+    //The 3 layouts depending on type
     LinearLayout phoneLayout;
     LinearLayout emailLayout;
     LinearLayout addressLayout;
@@ -113,7 +105,9 @@ public class ContactDetailFragment extends Fragment {
                         try {
                             Dao<ContactDetail, Integer> contactDetailDao = OpenHelperManager.getHelper(view.getContext(), DBHelper.class).getContactDetailDao();
                             contactDetailDao.delete(contact);
-                        }catch (Exception e){}
+                        }catch (Exception e){
+                            Log.d("Failure to delete", e.getLocalizedMessage());
+                        }
                     }
                 });
 
@@ -148,7 +142,7 @@ public class ContactDetailFragment extends Fragment {
                     contactDetailDao.create(contactDetail);
                     onMethodChosen(contactDetail.getType(), contactDetail.getDetail());
                 } catch (Exception e) {
-                    Log.d("Exception",e.toString());
+                    Log.d("Phone on click Exception",e.getLocalizedMessage());
                 }
 
             }
@@ -163,6 +157,7 @@ public class ContactDetailFragment extends Fragment {
                     contactDetailDao.create(contactDetail);
                     onMethodChosen(contactDetail.getType(), contactDetail.getDetail());
                 } catch (Exception e) {
+                    Log.d("Email on click Exception",e.getLocalizedMessage());
                 }
 
 
@@ -178,6 +173,7 @@ public class ContactDetailFragment extends Fragment {
                     contactDetailDao.create(contactDetail);
                     onMethodChosen(contactDetail.getType(), contactDetail.getDetail());
                 } catch (Exception e) {
+                    Log.d("Address on click Exception",e.getLocalizedMessage());
                 }
 
 
@@ -208,7 +204,7 @@ public class ContactDetailFragment extends Fragment {
             mListener = (OnContactChosenListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnContactChosenListener");
         }
     }
 

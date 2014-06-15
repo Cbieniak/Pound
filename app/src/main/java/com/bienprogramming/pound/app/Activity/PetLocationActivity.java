@@ -2,19 +2,15 @@ package com.bienprogramming.pound.app.Activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.bienprogramming.pound.app.R;
-import com.google.android.gms.location.LocationClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -22,13 +18,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+/**The Activity that hold the google map. Allows the user to choose a location on the map where the pet was lost
+ *
+ */
 public class PetLocationActivity extends FragmentActivity  implements LocationListener{
     private LocationManager locationManager;
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 1000;
     private Marker markedLocation;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private boolean useLocation;
+    private boolean useLocation; // A reference for whether or not the center the map on the users location
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +40,7 @@ public class PetLocationActivity extends FragmentActivity  implements LocationLi
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
         }else {
+            //If the user doesn't want to use location focus on melbourne
             LatLng melbourneLatLng = new LatLng(-37.81319, 144.96298);
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(melbourneLatLng, 15));
         }
@@ -59,9 +59,7 @@ public class PetLocationActivity extends FragmentActivity  implements LocationLi
 
         int id = item.getItemId();
         if (id == R.id.action_done) {
-
             finish();
-
             return true;
         }
         return super.onOptionsItemSelected(item);

@@ -1,18 +1,12 @@
 package com.bienprogramming.pound.app.Fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
-import android.media.ThumbnailUtils;
-import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,12 +14,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bienprogramming.pound.app.Activity.MainActivity;
 import com.bienprogramming.pound.app.Activity.PetLocationActivity;
 import com.bienprogramming.pound.app.POJO.Breed;
 import com.bienprogramming.pound.app.POJO.Color;
@@ -39,22 +30,13 @@ import java.util.List;
 import java.util.Locale;
 
 
-/**
- * A simple {@link android.support.v4.app.Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link FilterFragment.OnFiltersChosenListener} interface
- * to handle interaction events.
- * Use the {@link FilterFragment#newInstance} factory method to
- * create an instance of this fragment.
+/** A fragment that is used to filter the list of pets. Not fully working.
+ *
  *
  */
 public class FilterFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String FILTERS = "filters";
 
-
-    // TODO: Rename and change types of parameters
     private int filters;
 
     EditText speciesText;
@@ -70,14 +52,6 @@ public class FilterFragment extends Fragment {
 
     private OnFiltersChosenListener mListener;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param  filters
-     * @return A new instance of fragment FilterFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static FilterFragment newInstance(int filters) {
         FilterFragment fragment = new FilterFragment();
         Bundle args = new Bundle();

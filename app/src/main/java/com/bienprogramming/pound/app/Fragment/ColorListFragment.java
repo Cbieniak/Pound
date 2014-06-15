@@ -2,7 +2,6 @@ package com.bienprogramming.pound.app.Fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.ListFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -16,9 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-
 
 import com.bienprogramming.pound.app.Adapter.ColorAdapter;
 import com.bienprogramming.pound.app.Helper.InternetHelper;
@@ -32,7 +29,7 @@ import com.j256.ormlite.dao.Dao;
 import java.util.ArrayList;
 
 /**
- * A fragment representing a list of Items.
+ * A fragment representing a list of Colors.
  * interface.
  *
  */
@@ -73,7 +70,9 @@ public class ColorListFragment extends Fragment implements AbsListView.OnItemCli
             Dao<Color, Integer> colorDao = OpenHelperManager.getHelper(getActivity().getApplicationContext(), DBHelper.class).getColorDao();
             colors = (ArrayList<Color>)colorDao.queryBuilder().orderBy("name",true).query();
 
-        }catch (Exception e){}
+        }catch (Exception e){
+            Log.d("Fetch colors Exception", e.getLocalizedMessage());
+        }
 
 
     }
@@ -85,14 +84,9 @@ public class ColorListFragment extends Fragment implements AbsListView.OnItemCli
 
         // Set the adapter
         mListView = (AbsListView) view.findViewById(android.R.id.list);
-
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
-        mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-
-
         colorAdapter = new ColorAdapter(getActivity().getApplicationContext(), getThemedLayout(), colors);
-
         mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
         mListView.setAdapter(colorAdapter);
@@ -122,7 +116,7 @@ public class ColorListFragment extends Fragment implements AbsListView.OnItemCli
             mListener = (OnColorsChosenListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnColorsChosenListener");
         }
     }
 
@@ -132,7 +126,13 @@ public class ColorListFragment extends Fragment implements AbsListView.OnItemCli
         mListener = null;
     }
 
-
+    /**When an item is selected it is added to list. Unless its already been selected, then remove it.
+     * //View parameters
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         mListView.setItemChecked(position, true);
@@ -145,10 +145,16 @@ public class ColorListFragment extends Fragment implements AbsListView.OnItemCli
 
     }
 
+    /**Listener once done is cllicked
+     *
+     */
     public interface OnColorsChosenListener {
         public void colorsChosen(CreatePetFragment.Field field, ArrayList<Color> colors);
     }
 
+    /**Async task for fetching the colors and loading them into the database of colors
+     *
+     */
     private class GetColorsTask extends AsyncTask<String, Integer, String> {
         int TIMEOUT_MILLISEC = 10000;
 
@@ -185,6 +191,10 @@ public class ColorListFragment extends Fragment implements AbsListView.OnItemCli
 
     }
 
+    /** Get the current theme to pass through to the adapter so that the list items are the correct theme.
+     *
+     * @return The id of the theme.
+     */
     private int getThemedLayout()
     {
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);

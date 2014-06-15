@@ -1,19 +1,18 @@
 package com.bienprogramming.pound.app.Fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,22 +28,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bienprogramming.pound.app.Activity.MainActivity;
+import com.bienprogramming.pound.app.Activity.PetLocationActivity;
 import com.bienprogramming.pound.app.POJO.Breed;
 import com.bienprogramming.pound.app.POJO.Color;
-import com.bienprogramming.pound.app.POJO.ContactDetail;
 import com.bienprogramming.pound.app.POJO.DBHelper;
 import com.bienprogramming.pound.app.POJO.Pet;
 import com.bienprogramming.pound.app.POJO.PetColor;
 import com.bienprogramming.pound.app.POJO.PetLocation;
-import com.bienprogramming.pound.app.Activity.PetLocationActivity;
 import com.bienprogramming.pound.app.POJO.Species;
 import com.bienprogramming.pound.app.POJO.User;
 import com.bienprogramming.pound.app.R;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 
@@ -67,11 +63,14 @@ import java.util.List;
 import java.util.Locale;
 
 
-
+/**Fragment for created pet listings.
+ *
+ */
 public class CreatePetFragment extends Fragment {
+    //Callback ints
     private static final int SELECT_PHOTO = 100;
     private static final int SELECT_LOCATION = 200;
-
+    //Fields for where the data corresponds to
     public enum Field {
         FIELD_PET_NAME,
         FIELD_SPECIES,
@@ -117,7 +116,7 @@ public class CreatePetFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        if(pet == null)pet= new Pet();
+        if(pet == null)pet = new Pet();
         if (getArguments() != null) {
             lost = getArguments().getBoolean("Lost");
             pet.setLost(lost);
@@ -265,7 +264,7 @@ public class CreatePetFragment extends Fragment {
             mListener = (OnPetCreatedListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement PetCreated");
+                    + " must implement PetCreatedListener");
         }
 
     }
@@ -279,7 +278,7 @@ public class CreatePetFragment extends Fragment {
     public interface OnPetCreatedListener {
         public void onPetCreated(int id);
     }
-
+    //Update data depending on the field
     public void updateField(Field field,Object attribute){
         switch (field) {
             case FIELD_SPECIES:
@@ -293,10 +292,21 @@ public class CreatePetFragment extends Fragment {
 
     }
 
+    /**Color field updater
+     *
+     * @param field - Color always
+     * @param items - The colors in an array
+     */
     public void updateField(Field field,ArrayList<Color> items){
         pet.setColours(items);
     }
 
+    /**Contact detail updater
+     *
+     * @param field - Not needed yet
+     * @param item - The string on the detail
+     * @param type - The type of detail
+     */
     public void updateField(Field field,String item, int type){
         pet.setContactDetail(item);
         pet.setContactType(type);
@@ -345,6 +355,10 @@ public class CreatePetFragment extends Fragment {
         }
     }
 
+    /**Processes the image once its been chosen to avoid locking up the ui
+     * Adds dots to a text view to indicate progress
+     * Gets the image, extracts the bitmap and makes a thumbnail from the image
+     */
     private class ProcessFilesTask extends AsyncTask<Uri, Integer , ImageView> {
         protected ImageView doInBackground(Uri... uris) {
 
@@ -371,7 +385,9 @@ public class CreatePetFragment extends Fragment {
                 pet.setImageBlob(inputData);
 
                 return petImage;
-            } catch (Exception e){}
+            } catch (Exception e){
+                Log.d("Failure to process image", e.getLocalizedMessage());
+            }
             return null;
         }
 
@@ -392,6 +408,9 @@ public class CreatePetFragment extends Fragment {
 
     }
 
+    /**Processes the location the user has chosen to avoid locking up the ui
+     * Takes the lat and long, gets the locality and creates the petlocation object.
+     */
     private class ProcessLocationTask extends AsyncTask<Double, Integer , PetLocation>
     {
 
@@ -409,18 +428,23 @@ public class CreatePetFragment extends Fragment {
                 return petLocation;
 
             } catch (Exception e) {
-
+                Log.d("Failed to process location", e.getLocalizedMessage());
             }
             return null;
         }
         protected void onPostExecute(PetLocation result) {
-            pet.setPetLocation(result);
+            if(result != null)
+                pet.setPetLocation(result);
 
             refreshUI();
 
         }
     }
 
+    /** Uploads the pet to the server as well as saving it in the database.
+     * Uploads it once. gets the id, then uploads the image using that id
+     *
+     */
     private class UploadPetTask extends AsyncTask<Pet, Integer , String>
     {
         ProgressDialog progressDialog;
@@ -520,6 +544,9 @@ public class CreatePetFragment extends Fragment {
         }
     }
 
+    /**Refreshes the UI based on the pets attributes.
+     * Runnables because they're the only reliable ways to update edit text's text.
+     */
     public void refreshUI()
     {
         if(isVisible()) {

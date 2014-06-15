@@ -2,22 +2,17 @@ package com.bienprogramming.pound.app.Activity;
 
 import android.app.ActionBar;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import com.bienprogramming.pound.app.Fragment.AboutFragment;
@@ -61,11 +56,8 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -77,29 +69,27 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
-    private Pet currentPet;
-    private User currentUser;
     private CreatePetFragment createdPet;
     private FilterFragment filterFragment;
     private PetListFragment searchFragment;
-    private Filter filter;
+
+
     private UiLifecycleHelper uiHelper;
     public AtomicBoolean canUpdate;
-
+    private User currentUser;
     private Menu menu;
+
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
-
-    static HorizontalScrollView lostPets;
-    static HorizontalScrollView foundPets;
 
     //Settings Values
     Boolean settingLocation,settingPush,settingLocal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Setting theme from user preferences
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         switch (sharedPref.getInt("theme",0)){
             case R.id.radioFrog :
@@ -247,11 +237,22 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
         getMenuInflater().inflate(R.menu.create, menu);
     }
 
+    //Fragment Callback methods
+
+    /**CreatePetFragment callback. Currently just sets the fragment to null so we can tell that subsequent callbacks are from the
+     * filter fragment rather than the create pet fragment
+     * @param id The id of the created pet
+     */
     @Override
     public void onPetCreated(int id) {
         createdPet = null;
     }
 
+    /**AttributeList fragment callback.
+     *
+     * @param field The field that the item is from IE Species or Breed
+     * @param item The item selected
+     */
     @Override
     public void onItemChosenListener(CreatePetFragment.Field field, Object item) {
         if (createdPet != null)
@@ -260,7 +261,11 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
             filterFragment.updateField(field, item);
     }
 
-
+    /**The colorListFragment callback after a user chooses a series of colors
+     *
+     * @param field - Always color but is here in case this is used for anything else
+     * @param colors - The colors chosen in an arraylist
+     */
     @Override
     public void colorsChosen(CreatePetFragment.Field field, ArrayList<com.bienprogramming.pound.app.POJO.Color> colors) {
         if (createdPet != null)
@@ -270,40 +275,56 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
         getFragmentManager().popBackStack();
     }
 
+    /**ContactChosen fragment callback.
+     *
+     * @param type - The type of the contact detail - 0 - phone, 1- address, 2- email
+     * @param contactDetail - The string of the detail.
+     */
     @Override
     public void onContactChosen(int type, String contactDetail) {
         createdPet.updateField(CreatePetFragment.Field.FIELD_CONTACT_DETAIL, contactDetail, type);
     }
 
+    /**Search Fragment callback.
+     *
+     * @param id - The id of the pet selected
+     */
     @Override
     public void OnPetClicked(int id) {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         DisplayPetFragment fragment = DisplayPetFragment.newInstance(id);
         ft.replace(R.id.container, fragment);
         ft.addToBackStack(null);
-
-
         ft.commit();
     }
 
+    /**FilterFragment callback once the filters are selected
+     *
+     * @param filter - The filter object representing what the filters that have been chosen
+     */
     @Override
     public void onFiltersChosen(Filter filter) {
         searchFragment.filterResults(filter);
 
     }
 
-
+    /**A has many contact items callback. Ie if I choose to add an attribute that allows many items
+     *
+     * @param field - THe field on the pet
+     * @param items - The items in an array list
+     */
     @Override
     public void onItemsChosen(CreatePetFragment.Field field, ArrayList<String> items) {
 
     }
+
     //Facebook session information
-
-
-
-
     private void onSessionStateChange(Session session, SessionState state, Exception exception) {}
 
+    /** The Callback for when the facebook sessions changes.
+     * If they login(session opened) They I log them into the backend and recieve a token
+     *else I remove the user data
+     */
     private Session.StatusCallback callback = new Session.StatusCallback() {
         @Override
         public void call(Session session, SessionState state, Exception exception) {
@@ -315,6 +336,10 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
 
         }
     };
+
+    /**Called from the settings fragment and oncreate to ensure that settings are up to date.
+     *
+     */
     public void updateSettings()
     {
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
@@ -323,6 +348,9 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
         settingLocal = sharedPref.getBoolean("local",true);
     }
 
+    /**Async task to retrieve the pets from a url and place them in a database.
+     *
+     */
     public class UpdatePetTasks extends AsyncTask<String, Integer, Void> {
         int TIMEOUT_MILLISEC = 10000;
 
@@ -378,6 +406,10 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
             return null;
         }
 
+        /**Uses an atomic boolean as a semaphore to determine if its safe to recreate the fragment
+         *
+         * @param result - No important
+         */
         @Override
         protected void onPostExecute(Void result) {
             if(canUpdate.get()) {
@@ -390,7 +422,9 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
         }
     }
 
-
+    /**Async task to send a facebook token to the backend and recieve a user based on the facebook user id of the token.
+     *
+     */
     public class LogInUserToBackend extends AsyncTask<String, Integer, String> {
         int TIMEOUT_MILLISEC = 10000;
 
@@ -414,7 +448,9 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
                     sb.append(line + "\n");
                 }
                 return sb.toString();
-            } catch (Exception e){}
+            } catch (Exception e){
+                Log.d("Log in to backend error", e.getLocalizedMessage());
+            }
             return null;
         }
 
@@ -463,6 +499,7 @@ public class MainActivity extends OrmLiteBaseActivity<DBHelper>
         uiHelper.onSaveInstanceState(outState);
     }
 
+    //Getters for fragments to get information from the main activity
 
     public User getCurrentUser(){
         return currentUser;

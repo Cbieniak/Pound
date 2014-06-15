@@ -1,24 +1,25 @@
 package com.bienprogramming.pound.app.Fragment;
 
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
-import android.widget.TextView;
 
 import com.bienprogramming.pound.app.Activity.MainActivity;
 import com.bienprogramming.pound.app.R;
 
-
+/**A Settings fragment. Holds switches that control whether to use location, recieve push notifications(None yet), or to store data locally(not implemented)
+ * Also allows users change the theme of the application.
+ *
+ *
+ */
 public class SettingsFragment extends Fragment {
 
     public static SettingsFragment newInstance() {
